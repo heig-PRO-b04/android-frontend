@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">HEIG-VD PRO</string>
+    <string name="emoji_choice">Select the correct emoji</string>
+    <string name="qr_text">QR code</string>
+    <string name="ok_text">OK</string>
 </resources>
