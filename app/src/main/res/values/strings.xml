@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">HEIG-VD PRO</string>
+
+    <string name="home_welcome">Bienvenue!</string>
 </resources>
