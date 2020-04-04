@@ -1,18 +1,27 @@
-package ch.heigvd.pro.b04.android;
+package ch.heigvd.pro.b04.android.Home;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
+import ch.heigvd.pro.b04.android.R;
+
 public class Home extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_home);
+
+        RecyclerView emojiGrid = findViewById(R.id.home_emoji_view);
+        EmojiAdapter adapter = new EmojiAdapter();
+        emojiGrid.setAdapter(adapter);
+        emojiGrid.setLayoutManager(new GridLayoutManager(emojiGrid.getContext(), 4));
     }
 
     /**
