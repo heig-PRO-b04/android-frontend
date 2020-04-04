@@ -6,32 +6,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.emoji.widget.EmojiTextView;
+import androidx.emoji.widget.EmojiButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ch.heigvd.pro.b04.android.R;
 
 public class EmojiAdapter extends RecyclerView.Adapter<EmojiAdapter.ViewHolder> {
-    private final static Emoji elements[] = {
-            new Emoji("\u2705", '0'),
-            new Emoji("\uD83C\uDF7A", '1'),
-            new Emoji("\uD83C\uDF54", '2'),
-            new Emoji("\u2705", '3'),
-            new Emoji("\uD83D\uDC7B", '4'),
-            new Emoji("\uD83E\uDD84", '5'),
-            new Emoji("\uD83C\uDF40", '6'),
-            new Emoji("\u26C4", '7'),
-            new Emoji("\uD83D\uDD25", '8'),
-            new Emoji("\uD83E\uDD73", '9'),
-            new Emoji("\uD83E\uDD51", 'A'),
-            new Emoji("\uD83E\uDD76", 'B'),
-            new Emoji("\uD83E\uDD76", 'C'),
-            new Emoji("\uD83C\uDF08", 'D'),
-            new Emoji("\u2614", 'E'),
-            new Emoji("\u2614", 'F'),
-    };
+    private HomeViewModel state;
 
-    public EmojiAdapter() {
+    public EmojiAdapter(HomeViewModel state) {
+        this.state = state;
     }
 
     @NonNull
@@ -48,32 +32,25 @@ public class EmojiAdapter extends RecyclerView.Adapter<EmojiAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull EmojiAdapter.ViewHolder holder, int position) {
-        // Context holder.emojiTextView.getContext();
-        holder.emojiTextView.setText(elements[position].emoji);
+        EmojiButton button = holder.emojiButton;
+        Emoji emoji = Emoji.at(position);
+
+        button.setText(emoji.getEmoji());
+        button.setOnClickListener(v -> state.addNewEmoji(emoji));
     }
 
     @Override
     public int getItemCount() {
-        return elements.length;
-    }
-
-    private static class Emoji {
-        private CharSequence emoji;
-        private char hex;
-
-        public Emoji(CharSequence emoji, char hex) {
-            this.emoji = emoji;
-            this.hex = hex;
-        }
+        return Emoji.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public EmojiTextView emojiTextView;
+        public EmojiButton emojiButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            emojiTextView = itemView.findViewById(R.id.home_emoji_item);
+            emojiButton = itemView.findViewById(R.id.home_emoji_item);
         }
     }
 }
