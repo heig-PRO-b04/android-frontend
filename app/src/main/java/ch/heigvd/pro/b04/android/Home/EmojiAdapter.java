@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.emoji.widget.EmojiTextView;
+import androidx.emoji.widget.EmojiButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ch.heigvd.pro.b04.android.R;
@@ -48,8 +48,7 @@ public class EmojiAdapter extends RecyclerView.Adapter<EmojiAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull EmojiAdapter.ViewHolder holder, int position) {
-        // Context holder.emojiTextView.getContext();
-        holder.emojiTextView.setText(elements[position].emoji);
+        holder.emojiButton.setText(elements[position].emoji);
     }
 
     @Override
@@ -68,12 +67,12 @@ public class EmojiAdapter extends RecyclerView.Adapter<EmojiAdapter.ViewHolder> 
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public EmojiTextView emojiTextView;
+        public EmojiButton emojiButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            emojiTextView = itemView.findViewById(R.id.home_emoji_item);
+            emojiButton = itemView.findViewById(R.id.home_emoji_item);
         }
     }
 }
