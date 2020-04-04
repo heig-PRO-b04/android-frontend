@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home -->
+    <id name="home_emoji_code">home_emoji_code</id>
+    <id name="home_emoji_view">home_emoji_view</id>
+    <id name="home_emoji_item">home_emoji_item</id>
+
+    <!-- Other -->
+    <id name="button">button</id>
+</resources>
