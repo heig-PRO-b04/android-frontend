@@ -1,6 +1,9 @@
 package ch.heigvd.pro.b04.android.Home;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.emoji.widget.EmojiButton;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -8,20 +11,34 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import ch.heigvd.pro.b04.android.R;
 
 public class Home extends AppCompatActivity {
+    private HomeViewModel state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        state = new ViewModelProvider(this).get(HomeViewModel.class);
+
         RecyclerView emojiGrid = findViewById(R.id.home_emoji_view);
-        EmojiAdapter adapter = new EmojiAdapter();
+        EmojiAdapter adapter = new EmojiAdapter(state);
         emojiGrid.setAdapter(adapter);
         emojiGrid.setLayoutManager(new GridLayoutManager(emojiGrid.getContext(), 4));
+
+        state.getCodeEmoji().observe(this, new Observer<List<Emoji>>() {
+            @Override
+            public void onChanged(List<Emoji> emojis) {
+                Toast.makeText(Home.this, "Par exemple", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**

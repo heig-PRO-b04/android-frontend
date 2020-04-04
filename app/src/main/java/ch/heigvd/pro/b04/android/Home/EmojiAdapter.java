@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import ch.heigvd.pro.b04.android.R;
 
 public class EmojiAdapter extends RecyclerView.Adapter<EmojiAdapter.ViewHolder> {
+    private HomeViewModel state;
 
-    public EmojiAdapter() {
+    public EmojiAdapter(HomeViewModel state) {
+        this.state = state;
     }
 
     @NonNull
@@ -30,7 +32,11 @@ public class EmojiAdapter extends RecyclerView.Adapter<EmojiAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull EmojiAdapter.ViewHolder holder, int position) {
-        holder.emojiButton.setText(Emoji.at(position).getEmoji());
+        EmojiButton button = holder.emojiButton;
+        Emoji emoji = Emoji.at(position);
+
+        button.setText(emoji.getEmoji());
+        button.setOnClickListener(v -> state.addNewEmoji(emoji));
     }
 
     @Override
