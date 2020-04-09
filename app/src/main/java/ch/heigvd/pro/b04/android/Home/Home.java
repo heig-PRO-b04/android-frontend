@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 
 import java.util.List;
 
@@ -28,11 +29,14 @@ public class Home extends AppCompatActivity {
         state = new ViewModelProvider(this).get(HomeViewModel.class);
 
         RecyclerView emojiGrid = findViewById(R.id.home_emoji_view);
-        EmojiAdapter adapter = new EmojiAdapter(state);
-        emojiGrid.setAdapter(adapter);
+        EmojiAdapter emojiGridAdapter = new EmojiAdapter(state);
+        emojiGrid.setAdapter(emojiGridAdapter);
         emojiGrid.setLayoutManager(new GridLayoutManager(emojiGrid.getContext(), 4));
 
         EmojiTextView emojiCodeView = findViewById(R.id.home_emoji_code);
+
+        Button clearButton = findViewById(R.id.home_emoji_code_clear);
+        clearButton.setOnClickListener(v -> state.clearAll());
 
         state.getCodeEmoji().observe(this, new Observer<List<Emoji>>() {
             @Override
@@ -63,5 +67,9 @@ public class Home extends AppCompatActivity {
             Intent marketIntent = new Intent(Intent.ACTION_VIEW,marketUri);
             startActivity(marketIntent);
         }
+    }
+
+    public void clearEmojiCode(View view) {
+
     }
 }

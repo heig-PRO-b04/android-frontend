@@ -6,16 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".Home.Home">
 
-    <androidx.emoji.widget.EmojiTextView
-        android:id="@id/home_emoji_code"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        tools:ignore="MissingConstraints"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@id/home_emoji_code_layout"
+        android:paddingHorizontal="48dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/home_emoji_view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        />
+        >
+
+        <androidx.emoji.widget.EmojiTextView
+            android:id="@id/home_emoji_code"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            />
+
+        <Button
+            android:id="@id/home_emoji_code_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_weight="0"
+            android:text="@string/home_emoji_code_clear"
+            android:onClick="clearEmojiCode"
+            />
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@id/home_emoji_view"
@@ -23,7 +41,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/home_emoji_code"
+        app:layout_constraintTop_toBottomOf="@id/home_emoji_code_layout"
         app:layout_constraintBottom_toTopOf="@id/button"
         />
 
@@ -36,6 +54,7 @@
         android:text="@string/home_qr_code"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
