@@ -2,7 +2,6 @@ package ch.heigvd.pro.b04.android.Home;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.emoji.widget.EmojiTextView;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,8 +12,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-
-import java.util.List;
 
 import ch.heigvd.pro.b04.android.R;
 
@@ -64,9 +61,5 @@ public class Home extends AppCompatActivity {
             Intent marketIntent = new Intent(Intent.ACTION_VIEW,marketUri);
             startActivity(marketIntent);
         }
-    }
-
-    public void clearEmojiCode(View view) {
-
     }
 }
