@@ -2,7 +2,6 @@ package ch.heigvd.pro.b04.android.Home;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.emoji.widget.EmojiTextView;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,8 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-
-import java.util.List;
+import android.widget.Button;
 
 import ch.heigvd.pro.b04.android.R;
 
@@ -28,22 +26,22 @@ public class Home extends AppCompatActivity {
         state = new ViewModelProvider(this).get(HomeViewModel.class);
 
         RecyclerView emojiGrid = findViewById(R.id.home_emoji_view);
-        EmojiAdapter adapter = new EmojiAdapter(state);
-        emojiGrid.setAdapter(adapter);
+        EmojiAdapter emojiGridAdapter = new EmojiAdapter(state);
+        emojiGrid.setAdapter(emojiGridAdapter);
         emojiGrid.setLayoutManager(new GridLayoutManager(emojiGrid.getContext(), 4));
 
         EmojiTextView emojiCodeView = findViewById(R.id.home_emoji_code);
 
-        state.getCodeEmoji().observe(this, new Observer<List<Emoji>>() {
-            @Override
-            public void onChanged(List<Emoji> emojis) {
-                CharSequence txt = "";
+        Button clearButton = findViewById(R.id.home_emoji_code_clear);
+        clearButton.setOnClickListener(v -> state.clearAll());
 
-                for (Emoji e : emojis)
-                    txt = TextUtils.concat(txt, e.getEmoji());
+        state.getCodeEmoji().observe(this, emojis -> {
+            CharSequence txt = "";
 
-                emojiCodeView.setText(txt);
-            }
+            for (Emoji e : emojis)
+                txt = TextUtils.concat(txt, e.getEmoji());
+
+            emojiCodeView.setText(txt);
         });
     }
 

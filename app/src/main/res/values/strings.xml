@@ -3,4 +3,5 @@
 
     <string name="home_welcome">Bienvenue!</string>
     <string name="home_qr_code">QR Code</string>
+    <string name="home_emoji_code_clear">Clear</string>
 </resources>

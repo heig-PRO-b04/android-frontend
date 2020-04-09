@@ -17,6 +17,10 @@ public class HomeViewModel extends ViewModel {
         // Use retrofit -> https://square.github.io/retrofit/
     }
 
+    public void clearAll() {
+        codeEmoji.postValue(new ArrayList<>());
+    }
+
     public LiveData<List<Emoji>> getCodeEmoji() {
         return codeEmoji;
     }
