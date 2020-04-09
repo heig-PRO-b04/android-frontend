@@ -38,16 +38,13 @@ public class Home extends AppCompatActivity {
         Button clearButton = findViewById(R.id.home_emoji_code_clear);
         clearButton.setOnClickListener(v -> state.clearAll());
 
-        state.getCodeEmoji().observe(this, new Observer<List<Emoji>>() {
-            @Override
-            public void onChanged(List<Emoji> emojis) {
-                CharSequence txt = "";
+        state.getCodeEmoji().observe(this, emojis -> {
+            CharSequence txt = "";
 
-                for (Emoji e : emojis)
-                    txt = TextUtils.concat(txt, e.getEmoji());
+            for (Emoji e : emojis)
+                txt = TextUtils.concat(txt, e.getEmoji());
 
-                emojiCodeView.setText(txt);
-            }
+            emojiCodeView.setText(txt);
         });
     }
 
