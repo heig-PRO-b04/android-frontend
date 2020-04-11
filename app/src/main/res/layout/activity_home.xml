@@ -28,6 +28,7 @@
         android:text="@string/home_emoji_code_clear"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        style="?attr/buttonStyle"
         />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -50,6 +51,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        style="?attr/buttonStyle"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

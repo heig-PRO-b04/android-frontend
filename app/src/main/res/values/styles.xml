@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base white button. -->
+    <style name="Widget.Polls.Button" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@android:color/white</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+</resources>

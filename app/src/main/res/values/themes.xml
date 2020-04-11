@@ -5,6 +5,9 @@
         <item name="colorPrimary">@color/seaside_500</item>
         <item name="colorPrimaryDark">@color/seaside_600</item>
 
+        <!-- Widget styles. -->
+        <item name="buttonStyle">@style/Widget.Polls.Button</item>
+
         <!-- Text appearances. -->
         <item name="textAppearanceHeadline1">@style/TextAppearance.Polls.Headline1</item>
         <item name="textAppearanceHeadline2">@style/TextAppearance.Polls.Headline2</item>

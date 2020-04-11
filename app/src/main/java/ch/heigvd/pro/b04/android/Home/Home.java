@@ -36,17 +36,12 @@ public class Home extends AppCompatActivity {
         clearButton.setOnClickListener(v -> state.clearAll());
 
         state.getCodeEmoji().observe(this, emojis -> {
-            CharSequence txt = "";
-
-            for (Emoji e : emojis)
-                txt = TextUtils.concat(txt, e.getEmoji());
-
-            emojiCodeView.setText(txt);
         });
     }
 
     /**
      * Called when the user taps the Send button
+     *
      * @param view
      */
     public void scanQR(View view) {
@@ -58,7 +53,7 @@ public class Home extends AppCompatActivity {
             startActivityForResult(intent, 0);
         } catch (Exception e) {
             Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
-            Intent marketIntent = new Intent(Intent.ACTION_VIEW,marketUri);
+            Intent marketIntent = new Intent(Intent.ACTION_VIEW, marketUri);
             startActivity(marketIntent);
         }
     }
