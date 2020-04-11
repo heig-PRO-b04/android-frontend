@@ -4,6 +4,7 @@
     <style name="Base.Theme.Polls" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/seaside_500</item>
         <item name="colorPrimaryDark">@color/seaside_600</item>
+        <item name="android:textColor">@android:color/black</item>
 
         <!-- Widget styles. -->
         <item name="buttonStyle">@style/Widget.Polls.Button</item>

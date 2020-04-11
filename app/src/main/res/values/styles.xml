@@ -4,7 +4,14 @@
     <!-- Base white button. -->
     <style name="Widget.Polls.Button" parent="Widget.MaterialComponents.Button">
         <item name="backgroundTint">@android:color/white</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textAppearance">?attr/textAppearanceHeadline6</item>
         <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <!-- Icon button. -->
+    <style name="Widget.Polls.Button.Icon" parent="Widget.AppCompat.ImageButton">
+        <item name="backgroundTint">@color/seaside_050</item>
     </style>
 
 </resources>

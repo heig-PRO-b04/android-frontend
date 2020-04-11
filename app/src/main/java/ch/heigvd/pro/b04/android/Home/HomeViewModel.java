@@ -4,24 +4,48 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
-public class HomeViewModel extends ViewModel {
-    private MutableLiveData<List<Emoji>> codeEmoji = new MutableLiveData<>(new ArrayList<>());
+public final class HomeViewModel extends ViewModel {
+
+    private MutableLiveData<List<Emoji>> queue = new MutableLiveData<>();
+
+    private MutableLiveData<Set<Emoji>> selectedEmoji = new MutableLiveData<>();
+
+    private MutableLiveData<String> registrationCode = new MutableLiveData<>();
+
+    public HomeViewModel() {
+    }
 
     public void addNewEmoji(Emoji emoji) {
-        List<Emoji> list = codeEmoji.getValue();
-        list.add(emoji);
-        codeEmoji.postValue(list);
-        // Use retrofit -> https://square.github.io/retrofit/
+        List<Emoji> buffer = queue.getValue();
+
+        if (buffer == null) buffer = new LinkedList<>();
+
+        buffer.add(emoji);
+
+        if (buffer.size() == 4) {
+            Iterator<Emoji> emojis = buffer.iterator();
+            StringBuilder code = new StringBuilder();
+            code.append("0x");
+            while (emojis.hasNext()) {
+                code.append(emojis.next().getHex());
+            }
+            buffer.clear();
+            registrationCode.postValue(code.toString());
+
+            // Use retrofit -> https://square.github.io/retrofit/
+        }
+
+        queue.postValue(buffer);
+        selectedEmoji.postValue(new HashSet<>(buffer));
     }
 
-    public void clearAll() {
-        codeEmoji.postValue(new ArrayList<>());
-    }
-
-    public LiveData<List<Emoji>> getCodeEmoji() {
-        return codeEmoji;
+    public LiveData<String> getRegistrationCode() {
+        return this.registrationCode;
     }
 }

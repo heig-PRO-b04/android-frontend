@@ -1,17 +1,15 @@
 package ch.heigvd.pro.b04.android.Home;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.emoji.widget.EmojiTextView;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import ch.heigvd.pro.b04.android.R;
 
@@ -26,16 +24,21 @@ public class Home extends AppCompatActivity {
         state = new ViewModelProvider(this).get(HomeViewModel.class);
 
         RecyclerView emojiGrid = findViewById(R.id.home_emoji_view);
+        GridLayoutManager manager = new GridLayoutManager(this, 4);
+
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return position == 0 ? 4 : 1;
+            }
+        });
+
         EmojiAdapter emojiGridAdapter = new EmojiAdapter(state);
         emojiGrid.setAdapter(emojiGridAdapter);
-        emojiGrid.setLayoutManager(new GridLayoutManager(emojiGrid.getContext(), 4));
+        emojiGrid.setLayoutManager(manager);
 
-        EmojiTextView emojiCodeView = findViewById(R.id.home_emoji_code);
-
-        Button clearButton = findViewById(R.id.home_emoji_code_clear);
-        clearButton.setOnClickListener(v -> state.clearAll());
-
-        state.getCodeEmoji().observe(this, emojis -> {
+        state.getRegistrationCode().observe(this, code -> {
+            Toast.makeText(this, "Code " + code, Toast.LENGTH_LONG).show();
         });
     }
 
