@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- The different preloaded fonts that we are interested in. -->
+    <array name="polls_fonts_preloaded">
+        <item>@font/muli_400</item>
+        <item>@font/muli_600</item>
+        <item>@font/muli_700</item>
+    </array>
+
+</resources>

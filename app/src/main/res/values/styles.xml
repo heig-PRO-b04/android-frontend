@@ -1,11 +1,27 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <!-- Base application theme, inherited across API levels. -->
+    <style name="Base.Theme.Polls" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/seaside_500</item>
+        <item name="colorPrimaryDark">@color/seaside_600</item>
+
+        <!-- Text appearances. -->
+        <item name="textAppearanceHeadline1">@style/TextAppearance.Polls.Headline1</item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.Polls.Headline2</item>
+        <item name="textAppearanceHeadline3">@style/TextAppearance.Polls.Headline3</item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.Polls.Headline4</item>
+        <item name="textAppearanceHeadline5">@style/TextAppearance.Polls.Headline5</item>
+        <item name="textAppearanceHeadline6">@style/TextAppearance.Polls.Headline6</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.Polls.Subtitle1</item>
+        <item name="textAppearanceSubtitle2">@style/TextAppearance.Polls.Subtitle2</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.Polls.Body1</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.Polls.Body2</item>
+        <item name="textAppearanceButton">@style/TextAppearance.Polls.Button</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.Polls.Caption</item>
+        <item name="textAppearanceOverline">@style/TextAppearance.Polls.Overline</item>
     </style>
+
+    <!-- API-level specific application theme. -->
+    <style name="Theme.Polls" parent="Base.Theme.Polls"/>
 
 </resources>
