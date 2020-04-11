@@ -22,9 +22,15 @@ public final class HomeViewModel extends ViewModel {
     }
 
     public void addNewEmoji(Emoji emoji) {
+
+        // TODO : Factorize this logic in a model class, and test it.
+
         List<Emoji> buffer = queue.getValue();
 
         if (buffer == null) buffer = new LinkedList<>();
+
+        // We do not support duplicate emojis.
+        if (buffer.contains(emoji)) return;
 
         buffer.add(emoji);
 
@@ -43,6 +49,10 @@ public final class HomeViewModel extends ViewModel {
 
         queue.postValue(buffer);
         selectedEmoji.postValue(new HashSet<>(buffer));
+    }
+
+    public LiveData<Set<Emoji>> getSelectedEmoji() {
+        return this.selectedEmoji;
     }
 
     public LiveData<String> getRegistrationCode() {
