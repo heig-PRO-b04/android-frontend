@@ -1,46 +1,44 @@
 package ch.heigvd.pro.b04.android.Home;
 
-public class Emoji {
-    private final static Emoji elements[] = {
-            new Emoji("\u2705", '0'),
-            new Emoji("\uD83C\uDF7A", '1'),
-            new Emoji("\uD83C\uDF54", '2'),
-            new Emoji("\uD83D\uDE3B", '3'),
-            new Emoji("\uD83D\uDC7B", '4'),
-            new Emoji("\uD83E\uDD84", '5'),
-            new Emoji("\uD83C\uDF40", '6'),
-            new Emoji("\u26C4", '7'),
-            new Emoji("\uD83D\uDD25", '8'),
-            new Emoji("\uD83E\uDD73", '9'),
-            new Emoji("\uD83E\uDD51", 'A'),
-            new Emoji("\uD83E\uDD76", 'B'),
-            new Emoji("\uD83C\uDF8B", 'C'),
-            new Emoji("\uD83C\uDF08", 'D'),
-            new Emoji("\u2614", 'E'),
-            new Emoji("\uD83C\uDFB9", 'F'),
-    };
+import androidx.annotation.DrawableRes;
 
-    private CharSequence emoji;
-    private char hex;
+import ch.heigvd.pro.b04.android.R;
 
-    public Emoji(CharSequence emoji, char hex) {
-        this.emoji = emoji;
-        this.hex = hex;
+public enum Emoji {
+
+    E0(R.drawable.emoji_0, '0'),
+    E1(R.drawable.emoji_1, '1'),
+    E2(R.drawable.emoji_2, '2'),
+    E3(R.drawable.emoji_3, '3'),
+    E4(R.drawable.emoji_4, '4'),
+    E5(R.drawable.emoji_5, '5'),
+    E6(R.drawable.emoji_6, '6'),
+    E7(R.drawable.emoji_7, '7'),
+    E8(R.drawable.emoji_8, '8'),
+    E9(R.drawable.emoji_9, '9'),
+    EA(R.drawable.emoji_a, 'A'),
+    EB(R.drawable.emoji_b, 'B'),
+    EC(R.drawable.emoji_c, 'C'),
+    ED(R.drawable.emoji_d, 'D'),
+    EE(R.drawable.emoji_e, 'E'),
+    EF(R.drawable.emoji_f, 'F');
+
+    @DrawableRes
+    private int drawable;
+
+    private char c;
+
+    /* private */ Emoji(@DrawableRes int resource, char c) {
+        this.drawable = resource;
+        this.c = c;
     }
 
-    public CharSequence getEmoji() {
-        return emoji;
+    @DrawableRes
+    public int getEmoji() {
+        return this.drawable;
     }
 
     public char getHex() {
-        return hex;
-    }
-
-    public static Emoji at(int pos) {
-        return elements[pos];
-    }
-
-    public static int size() {
-        return elements.length;
+        return this.c;
     }
 }

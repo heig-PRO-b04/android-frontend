@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme, inherited across API levels. -->
+    <style name="Base.V23.Theme.Polls" parent="Base.Theme.Polls">
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <!-- API-level specific application theme. -->
+    <style name="Theme.Polls" parent="Base.V23.Theme.Polls"/>
+
+</resources>
