@@ -3,4 +3,19 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="seaside_050">#E1F5FE</color>
+    <color name="seaside_100">#B3E5FC</color>
+    <color name="seaside_200">#81D4FA</color>
+    <color name="seaside_300">#4FC3F7</color>
+    <color name="seaside_400">#29B6F6</color>
+    <color name="seaside_500">#03A9F4</color>
+    <color name="seaside_600">#039BE5</color>
+    <color name="seaside_700">#0288D1</color>
+    <color name="seaside_800">#0277BD</color>
+    <color name="seaside_900">#01579B</color>
+    <color name="seaside_A100">#80D8FF</color>
+    <color name="seaside_A200">#40C4FF</color>
+    <color name="seaside_A400">#00B0FF</color>
+    <color name="seaside_A700">#0091EA</color>
 </resources>
