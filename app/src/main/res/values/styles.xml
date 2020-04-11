@@ -19,9 +19,13 @@
         <item name="textAppearanceButton">@style/TextAppearance.Polls.Button</item>
         <item name="textAppearanceCaption">@style/TextAppearance.Polls.Caption</item>
         <item name="textAppearanceOverline">@style/TextAppearance.Polls.Overline</item>
+
+        <!-- Window styling. -->
+        <item name="android:statusBarColor">@color/seaside_100</item>
+        <item name="android:windowBackground">@color/seaside_100</item>
     </style>
 
     <!-- API-level specific application theme. -->
-    <style name="Theme.Polls" parent="Base.Theme.Polls"/>
+    <style name="Theme.Polls" parent="Base.Theme.Polls" />
 
 </resources>
