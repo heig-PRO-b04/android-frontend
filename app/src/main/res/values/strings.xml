@@ -4,4 +4,6 @@
     <string name="home_welcome">What\'s your poll identifier ?</string>
     <string name="home_qr_code">Or Scan a QR Code</string>
     <string name="home_emoji_code_clear">Clear</string>
+
+    <string name="poll_welcome">This is a poll</string>
 </resources>
