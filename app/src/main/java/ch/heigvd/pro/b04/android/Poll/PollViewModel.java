@@ -19,21 +19,6 @@ public class PollViewModel extends ViewModel {
 
     public PollViewModel() {}
 
-    public void addNewQuestion(Question question) {
-
-        List<Question> buffer = queue.getValue();
-
-        if (buffer == null) buffer = new LinkedList<>();
-
-        // We do not support duplicate questions.
-        if (buffer.contains(question)) return;
-
-        buffer.add(question);
-
-        queue.postValue(buffer);
-        answeredQuestion.postValue(new HashSet<>(buffer));
-    }
-
     public List<Question> getQuestions() {
         return queue.getValue();
     }
