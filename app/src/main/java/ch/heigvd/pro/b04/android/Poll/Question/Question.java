@@ -7,7 +7,11 @@ import ch.heigvd.pro.b04.android.Poll.Answer.Answer;
 
 public enum Question {
 
-    Q0(0, "Is it sunny today?", new Answer[]{new Answer(0, "Yes"), new Answer(1, "No")});
+    Q0(0, "Is it sunny today?", new Answer[]{new Answer(0, "Yes"), new Answer(1, "No")}),
+    Q1(1, "Is it rainy today?", new Answer[]{new Answer(2, "Yes"), new Answer(3, "No")}),
+    Q2(2, "Are you happy?", new Answer[]{new Answer(4, "Yes"), new Answer(5, "No")}),
+    Q3(3, "Are you sad?", new Answer[]{new Answer(6, "Yes"), new Answer(7, "No")}),
+    Q4(4, "Is this a good question?", new Answer[]{new Answer(8, "Yes"), new Answer(9, "No")});
 
     private int id;
     private String question;

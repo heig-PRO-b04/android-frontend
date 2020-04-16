@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -19,8 +18,23 @@ public class PollViewModel extends ViewModel {
 
     public PollViewModel() {}
 
+    public void addQuestion(Question question) {
+        if (!queue.getValue().contains(question)) {
+            List<Question> buffer = queue.getValue();
+
+            if (buffer == null) buffer = new LinkedList<>();
+
+            buffer.add(question);
+            queue.postValue(buffer);
+            //TODO : trouver les questions qui ont reçu une réponse et les ajouter ici
+            //       answeredQuestion.postValue(new HashSet<>(buffer));
+        }
+    }
+
     public List<Question> getQuestions() {
-        return queue.getValue();
+        if(queue.getValue() != null)
+            return queue.getValue();
+        return new LinkedList<>();
     }
 
     public LiveData<Set<Question>> getAnsweredQuestion() {
@@ -29,5 +43,6 @@ public class PollViewModel extends ViewModel {
 
     public void goToQuestion(Question question) {
         // TODO : go to the question view
+        System.out.println("Question was selected...\n");
     }
 }

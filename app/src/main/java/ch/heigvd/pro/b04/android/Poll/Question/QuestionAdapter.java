@@ -28,7 +28,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         state.getAnsweredQuestion().observe(lifecycleOwner, questions -> {
             answered.clear();
             for (Question question : questions) {
-                answered.add(question.getId());
+                answered.add(question.getId() + 1);
             }
             notifyDataSetChanged();
         });
@@ -47,7 +47,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         private QuestionViewHolder(@NonNull ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.home_emoji, parent, false));
+                    .inflate(R.layout.poll_question, parent, false));
 
             questionButton = itemView.findViewById(R.id.poll_question_item);
         }
@@ -84,7 +84,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 break;
             default:
                 ((QuestionViewHolder) holder).bindQuestion(
-                        state.getQuestions().get(position - 1),
+                        Question.values()[position-1],
                         answered.contains(position)
                 );
                 break;
@@ -93,7 +93,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemCount() {
-        return state.getQuestions().size() + 1;
+        return Question.values().length + 1;
     }
 
     @Override
