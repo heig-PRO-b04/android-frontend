@@ -47,4 +47,11 @@ public class Question {
     public int getId() {
         return id;
     }
+
+    public boolean equals(Question question) {
+        return question.id               == id &&
+               question.question         == this.question &&
+               question.answers          == answers &&
+               question.nummberOfAnswers == nummberOfAnswers;
+    }
 }
