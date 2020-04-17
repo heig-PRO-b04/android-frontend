@@ -20,18 +20,9 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int VIEW_TYPE_QUESTION = 1;
 
     private PollViewModel state;
-    private Set<Integer> answered = new HashSet<>();
 
     public QuestionAdapter(PollViewModel state, LifecycleOwner lifecycleOwner) {
         this.state = state;
-
-        state.getAnsweredQuestion().observe(lifecycleOwner, questions -> {
-            answered.clear();
-            for (Question question : questions) {
-                answered.add(question.getId() + 1);
-            }
-            notifyDataSetChanged();
-        });
     }
 
     private static class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -59,7 +50,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (answered) {
                 questionButton.setBackgroundColor(Color.GREEN);
             } else {
-                questionButton.setBackgroundColor(Color.TRANSPARENT);
+                questionButton.setBackgroundColor(Color.WHITE);
             }
         }
     }
@@ -83,9 +74,10 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case 0:
                 break;
             default:
+                Question q = Question.values()[position-1];
                 ((QuestionViewHolder) holder).bindQuestion(
-                        Question.values()[position-1],
-                        answered.contains(position)
+                        q,
+                        q.answered()
                 );
                 break;
         }

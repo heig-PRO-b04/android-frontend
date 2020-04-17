@@ -38,6 +38,10 @@ public enum Question {
         return question;
     }
 
+    public boolean answered() {
+        return selectedAnswers.size() != 0;
+    }
+
     public Answer[] getAnswers() {
         return answers;
     }
