@@ -3,6 +3,7 @@ package ch.heigvd.pro.b04.android.Poll;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
@@ -23,20 +24,13 @@ public class PollActivity extends AppCompatActivity {
 
         state = new ViewModelProvider(this).get(PollViewModel.class);
 
-        RecyclerView questionGrid = findViewById(R.id.poll_questions_view);
-        GridLayoutManager manager = new GridLayoutManager(this, 1);
-
-        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                return 1;
-            }
-        });
+        RecyclerView questionList = findViewById(R.id.poll_questions_view);
+        LinearLayoutManager manager = new LinearLayoutManager(this);
 
         QuestionAdapter questionAdapter = new QuestionAdapter(state, this);
 
-        questionGrid.setAdapter(questionAdapter);
-        questionGrid.setLayoutManager(manager);
+        questionList.setAdapter(questionAdapter);
+        questionList.setLayoutManager(manager);
 
     }
 }
