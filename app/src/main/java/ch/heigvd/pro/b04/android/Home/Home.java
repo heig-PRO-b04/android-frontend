@@ -42,7 +42,6 @@ public class Home extends AppCompatActivity {
             Toast.makeText(this, "Code " + code, Toast.LENGTH_LONG).show();
 
             Intent intent = new Intent(this, PollActivity.class);
-            // TODO : vérifier validité et passer les informations relatives au poll
             startActivity(intent);
         });
     }
