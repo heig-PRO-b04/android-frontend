@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.HashSet;
 import java.util.Set;
 
+import ch.heigvd.pro.b04.android.Poll.PollActivity;
 import ch.heigvd.pro.b04.android.Poll.PollViewModel;
 import ch.heigvd.pro.b04.android.R;
 
@@ -74,7 +75,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case 0:
                 break;
             default:
-                Question q = Question.values()[position-1];
+                Question q = state.getQuestions().get(position-1);
                 ((QuestionViewHolder) holder).bindQuestion(
                         q,
                         q.answered()
@@ -85,7 +86,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemCount() {
-        return Question.values().length + 1;
+        return state.getQuestions().size() + 1;
     }
 
     @Override
