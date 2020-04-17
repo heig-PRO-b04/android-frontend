@@ -8,23 +8,28 @@ import ch.heigvd.pro.b04.android.Poll.Answer.Answer;
 public class Question {
     private int id;
     private String question;
+    private int nummberOfAnswers;
     private Answer[] answers;
-    private List<Answer> selectedAnswers;
+    private boolean answered;
 
     public Question(int id, String question, Answer[] answers){
         this.id = id;
         this.question = question;
         this.answers = answers;
-        this.selectedAnswers = new LinkedList<>();
+        this.answered = false;
+        nummberOfAnswers = 1;
     }
 
-    public void answer(Question question, Answer answer) {
-        for (Answer a : question.answers ) {
-            if(a == answer) {
-                question.selectedAnswers.add(answer);
-                break;
-            }
-        }
+    public Question(int id, String question, Answer[] answers, int numberOfAnswers){
+        this.id = id;
+        this.question = question;
+        this.answers = answers;
+        this.answered = false;
+        this.nummberOfAnswers = numberOfAnswers;
+    }
+
+    public void answer(Answer answer) {
+        answer.select();
     }
 
     public String getQuestion() {
@@ -32,15 +37,11 @@ public class Question {
     }
 
     public boolean answered() {
-        return selectedAnswers.size() != 0;
+        return false;
     }
 
     public Answer[] getAnswers() {
         return answers;
-    }
-
-    public List<Answer> getSelectedAnswers() {
-        return selectedAnswers;
     }
 
     public int getId() {
