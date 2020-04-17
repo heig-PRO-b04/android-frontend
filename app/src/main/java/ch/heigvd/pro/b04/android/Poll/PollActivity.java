@@ -38,7 +38,11 @@ public class PollActivity extends AppCompatActivity {
 
         //state = new PollViewModel(questions);
         state = new ViewModelProvider(this).get(PollViewModel.class);
-        state.setQuestions(questions);
+        state.addQuestion(q0);
+        state.addQuestion(q1);
+        state.addQuestion(q2);
+        state.addQuestion(q3);
+        state.addQuestion(q4);
 
         RecyclerView questionList = findViewById(R.id.poll_questions_view);
         LinearLayoutManager manager = new LinearLayoutManager(this);

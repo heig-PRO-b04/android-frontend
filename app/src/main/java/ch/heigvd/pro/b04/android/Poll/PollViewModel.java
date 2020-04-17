@@ -10,25 +10,20 @@ import ch.heigvd.pro.b04.android.Poll.Question.Question;
 
 
 public class PollViewModel extends ViewModel {
-    private List<Question> questions = new LinkedList<>();
-    private MutableLiveData<List<Question>> queue = new MutableLiveData<>();
+    private MutableLiveData<List<Question>> questions = new MutableLiveData<>(new LinkedList<>());
 
     public PollViewModel() {}
 
-    public void setQuestions(List<Question> questions) {
-        this.questions = questions;
-    }
-
     public void addQuestion(Question question) {
-        questions.add(question);
-    }
-
-    public List<Question> getQuestions() {
-        return questions;
-    }
+        this.questions.getValue().add(question);
+   }
 
     public void goToQuestion(Question question) {
         // TODO : go to the question view
         System.out.println("Question was selected...\n");
+    }
+
+    public MutableLiveData<List<Question>> getQuestions() {
+        return questions;
     }
 }

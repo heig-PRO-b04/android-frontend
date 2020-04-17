@@ -9,17 +9,33 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+
 import ch.heigvd.pro.b04.android.Poll.PollViewModel;
 import ch.heigvd.pro.b04.android.R;
 
 public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_QUESTION = 1;
-
     private PollViewModel state;
+
+    private List<Question> questions = new LinkedList<>();
 
     public QuestionAdapter(PollViewModel state, LifecycleOwner lifecycleOwner) {
         this.state = state;
+
+        state.getQuestions().observe(lifecycleOwner, newQuestions -> {
+
+            for (Question question : newQuestions) {
+                //if (!questions.contains(question))
+                    questions.add(question);
+            }
+
+            notifyDataSetChanged();
+        });
     }
 
     private static class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -71,7 +87,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case 0:
                 break;
             default:
-                Question q = state.getQuestions().get(position-1);
+                Question q = questions.get(position-1);
                 ((QuestionViewHolder) holder).bindQuestion(
                         q,
                         q.answered()
@@ -82,7 +98,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemCount() {
-        return state.getQuestions().size() + 1;
+        return questions.size() + 1;
     }
 
     @Override
