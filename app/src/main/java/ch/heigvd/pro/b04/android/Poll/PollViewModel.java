@@ -8,7 +8,6 @@ import java.util.List;
 
 import ch.heigvd.pro.b04.android.Poll.Question.Question;
 
-
 public class PollViewModel extends ViewModel {
     private MutableLiveData<List<Question>> questions = new MutableLiveData<>(new LinkedList<>());
 

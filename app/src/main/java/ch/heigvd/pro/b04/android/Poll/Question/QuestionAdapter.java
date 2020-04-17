@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import ch.heigvd.pro.b04.android.Poll.PollViewModel;
 import ch.heigvd.pro.b04.android.R;
@@ -28,9 +26,8 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.state = state;
 
         state.getQuestions().observe(lifecycleOwner, newQuestions -> {
-
             for (Question question : newQuestions) {
-                //if (!questions.contains(question))
+                if (!questions.contains(question))
                     questions.add(question);
             }
 
