@@ -6,8 +6,10 @@ import androidx.emoji.bundled.BundledEmojiCompatConfig;
 import androidx.emoji.text.EmojiCompat;
 
 public class Polls extends Application {
+
     @Override
     public void onCreate() {
+
         super.onCreate();
 
         BundledEmojiCompatConfig config = new BundledEmojiCompatConfig(this);

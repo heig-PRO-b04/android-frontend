@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ch.heigvd.pro.b04.android.Poll.PollActivity;
 import ch.heigvd.pro.b04.android.R;
 
 public class Home extends AppCompatActivity {
@@ -39,6 +40,9 @@ public class Home extends AppCompatActivity {
 
         state.getRegistrationCode().observe(this, code -> {
             Toast.makeText(this, "Code " + code, Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(this, PollActivity.class);
+            startActivity(intent);
         });
     }
 
