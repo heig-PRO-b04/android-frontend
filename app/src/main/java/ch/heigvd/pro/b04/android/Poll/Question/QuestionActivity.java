@@ -1,4 +1,4 @@
-package ch.heigvd.pro.b04.android.Poll;
+package ch.heigvd.pro.b04.android.Poll.Question;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -7,12 +7,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import ch.heigvd.pro.b04.android.Poll.Answer.Answer;
 import ch.heigvd.pro.b04.android.Poll.Answer.AnswerAdapter;
-import ch.heigvd.pro.b04.android.Poll.Question.Question;
 import ch.heigvd.pro.b04.android.R;
 
 public class QuestionActivity extends AppCompatActivity {

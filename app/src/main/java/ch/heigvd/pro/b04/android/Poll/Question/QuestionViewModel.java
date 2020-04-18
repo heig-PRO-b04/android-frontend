@@ -1,4 +1,4 @@
-package ch.heigvd.pro.b04.android.Poll;
+package ch.heigvd.pro.b04.android.Poll.Question;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;

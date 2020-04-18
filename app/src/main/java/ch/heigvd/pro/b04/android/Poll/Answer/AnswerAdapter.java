@@ -13,9 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.heigvd.pro.b04.android.Poll.PollViewModel;
-import ch.heigvd.pro.b04.android.Poll.Question.Question;
-import ch.heigvd.pro.b04.android.Poll.QuestionViewModel;
+import ch.heigvd.pro.b04.android.Poll.Question.QuestionViewModel;
 import ch.heigvd.pro.b04.android.R;
 
 public class AnswerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
