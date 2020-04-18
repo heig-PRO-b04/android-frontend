@@ -1,5 +1,7 @@
 package ch.heigvd.pro.b04.android.Poll.Answer;
 
+import androidx.annotation.Nullable;
+
 public class Answer {
     private String answer;
     private boolean selected;
@@ -26,4 +28,10 @@ public class Answer {
     public Integer getId() {
         return id;
     }
-}
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        Answer a = (Answer) obj;
+        return answer.equals(a.answer) && a.id == id;
+    }
+}   

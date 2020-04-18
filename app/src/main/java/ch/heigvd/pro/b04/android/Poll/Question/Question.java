@@ -1,5 +1,7 @@
 package ch.heigvd.pro.b04.android.Poll.Question;
 
+import androidx.annotation.Nullable;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,10 +50,13 @@ public class Question {
         return id;
     }
 
-    public boolean equals(Question question) {
-        return question.id               == id &&
-               question.question         == this.question &&
-               question.answers          == answers &&
-               question.nummberOfAnswers == nummberOfAnswers;
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        Question q = (Question) obj;
+        return q.id == id &&
+               this.question.equals(q.question) &&
+               this.answers.equals(q.answers) &&
+               q.nummberOfAnswers == nummberOfAnswers;
     }
 }
