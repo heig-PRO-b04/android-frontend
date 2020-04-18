@@ -5,7 +5,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.widget.Toast;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -51,6 +54,15 @@ public class PollActivity extends AppCompatActivity {
 
         questionList.setAdapter(questionAdapter);
         questionList.setLayoutManager(manager);
+
+        state.getQuestionToView().observe(this, question -> {
+            Question q = question.get(0);
+            Toast.makeText(this, "Question : " + q.getQuestion(), Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(this, QuestionActivity.class);
+            intent.putExtra("QUESTION_ID", q.getId());
+            startActivity(intent);
+        });
     }
 
 }
