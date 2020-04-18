@@ -19,4 +19,53 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@id/before_button"
+        style="?attr/buttonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_before_black"
+        android:drawablePadding="8dp"
+        android:gravity="center"
+        android:onClick="goBack"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/back_button"
+        app:layout_constraintStart_toStartOf="parent" />
+    <ImageButton
+        android:id="@id/back_button"
+        style="?attr/buttonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_exit_sign"
+        android:drawablePadding="8dp"
+        android:gravity="center"
+        android:onClick="exitQuestion"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/before_button"
+        app:layout_constraintEnd_toStartOf="@id/next_button" />
+    <ImageButton
+        android:id="@id/next_button"
+        style="?attr/buttonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_next_black"
+        android:drawablePadding="8dp"
+        android:gravity="center"
+        android:onClick="goNext"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/back_button"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

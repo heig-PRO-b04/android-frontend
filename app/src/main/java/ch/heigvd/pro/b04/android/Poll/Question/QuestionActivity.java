@@ -7,9 +7,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
 import ch.heigvd.pro.b04.android.Poll.Answer.Answer;
 import ch.heigvd.pro.b04.android.Poll.Answer.AnswerAdapter;
+import ch.heigvd.pro.b04.android.Poll.PollActivity;
 import ch.heigvd.pro.b04.android.R;
 
 public class QuestionActivity extends AppCompatActivity {
@@ -54,5 +57,22 @@ public class QuestionActivity extends AppCompatActivity {
 
             System.out.println("An Answer was selected");
         });*/
+    }
+
+    public void goBack(View view) {
+        Intent intent = new Intent(this, QuestionActivity.class);
+        // TODO : get the previous question
+        startActivity(intent);
+    }
+
+    public void goNext(View view) {
+        Intent intent = new Intent(this, QuestionActivity.class);
+        // TODO : get the next question
+        startActivity(intent);
+    }
+
+    public void exitQuestion(View view) {
+        Intent intent = new Intent(this, PollActivity.class);
+        startActivity(intent);
     }
 }
