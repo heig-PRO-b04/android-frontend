@@ -9,6 +9,11 @@
     <item type="id" name="poll_question_item" />
     <item type="id" name="poll_answers_view" />
 
+    <!-- Question -->
+    <item type="id" name="question" />
+    <item type="id" name="question_answers_view" />
+    <item type="id" name="question_answer_item" />
+
     <!-- Other -->
     <item type="id" name="button" />
 </resources>

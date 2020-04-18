@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="ch.heigvd.pro.b04.android.Poll.QuestionActivity">
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:paddingStart="12dp"
+    android:paddingTop="52dp"
+    android:paddingEnd="12dp"
+    android:paddingBottom="12dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@id/question_answers_view"
+    <TextView
+        style="?attr/textAppearanceHeadline4"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
-        android:paddingBottom="88dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@id/question"
+        android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

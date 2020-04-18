@@ -13,6 +13,10 @@ public class Answer {
         this.answer = answer;
     }
 
+    public String getAnswer() {
+        return answer;
+    }
+
     public boolean isSelected() {
         return selected;
     }
