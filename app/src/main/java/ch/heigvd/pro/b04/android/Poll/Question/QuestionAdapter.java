@@ -26,9 +26,9 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.state = state;
 
         state.getQuestions().observe(lifecycleOwner, newQuestions -> {
-            for (Question question : newQuestions) {
-                if (!questions.contains(question))
-                    questions.add(question);
+            for (Question q : newQuestions) {
+                if (!questions.contains(q))
+                    questions.add(q);
             }
 
             notifyDataSetChanged();
