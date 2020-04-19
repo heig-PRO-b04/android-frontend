@@ -37,7 +37,7 @@ android {
         }
         developmentAPI {
             dimension "endpoint"
-            buildConfigField("String", "API_URL", properties.getProperty("apiUrl"))
+            buildConfigField("String", "API_URL", properties.getProperty("apiUrl") ?: "")
         }
     }
 
