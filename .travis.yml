@@ -29,4 +29,4 @@ android:
     - 'google-gdk-license-.+'
 
 script:
-  - ./gradlew clean assembleDebug assembleRelease testDebug
+  - ./gradlew clean assembleRelease testRelease
