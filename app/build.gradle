@@ -1,5 +1,9 @@
 apply plugin: "com.android.application"
 
+Properties properties = new Properties()
+
+properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -22,6 +26,18 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "endpoint"
+    productFlavors {
+        productionAPI {
+            dimension "endpoint"
+            buildConfigField("String", "API_URL", "https://api.rockin.app")
+        }
+        developmentAPI {
+            dimension "endpoint"
+            buildConfigField("String", "API_URL", properties.getProperty("apiUrl"))
         }
     }
 
@@ -55,4 +71,6 @@ dependencies {
     implementation "androidx.emoji:emoji-bundled:1.0.0"
 
     implementation "com.google.android.material:material:1.1.0"
+    implementation 'com.squareup.retrofit2:converter-gson:2.8.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.8.1'
 }
