@@ -28,7 +28,7 @@ public class Question {
     }
 
     public void answer(Answer answer) {
-        answer.select();
+        answer.toggle();
     }
 
     public String getQuestion() {

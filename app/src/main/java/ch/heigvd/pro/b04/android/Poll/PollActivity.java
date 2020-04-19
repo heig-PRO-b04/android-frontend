@@ -57,7 +57,6 @@ public class PollActivity extends AppCompatActivity {
 
         state.getQuestionToView().observe(this, question -> {
             Question q = question;
-            //Toast.makeText(this, "Question : " + q.getQuestion(), Toast.LENGTH_LONG).show();
 
             Intent intent = new Intent(this, QuestionActivity.class);
             intent.putExtra("QUESTION_ID", q.getId());

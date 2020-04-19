@@ -21,12 +21,8 @@ public class Answer {
         return selected;
     }
 
-    public void select() {
-        this.selected = true;
-    }
-
-    public void deselect() {
-        this.selected = false;
+    public void toggle() {
+        selected = !selected;
     }
 
     public Integer getId() {
