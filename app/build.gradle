@@ -33,7 +33,7 @@ android {
     productFlavors {
         productionAPI {
             dimension "endpoint"
-            buildConfigField("String", "API_URL", "https://api.rockin.app")
+            buildConfigField("String", "API_URL", "\"https://api.rockin.app\"")
         }
         developmentAPI {
             dimension "endpoint"
