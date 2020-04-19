@@ -11,7 +11,6 @@ import ch.heigvd.pro.b04.android.Poll.Answer.Answer;
 public class QuestionViewModel extends ViewModel {
     private String question;
     private MutableLiveData<List<Answer>> answers = new MutableLiveData<>(new LinkedList<>());
-    private MutableLiveData<List<Answer>> selected = new MutableLiveData<>(new LinkedList<>());
 
     public QuestionViewModel() {}
 
@@ -25,10 +24,6 @@ public class QuestionViewModel extends ViewModel {
 
     public MutableLiveData<List<Answer>> getAnswers() {
         return answers;
-    }
-
-    public MutableLiveData<List<Answer>> getSelectedAnswers() {
-        return selected;
     }
 
     public String getQuestion() {
