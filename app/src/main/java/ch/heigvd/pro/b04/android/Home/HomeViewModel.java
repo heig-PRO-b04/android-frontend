@@ -1,14 +1,25 @@
 package ch.heigvd.pro.b04.android.Home;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
+import ch.heigvd.pro.b04.android.datamodel.SessionCode;
+import ch.heigvd.pro.b04.android.datamodel.Token;
+import ch.heigvd.pro.b04.android.network.RetrofitClient;
+import ch.heigvd.pro.b04.android.network.RockinAPI;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public final class HomeViewModel extends ViewModel {
 
@@ -17,6 +28,29 @@ public final class HomeViewModel extends ViewModel {
     private MutableLiveData<Set<Emoji>> selectedEmoji = new MutableLiveData<>();
 
     private MutableLiveData<String> registrationCode = new MutableLiveData<>();
+    private MutableLiveData<Token> token = new MutableLiveData<>();
+
+    private Callback<Token> callbackToken = new Callback<Token>() {
+        @Override
+        public void onResponse(Call<Token> call, Response<Token> response) {
+            if (response.isSuccessful()) {
+                token.postValue(response.body());
+            } else {
+                Log.w("localDebug", "Received error, HTTP status is " + response.code());
+                Log.w("localDebug", "Registration code was : " + registrationCode.getValue());
+                try {
+                    Log.w("localDebug", response.errorBody().string());
+                } catch (IOException e) {
+                    Log.e("localDebug", "Error in error, rip");
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<Token> call, Throwable t) {
+            Log.e("localDebug", "We had a super bad error in callbackToken");
+        }
+    };
 
     public HomeViewModel() {
     }
@@ -44,7 +78,10 @@ public final class HomeViewModel extends ViewModel {
             buffer.clear();
             registrationCode.postValue(code.toString());
 
-            // Use retrofit -> https://square.github.io/retrofit/
+            RetrofitClient.getRetrofitInstance()
+                    .create(RockinAPI.class)
+                    .postConnect(new SessionCode(code.toString()))
+                    .enqueue(callbackToken);
         }
 
         queue.postValue(buffer);
@@ -55,7 +92,7 @@ public final class HomeViewModel extends ViewModel {
         return this.selectedEmoji;
     }
 
-    public LiveData<String> getRegistrationCode() {
-        return this.registrationCode;
+    public LiveData<Token> getToken() {
+        return this.token;
     }
 }
