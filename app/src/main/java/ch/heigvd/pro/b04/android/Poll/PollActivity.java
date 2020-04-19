@@ -56,7 +56,7 @@ public class PollActivity extends AppCompatActivity {
         questionList.setLayoutManager(manager);
 
         state.getQuestionToView().observe(this, question -> {
-            Question q = question.get(0);
+            Question q = question;
             //Toast.makeText(this, "Question : " + q.getQuestion(), Toast.LENGTH_LONG).show();
 
             Intent intent = new Intent(this, QuestionActivity.class);
