@@ -56,10 +56,8 @@ public class PollActivity extends AppCompatActivity {
         questionList.setLayoutManager(manager);
 
         state.getQuestionToView().observe(this, question -> {
-            Question q = question;
-
             Intent intent = new Intent(this, QuestionActivity.class);
-            intent.putExtra("QUESTION_ID", q.getId());
+            intent.putExtra("QUESTION_ID", question.getId());
             startActivity(intent);
         });
     }
