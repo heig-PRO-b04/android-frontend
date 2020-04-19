@@ -1,4 +1,4 @@
-package ch.heigvd.pro.b04.android.Home;
+package ch.heigvd.pro.b04.android;
 
 import android.app.Application;
 

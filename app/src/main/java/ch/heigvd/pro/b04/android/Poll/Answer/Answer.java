@@ -13,16 +13,16 @@ public class Answer {
         this.answer = answer;
     }
 
+    public String getAnswer() {
+        return answer;
+    }
+
     public boolean isSelected() {
         return selected;
     }
 
-    public void select() {
-        this.selected = true;
-    }
-
-    public void deselect() {
-        this.selected = false;
+    public void toggle() {
+        selected = !selected;
     }
 
     public Integer getId() {

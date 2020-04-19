@@ -39,8 +39,6 @@ public class Home extends AppCompatActivity {
         emojiGrid.setLayoutManager(manager);
 
         state.getRegistrationCode().observe(this, code -> {
-            Toast.makeText(this, "Code " + code, Toast.LENGTH_LONG).show();
-
             Intent intent = new Intent(this, PollActivity.class);
             startActivity(intent);
         });

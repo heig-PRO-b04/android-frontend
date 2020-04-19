@@ -1,9 +1,14 @@
 <resources>
+    <!-- General -->
     <string name="app_name">HEIG-VD PRO</string>
+    <string name="poll_welcome">Here are the questions</string>
 
+    <!-- Home -->
     <string name="home_welcome">What\'s your poll identifier ?</string>
     <string name="home_qr_code">Or Scan a QR Code</string>
     <string name="home_emoji_code_clear">Clear</string>
 
-    <string name="poll_welcome">Here are the questions</string>
+    <!-- Question -->
+    <string name="question_bask_button">Back</string>
+
 </resources>

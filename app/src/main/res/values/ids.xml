@@ -9,6 +9,14 @@
     <item type="id" name="poll_question_item" />
     <item type="id" name="poll_answers_view" />
 
+    <!-- Question -->
+    <item type="id" name="question" />
+    <item type="id" name="question_answers_view" />
+    <item type="id" name="question_answer_item" />
+    <item type="id" name="back_button" />
+    <item type="id" name="before_button" />
+    <item type="id" name="next_button" />
+
     <!-- Other -->
     <item type="id" name="button" />
 </resources>
