@@ -36,6 +36,8 @@ public final class HomeViewModel extends ViewModel {
             if (response.isSuccessful()) {
                 token.postValue(response.body());
             } else {
+                Token error = new Token("Error");
+                token.postValue(error);
                 Log.w("localDebug", "Received error, HTTP status is " + response.code());
                 Log.w("localDebug", "Registration code was : " + registrationCode.getValue());
                 try {

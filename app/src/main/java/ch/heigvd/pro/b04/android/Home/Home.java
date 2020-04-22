@@ -39,8 +39,16 @@ public class Home extends AppCompatActivity {
         emojiGrid.setLayoutManager(manager);
 
         state.getToken().observe(this, token -> {
-            Intent intent = new Intent(this, PollActivity.class);
-            startActivity(intent);
+            if (token.getToken() == "Error") {
+                // TODO : Make it a bit prettier if possible, but at least, it does the job
+                Toast toast = Toast.makeText(this, "Wrong code !", Toast.LENGTH_LONG);
+                toast.setGravity(0, 0, 0);
+                toast.show();
+
+            } else {
+                Intent intent = new Intent(this, PollActivity.class);
+                startActivity(intent);
+            }
         });
     }
 
