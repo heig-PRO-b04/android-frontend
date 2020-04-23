@@ -1,35 +1,30 @@
 package ch.heigvd.pro.b04.android.Home;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 import ch.heigvd.pro.b04.android.R;
+public class EmojiCodeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-public class EmojiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_EMOJI = 1;
 
     private HomeViewModel state;
-    private Set<Integer> selected = new HashSet<>();
+    private List<Emoji> emojis = new LinkedList<>();
 
-    public EmojiAdapter(HomeViewModel state, LifecycleOwner lifecycleOwner) {
+    public EmojiCodeAdapter(HomeViewModel state, LifecycleOwner lifecycleOwner) {
         this.state = state;
 
-        state.getSelectedEmoji().observe(lifecycleOwner, emojis -> {
-            selected.clear();
-            for (Emoji emoji : emojis) {
-                selected.add(emoji.ordinal() + 1);
-            }
+        state.getCodeEmoji().observe(lifecycleOwner, emojis -> {
+            this.emojis.clear();
+            this.emojis.addAll(emojis);
             notifyDataSetChanged();
         });
     }
@@ -38,8 +33,6 @@ public class EmojiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
-            case VIEW_TYPE_HEADER:
-                return new HeaderViewHolder(parent);
             case VIEW_TYPE_EMOJI:
                 return new EmojiViewHolder(parent);
             default:
@@ -49,57 +42,35 @@ public class EmojiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        switch (position) {
-            case 0:
-                break;
-            default:
-                ((EmojiViewHolder) holder).bindEmoji(
-                        Emoji.values()[position - 1],
-                        selected.contains(position)
-                );
-                break;
-        }
+        ((EmojiViewHolder) holder).bindEmoji(
+                emojis.get(position)
+        );
     }
 
     @Override
     public int getItemCount() {
-        return Emoji.values().length + 1;
+        System.out.println("Emojis size : " + emojis.size());
+        return emojis.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        return position == 0
-                ? VIEW_TYPE_HEADER
-                : VIEW_TYPE_EMOJI;
-    }
-
-    private static class HeaderViewHolder extends RecyclerView.ViewHolder {
-
-        public HeaderViewHolder(@NonNull ViewGroup parent) {
-            super(LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.home_title, parent, false));
-        }
+        return VIEW_TYPE_EMOJI;
     }
 
     private class EmojiViewHolder extends RecyclerView.ViewHolder {
-        private ImageButton emojiButton;
+        private ImageView emojiImage;
 
         private EmojiViewHolder(@NonNull ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.home_emoji, parent, false));
+                    .inflate(R.layout.home_code_emoji, parent, false));
 
-            emojiButton = itemView.findViewById(R.id.home_emoji_item);
+            emojiImage = itemView.findViewById(R.id.home_emoji_code_item);
         }
 
-        private void bindEmoji(Emoji emoji, boolean selected) {
-            emojiButton.setImageResource(emoji.getEmoji());
-            emojiButton.setOnClickListener(v -> state.addNewEmoji(emoji));
-
-            if (selected) {
-                emojiButton.setBackgroundColor(Color.RED);
-            } else {
-                emojiButton.setBackgroundColor(Color.TRANSPARENT);
-            }
+        private void bindEmoji(Emoji emoji) {
+            this.emojiImage.setImageResource(emoji.getEmoji());
+            this.emojiImage.setBackground(null);
         }
     }
 }

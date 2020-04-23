@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ch.heigvd.pro.b04.android.Poll.PollActivity;
@@ -24,6 +25,7 @@ public class Home extends AppCompatActivity {
 
         state = new ViewModelProvider(this).get(HomeViewModel.class);
 
+        // List of possible emojis
         RecyclerView emojiGrid = findViewById(R.id.home_emoji_view);
         GridLayoutManager manager = new GridLayoutManager(this, 4);
 
@@ -34,9 +36,17 @@ public class Home extends AppCompatActivity {
             }
         });
 
-        EmojiAdapter emojiGridAdapter = new EmojiAdapter(state, this);
-        emojiGrid.setAdapter(emojiGridAdapter);
+        EmojiAdapter emojiAdapter = new EmojiAdapter(state, this);
+        emojiGrid.setAdapter(emojiAdapter);
         emojiGrid.setLayoutManager(manager);
+
+        // Code of selected emojis
+        RecyclerView emojiCode = findViewById(R.id.home_emoji_code);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(RecyclerView.HORIZONTAL);
+        EmojiCodeAdapter emojiCodeAdapter = new EmojiCodeAdapter(state, this);
+        emojiCode.setAdapter(emojiCodeAdapter);
+        emojiCode.setLayoutManager(llm);
 
         state.getToken().observe(this, token -> {
             if (token.getToken() == "Error") {
@@ -44,7 +54,6 @@ public class Home extends AppCompatActivity {
                 Toast toast = Toast.makeText(this, "Wrong code !", Toast.LENGTH_LONG);
                 toast.setGravity(0, 0, 0);
                 toast.show();
-
             } else {
                 Intent intent = new Intent(this, PollActivity.class);
                 startActivity(intent);

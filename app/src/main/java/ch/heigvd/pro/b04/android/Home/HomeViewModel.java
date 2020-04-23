@@ -22,12 +22,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public final class HomeViewModel extends ViewModel {
-
     private MutableLiveData<List<Emoji>> queue = new MutableLiveData<>();
 
     private MutableLiveData<Set<Emoji>> selectedEmoji = new MutableLiveData<>();
 
     private MutableLiveData<String> registrationCode = new MutableLiveData<>();
+    private MutableLiveData<List<Emoji>> registrationCodeEmoji = new MutableLiveData<>();
+
     private MutableLiveData<Token> token = new MutableLiveData<>();
 
     private Callback<Token> callbackToken = new Callback<Token>() {
@@ -62,13 +63,13 @@ public final class HomeViewModel extends ViewModel {
         // TODO : Factorize this logic in a model class, and test it.
 
         List<Emoji> buffer = queue.getValue();
+        List<Emoji> emojisBuffer = registrationCodeEmoji.getValue();
 
         if (buffer == null) buffer = new LinkedList<>();
-
-        // We do not support duplicate emojis.
-        if (buffer.contains(emoji)) return;
+        if (emojisBuffer == null) emojisBuffer = new LinkedList<>();
 
         buffer.add(emoji);
+        emojisBuffer.add(emoji);
 
         if (buffer.size() == 4) {
             Iterator<Emoji> emojis = buffer.iterator();
@@ -78,6 +79,7 @@ public final class HomeViewModel extends ViewModel {
                 code.append(emojis.next().getHex());
             }
             buffer.clear();
+            emojisBuffer.clear();
             registrationCode.postValue(code.toString());
 
             RetrofitClient.getRetrofitInstance()
@@ -87,7 +89,12 @@ public final class HomeViewModel extends ViewModel {
         }
 
         queue.postValue(buffer);
+        registrationCodeEmoji.postValue(emojisBuffer);
         selectedEmoji.postValue(new HashSet<>(buffer));
+    }
+
+    public LiveData<List<Emoji>> getCodeEmoji() {
+        return this.registrationCodeEmoji;
     }
 
     public LiveData<Set<Emoji>> getSelectedEmoji() {
