@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +17,6 @@ import ch.heigvd.pro.b04.android.Poll.Question.QuestionAdapter;
 import ch.heigvd.pro.b04.android.Poll.Question.Question;
 import ch.heigvd.pro.b04.android.R;
 import ch.heigvd.pro.b04.android.datamodel.SessionCode;
-import ch.heigvd.pro.b04.android.datamodel.Token;
 
 public class PollActivity extends AppCompatActivity {
     private PollViewModel state;

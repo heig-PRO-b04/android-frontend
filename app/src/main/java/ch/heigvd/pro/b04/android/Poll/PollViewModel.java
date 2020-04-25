@@ -11,7 +11,6 @@ import java.util.List;
 
 import ch.heigvd.pro.b04.android.Poll.Question.Question;
 import ch.heigvd.pro.b04.android.datamodel.Session;
-import ch.heigvd.pro.b04.android.datamodel.Token;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
