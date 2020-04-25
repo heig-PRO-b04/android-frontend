@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.heigvd.pro.b04.android.Poll.Poll.Poll;
 import ch.heigvd.pro.b04.android.Poll.Question.Question;
 import ch.heigvd.pro.b04.android.datamodel.Session;
 import ch.heigvd.pro.b04.android.datamodel.Token;
@@ -19,7 +20,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PollViewModel extends ViewModel {
-    private MutableLiveData<Token> token = new MutableLiveData<>();
+    private MutableLiveData<Poll> poll = new MutableLiveData<>();
     private MutableLiveData<Question> questionToView = new MutableLiveData<>();
     private MutableLiveData<List<Question>> questions = new MutableLiveData<>(new LinkedList<>());
 
@@ -27,10 +28,12 @@ public class PollViewModel extends ViewModel {
         @Override
         public void onResponse(Call<Session> call, Response<Session> response) {
             if (response.isSuccessful()) {
-                // TODO : store poll info pollTitle.postValue(response.body());
-                Log.e("Réussite", response.body().getStatus());
+                Log.w("localDebug", "Success, session is " + response.body().getStatus());
+                poll.postValue(new Poll(response.body().getIdPoll(), response.body().getIdModerator(), response.body().getStatus()));
             } else {
                 Log.w("localDebug", "Received error, HTTP status is " + response.code());
+                Log.w("localDebug", "The request was " + call.request().url());
+
                 try {
                     Log.w("localDebug", response.errorBody().string());
                 } catch (IOException e) {
@@ -47,8 +50,8 @@ public class PollViewModel extends ViewModel {
 
     public PollViewModel() {}
 
-    public MutableLiveData<Token> getToken() {
-        return token;
+    public MutableLiveData<Poll> getPoll() {
+        return poll;
     }
 
     public void goToQuestion(Question question) {
@@ -64,12 +67,10 @@ public class PollViewModel extends ViewModel {
         return questionToView;
     }
 
-    public void setToken(Token token) {
-        this.token.postValue(token);
-
+    public void getSession(Token token) {
         RetrofitClient.getRetrofitInstance()
                 .create(RockinAPI.class)
-                .getSession(this.token.getValue())
+                .getSession(token.getToken())
                 .enqueue(callbackSession);
     }
 }
