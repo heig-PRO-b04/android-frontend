@@ -22,12 +22,12 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@id/home_emoji_code"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clipToPadding="false"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
-        android:paddingBottom="88dp"
+        android:paddingBottom="8dp"
         app:layout_constraintBottom_toTopOf="@id/button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

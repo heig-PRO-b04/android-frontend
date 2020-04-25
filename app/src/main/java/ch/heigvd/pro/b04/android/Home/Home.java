@@ -42,8 +42,14 @@ public class Home extends AppCompatActivity {
 
         // Code of selected emojis
         RecyclerView emojiCode = findViewById(R.id.home_emoji_code);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        llm.setOrientation(RecyclerView.HORIZONTAL);
+        GridLayoutManager llm = new GridLayoutManager(this, 4);
+        //llm.setOrientation(RecyclerView.HORIZONTAL);
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return position == 0 ? 4 : 1;
+            }
+        });
         EmojiCodeAdapter emojiCodeAdapter = new EmojiCodeAdapter(state, this);
         emojiCode.setAdapter(emojiCodeAdapter);
         emojiCode.setLayoutManager(llm);
