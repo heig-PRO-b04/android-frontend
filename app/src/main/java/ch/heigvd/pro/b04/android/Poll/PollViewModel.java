@@ -11,11 +11,15 @@ import java.util.List;
 
 import ch.heigvd.pro.b04.android.Poll.Question.Question;
 import ch.heigvd.pro.b04.android.datamodel.Session;
+import ch.heigvd.pro.b04.android.datamodel.Token;
+import ch.heigvd.pro.b04.android.network.RetrofitClient;
+import ch.heigvd.pro.b04.android.network.RockinAPI;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PollViewModel extends ViewModel {
+    private MutableLiveData<Token> token = new MutableLiveData<>();
     private MutableLiveData<Question> questionToView = new MutableLiveData<>();
     private MutableLiveData<List<Question>> questions = new MutableLiveData<>(new LinkedList<>());
 
@@ -24,6 +28,7 @@ public class PollViewModel extends ViewModel {
         public void onResponse(Call<Session> call, Response<Session> response) {
             if (response.isSuccessful()) {
                 // TODO : store poll info pollTitle.postValue(response.body());
+                Log.e("Réussite", response.body().getStatus());
             } else {
                 Log.w("localDebug", "Received error, HTTP status is " + response.code());
                 try {
@@ -42,9 +47,9 @@ public class PollViewModel extends ViewModel {
 
     public PollViewModel() {}
 
-    public void addQuestion(Question question) {
-        this.questions.getValue().add(question);
-   }
+    public MutableLiveData<Token> getToken() {
+        return token;
+    }
 
     public void goToQuestion(Question question) {
         System.out.println("Question was selected...\n");
@@ -57,5 +62,14 @@ public class PollViewModel extends ViewModel {
 
     public MutableLiveData<Question> getQuestionToView() {
         return questionToView;
+    }
+
+    public void setToken(Token token) {
+        this.token.postValue(token);
+
+        RetrofitClient.getRetrofitInstance()
+                .create(RockinAPI.class)
+                .getSession(this.token.getValue())
+                .enqueue(callbackSession);
     }
 }

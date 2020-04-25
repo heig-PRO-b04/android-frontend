@@ -7,12 +7,13 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface RockinAPI {
 
     @POST("/connect")
     Call<Token> postConnect(@Body SessionCode code);
 
-    @GET("/session")
-    Call<Session> getSession(@Body Token userToken);
+    @GET("/session/{token}")
+    Call<Session> getSession(@Path("token") Token userToken);
 }
