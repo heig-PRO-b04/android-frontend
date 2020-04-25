@@ -40,6 +40,7 @@ public class Home extends AppCompatActivity {
 
         state.getToken().observe(this, token -> {
             Intent intent = new Intent(this, PollActivity.class);
+            intent.putExtra("token", token.getToken());
             startActivity(intent);
         });
     }

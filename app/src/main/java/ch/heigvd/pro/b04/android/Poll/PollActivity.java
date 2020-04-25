@@ -17,15 +17,20 @@ import ch.heigvd.pro.b04.android.Poll.Question.QuestionActivity;
 import ch.heigvd.pro.b04.android.Poll.Question.QuestionAdapter;
 import ch.heigvd.pro.b04.android.Poll.Question.Question;
 import ch.heigvd.pro.b04.android.R;
+import ch.heigvd.pro.b04.android.datamodel.SessionCode;
+import ch.heigvd.pro.b04.android.datamodel.Token;
 
 public class PollActivity extends AppCompatActivity {
     private PollViewModel state;
+    private SessionCode sessionCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         List<Question> questions = new LinkedList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_poll);
+        Intent intent = getIntent();
+        sessionCode = new SessionCode(intent.getStringExtra("token"));
 
         Question q0 = new Question(0, "Is it sunny today?", new Answer[]{new Answer(0, "Yes"), new Answer(1, "No")});
         Question q1 = new Question(1, "Is it rainy today?", new Answer[]{new Answer(2, "Yes"), new Answer(3, "No")});
@@ -56,9 +61,9 @@ public class PollActivity extends AppCompatActivity {
         questionList.setLayoutManager(manager);
 
         state.getQuestionToView().observe(this, question -> {
-            Intent intent = new Intent(this, QuestionActivity.class);
-            intent.putExtra("QUESTION_ID", question.getId());
-            startActivity(intent);
+            Intent questionIntent = new Intent(this, QuestionActivity.class);
+            questionIntent.putExtra("QUESTION_ID", question.getId());
+            startActivity(questionIntent);
         });
     }
 
