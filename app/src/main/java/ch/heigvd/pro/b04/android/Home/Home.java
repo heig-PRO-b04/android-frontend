@@ -16,6 +16,7 @@ import ch.heigvd.pro.b04.android.Poll.PollActivity;
 import ch.heigvd.pro.b04.android.R;
 
 public class Home extends AppCompatActivity {
+    private static final int COLUMN_NBR = 4;
     private HomeViewModel state;
 
     @Override
@@ -27,12 +28,12 @@ public class Home extends AppCompatActivity {
 
         // List of possible emojis
         RecyclerView emojiGrid = findViewById(R.id.home_emoji_view);
-        GridLayoutManager manager = new GridLayoutManager(this, 4);
+        GridLayoutManager manager = new GridLayoutManager(this, COLUMN_NBR);
 
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return position == 0 ? 4 : 1;
+                return position == 0 ? COLUMN_NBR : 1;
             }
         });
 
@@ -42,12 +43,11 @@ public class Home extends AppCompatActivity {
 
         // Code of selected emojis
         RecyclerView emojiCode = findViewById(R.id.home_emoji_code);
-        GridLayoutManager llm = new GridLayoutManager(this, 4);
-        //llm.setOrientation(RecyclerView.HORIZONTAL);
+        GridLayoutManager llm = new GridLayoutManager(this, COLUMN_NBR);
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return position == 0 ? 4 : 1;
+                return position == 0 ? COLUMN_NBR : 1;
             }
         });
         EmojiCodeAdapter emojiCodeAdapter = new EmojiCodeAdapter(state, this);
