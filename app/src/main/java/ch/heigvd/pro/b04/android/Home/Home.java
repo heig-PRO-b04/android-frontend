@@ -42,7 +42,7 @@ public class Home extends AppCompatActivity {
 
         // Code of selected emojis
         RecyclerView emojiCode = findViewById(R.id.home_emoji_code);
-        GridLayoutManager llm = new GridLayoutManager(this, COLUMN_NBR);
+        GridLayoutManager emojiCodeLayout = new GridLayoutManager(this, COLUMN_NBR);
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -51,7 +51,7 @@ public class Home extends AppCompatActivity {
         });
         EmojiCodeAdapter emojiCodeAdapter = new EmojiCodeAdapter(state, this);
         emojiCode.setAdapter(emojiCodeAdapter);
-        emojiCode.setLayoutManager(llm);
+        emojiCode.setLayoutManager(emojiCodeLayout);
 
         state.getToken().observe(this, token -> {
             if (token.getToken() == "Error") {
