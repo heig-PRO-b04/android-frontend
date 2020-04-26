@@ -42,7 +42,6 @@ public class EmojiCodeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemCount() {
-        System.out.println("Emojis size : " + emojis.size());
         return emojis.size();
     }
 
