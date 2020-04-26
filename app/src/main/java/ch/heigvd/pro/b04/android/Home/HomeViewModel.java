@@ -60,25 +60,19 @@ public final class HomeViewModel extends ViewModel {
 
     public void addNewEmoji(Emoji emoji) {
 
-        // TODO : Factorize this logic in a model class, and test it.
-
-        List<Emoji> buffer = queue.getValue();
         List<Emoji> emojisBuffer = registrationCodeEmoji.getValue();
 
-        if (buffer == null) buffer = new LinkedList<>();
         if (emojisBuffer == null) emojisBuffer = new LinkedList<>();
 
-        buffer.add(emoji);
         emojisBuffer.add(emoji);
 
-        if (buffer.size() == 4) {
-            Iterator<Emoji> emojis = buffer.iterator();
+        if (emojisBuffer.size() == 4) {
+            Iterator<Emoji> emojis = emojisBuffer.iterator();
             StringBuilder code = new StringBuilder();
             code.append("0x");
             while (emojis.hasNext()) {
                 code.append(emojis.next().getHex());
             }
-            buffer.clear();
             emojisBuffer.clear();
             registrationCode.postValue(code.toString());
 
@@ -88,9 +82,9 @@ public final class HomeViewModel extends ViewModel {
                     .enqueue(callbackToken);
         }
 
-        queue.postValue(buffer);
+        queue.postValue(emojisBuffer);
         registrationCodeEmoji.postValue(emojisBuffer);
-        selectedEmoji.postValue(new HashSet<>(buffer));
+        selectedEmoji.postValue(new HashSet<>(emojisBuffer));
     }
 
     public LiveData<List<Emoji>> getCodeEmoji() {
