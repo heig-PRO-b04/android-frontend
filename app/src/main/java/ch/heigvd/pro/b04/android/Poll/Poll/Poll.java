@@ -9,16 +9,16 @@ public class Poll {
     private String id;
     private String title;
     private String idModerator;
-    private String status;
     private List<Question> questions;
 
-    public Poll(String id, String idModerator, String status) {
+    public Poll(String id, String idModerator, String title) {
         this.id = id;
         this.idModerator = idModerator;
+        this.title = title;
         this.questions = new LinkedList<>();
     }
 
-    public Poll(String id, String idModerator, String status, List<Question> questions) {
+    public Poll(String id, String idModerator, List<Question> questions) {
         this.id = id;
         this.idModerator = idModerator;
         this.questions = questions;

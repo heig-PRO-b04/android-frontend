@@ -46,8 +46,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             title = itemView.findViewById(R.id.poll_title);
 
             state.getPoll().observe(lifecycleOwner, poll -> {
-                // TODO : change this line to print poll title
-                title.setText("Poll id : " + poll.getId());
+                title.setText(poll.getTitle());
             });
         }
     }

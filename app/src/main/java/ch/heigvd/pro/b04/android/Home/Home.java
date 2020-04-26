@@ -37,11 +37,14 @@ public class Home extends AppCompatActivity {
         emojiGrid.setAdapter(emojiGridAdapter);
         emojiGrid.setLayoutManager(manager);
 
-        state.getToken().observe(this, token -> {
+        state.getPollInfo().observe(this, poll -> {
             Intent intent = new Intent(this, PollActivity.class);
-            intent.putExtra("token", token.getToken());
+            intent.putExtra("idPoll", poll.get(0));
+            intent.putExtra("idModerator", poll.get(1));
+            intent.putExtra("token", state.getToken());
             startActivity(intent);
         });
+
     }
 
     /**
