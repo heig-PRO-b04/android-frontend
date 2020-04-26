@@ -14,8 +14,6 @@ import java.util.List;
 import ch.heigvd.pro.b04.android.R;
 public class EmojiCodeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int VIEW_TYPE_EMOJI = 1;
-
     private HomeViewModel state;
     private List<Emoji> emojis = new LinkedList<>();
 
@@ -32,12 +30,7 @@ public class EmojiCodeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case VIEW_TYPE_EMOJI:
-                return new EmojiViewHolder(parent);
-            default:
-                throw new IllegalStateException("Unknown view type.");
-        }
+        return new EmojiViewHolder(parent);
     }
 
     @Override
@@ -51,11 +44,6 @@ public class EmojiCodeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public int getItemCount() {
         System.out.println("Emojis size : " + emojis.size());
         return emojis.size();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return VIEW_TYPE_EMOJI;
     }
 
     private class EmojiViewHolder extends RecyclerView.ViewHolder {
