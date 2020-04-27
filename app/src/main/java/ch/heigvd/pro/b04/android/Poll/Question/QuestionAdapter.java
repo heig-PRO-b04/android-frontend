@@ -62,7 +62,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         private void bindQuestion(Question question, boolean answered) {
-            questionButton.setText(question.getQuestion());
+            questionButton.setText(question.getTitle());
             questionButton.setOnClickListener(v -> state.goToQuestion(question));
 
             if (answered) {

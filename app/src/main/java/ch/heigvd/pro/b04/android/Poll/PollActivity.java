@@ -37,7 +37,9 @@ public class PollActivity extends AppCompatActivity {
 
         state.getQuestionToView().observe(this, question -> {
             Intent questionIntent = new Intent(this, QuestionActivity.class);
-            questionIntent.putExtra("QUESTION_ID", question.getId());
+            questionIntent.putExtra("idModerator", question.getIdModerator());
+            questionIntent.putExtra("idPoll", question.getIdPoll());
+            questionIntent.putExtra("idQuestion", question.getIdQuestion());
             startActivity(questionIntent);
         });
     }

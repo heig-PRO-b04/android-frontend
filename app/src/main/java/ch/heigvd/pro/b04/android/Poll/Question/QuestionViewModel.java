@@ -9,24 +9,21 @@ import java.util.List;
 import ch.heigvd.pro.b04.android.Poll.Answer.Answer;
 
 public class QuestionViewModel extends ViewModel {
-    private String question;
+    private MutableLiveData<List<Answer>> question = new MutableLiveData<>(new LinkedList<>());
     private MutableLiveData<List<Answer>> answers = new MutableLiveData<>(new LinkedList<>());
 
     public QuestionViewModel() {}
-
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-
-    public void addAnswer(Answer answer) {
-        this.answers.getValue().add(answer);
-    }
 
     public MutableLiveData<List<Answer>> getAnswers() {
         return answers;
     }
 
-    public String getQuestion() {
-        return question;
+    public void getQuestions(int idModerator, int idPoll, int idQuestion) {
+        //TODO : get question from backend
+    }
+
+    public Question getQuestion(int idModerator, int idPoll, int idQuestion) {
+        //TODO : get question from backend
+        return  new Question(0,0,0,"", "", 0, 0);
     }
 }

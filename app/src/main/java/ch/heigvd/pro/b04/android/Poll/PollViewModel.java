@@ -12,6 +12,7 @@ import java.util.List;
 import ch.heigvd.pro.b04.android.Poll.Poll.Poll;
 import ch.heigvd.pro.b04.android.Poll.Question.Question;
 import ch.heigvd.pro.b04.android.datamodel.PollDataModel;
+import ch.heigvd.pro.b04.android.datamodel.QuestionDataModel;
 import ch.heigvd.pro.b04.android.network.RetrofitClient;
 import ch.heigvd.pro.b04.android.network.RockinAPI;
 import retrofit2.Call;
@@ -23,13 +24,57 @@ public class PollViewModel extends ViewModel {
     private MutableLiveData<Question> questionToView = new MutableLiveData<>();
     private MutableLiveData<List<Question>> questions = new MutableLiveData<>(new LinkedList<>());
 
+    /**********************
+     * Callback variables *
+     **********************/
+    private Callback<List<QuestionDataModel>> callbackQuestions = new Callback<List<QuestionDataModel>>() {
+        @Override
+        public void onResponse(Call<List<QuestionDataModel>> call, Response<List<QuestionDataModel>> response) {
+            if (response.isSuccessful()) {
+                Log.w("localDebug", call.request().url().toString());
+                List<Question> respQuestions = new LinkedList<>();
+                for (QuestionDataModel question :
+                        response.body()) {
+                    respQuestions
+                            .add(new Question(
+                                    Integer.parseInt(question.getIdModerator()),
+                                    Integer.parseInt(question.getIdPoll()),
+                                    Integer.parseInt(question.getIdQuestion()),
+                                    question.getTitle(), question.getDetails(),
+                                    Integer.parseInt(question.getAnswerMin()),
+                                    Integer.parseInt(question.getAnswerMax()))
+                            );
+                }
+                questions.postValue(respQuestions);
+            } else {
+                Log.w("localDebug", "Received error, HTTP status is " + response.code());
+                Log.w("localDebug", "The request was " + call.request().url());
 
+                try {
+                    Log.w("localDebug", response.errorBody().string());
+                } catch (IOException e) {
+                    Log.e("localDebug", "Error in error, rip");
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<QuestionDataModel>> call, Throwable t) {
+            Log.e("localDebug", "We had a super bad error in callbackQuestions : " + call.request().url());
+            Log.e("localDebug", "The error is : " + t.getMessage());
+        }
+    };
     private Callback<PollDataModel> callbackPoll = new Callback<PollDataModel>() {
         @Override
         public void onResponse(Call<PollDataModel> call, Response<PollDataModel> response) {
             if (response.isSuccessful()) {
                 Log.w("localDebug", call.request().url().toString());
-                poll.postValue(new Poll(response.body().getIdPoll(), response.body().getIdModerator(), response.body().getTitle()));
+                //poll.postValue(new Poll(response.body().getIdPoll(), response.body().getIdModerator(), response.body().getTitle()));
+
+                RetrofitClient.getRetrofitInstance()
+                        .create(RockinAPI.class)
+                        .getQuestions(response.body().getIdModerator(), response.body().getIdPoll(), call.request().url().query().substring(6))
+                        .enqueue(callbackQuestions);
             } else {
                 Log.w("localDebug", "Received error, HTTP status is " + response.code());
                 Log.w("localDebug", "The request was " + call.request().url());
@@ -44,10 +89,13 @@ public class PollViewModel extends ViewModel {
 
         @Override
         public void onFailure(Call<PollDataModel> call, Throwable t) {
-            Log.e("localDebug", "We had a super bad error in callbackToken");
+            Log.e("localDebug", "We had a super bad error in callbackPollDataModel");
         }
     };
 
+    /**
+     * Constructor
+     */
     public PollViewModel() {}
 
     public MutableLiveData<Poll> getPoll() {

@@ -89,8 +89,9 @@ public class AnswerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (position) {
             case 0:
+                // TODO : change values to correct ones
                 ((HeaderViewHolder) holder).setTitle(
-                        state.getQuestion()
+                        state.getQuestion(0, 0, 0).getTitle()
                 );
                 break;
             default:
