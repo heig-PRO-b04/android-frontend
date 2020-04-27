@@ -15,6 +15,7 @@ import ch.heigvd.pro.b04.android.Poll.PollActivity;
 import ch.heigvd.pro.b04.android.R;
 
 public class Home extends AppCompatActivity {
+    private static final int COLUMN_NBR = 4;
     private HomeViewModel state;
 
     @Override
@@ -24,24 +25,41 @@ public class Home extends AppCompatActivity {
 
         state = new ViewModelProvider(this).get(HomeViewModel.class);
 
+        // List of possible emojis
         RecyclerView emojiGrid = findViewById(R.id.home_emoji_view);
-        GridLayoutManager manager = new GridLayoutManager(this, 4);
+        GridLayoutManager manager = new GridLayoutManager(this, COLUMN_NBR);
 
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return position == 0 ? 4 : 1;
+                return position == 0 ? COLUMN_NBR : 1;
             }
         });
 
-        EmojiAdapter emojiGridAdapter = new EmojiAdapter(state, this);
-        emojiGrid.setAdapter(emojiGridAdapter);
+        EmojiAdapter emojiAdapter = new EmojiAdapter(state, this);
+        emojiGrid.setAdapter(emojiAdapter);
         emojiGrid.setLayoutManager(manager);
 
-        state.getToken().observe(this, token -> {
-            Intent intent = new Intent(this, PollActivity.class);
-            startActivity(intent);
+        state.getPollInfo().observe(this, poll -> {
+                    Intent intent = new Intent(this, PollActivity.class);
+                    intent.putExtra("idPoll", poll.get(0));
+                    intent.putExtra("idModerator", poll.get(1));
+                    intent.putExtra("token", state.getToken());
+                    startActivity(intent);
+            });
+          
+        // Code of selected emojis
+        RecyclerView emojiCode = findViewById(R.id.home_emoji_code);
+        GridLayoutManager emojiCodeLayout = new GridLayoutManager(this, COLUMN_NBR);
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return position == 0 ? COLUMN_NBR : 1;
+            }
         });
+        EmojiCodeAdapter emojiCodeAdapter = new EmojiCodeAdapter(state, this);
+        emojiCode.setAdapter(emojiCodeAdapter);
+        emojiCode.setLayoutManager(emojiCodeLayout);
     }
 
     /**
