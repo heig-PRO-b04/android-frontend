@@ -60,8 +60,6 @@ public final class HomeViewModel extends ViewModel {
     };
     private MutableLiveData<List<Emoji>> registrationCodeEmoji = new MutableLiveData<>();
 
-    private MutableLiveData<Token> token = new MutableLiveData<>();
-
     private Callback<Token> callbackToken = new Callback<Token>() {
         @Override
         public void onResponse(Call<Token> call, Response<Token> response) {
@@ -72,8 +70,7 @@ public final class HomeViewModel extends ViewModel {
                         .getSession(response.body().getToken())
                         .enqueue(callbackSession);
             } else {
-                Token error = new Token("Error");
-                token.postValue(error);
+                token = "Error";
                 Log.w("localDebug", "Received error, HTTP status is " + response.code());
                 Log.w("localDebug", "Registration code was : " + registrationCode.getValue());
                 try {
