@@ -3,6 +3,8 @@
     <!-- Home -->
     <item type="id" name="home_emoji_view" />
     <item type="id" name="home_emoji_item" />
+    <item type="id" name="home_emoji_code" />
+    <item type="id" name="home_emoji_code_item" />
 
     <!-- Poll -->
     <item type="id" name="poll_questions_view" />

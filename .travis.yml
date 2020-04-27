@@ -29,4 +29,5 @@ android:
     - 'google-gdk-license-.+'
 
 script:
-  - ./gradlew clean assembleProductionAPI testProductionAPIDebugUnitTest
+    - echo 'apiUrl="https://api.rockin.app"' > local.properties
+    - ./gradlew clean assembleProductionAPI testProductionAPIDebugUnitTest

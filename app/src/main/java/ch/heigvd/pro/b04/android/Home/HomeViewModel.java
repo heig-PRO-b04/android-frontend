@@ -22,12 +22,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public final class HomeViewModel extends ViewModel {
-
     private MutableLiveData<List<Emoji>> queue = new MutableLiveData<>();
 
     private MutableLiveData<Set<Emoji>> selectedEmoji = new MutableLiveData<>();
 
     private MutableLiveData<String> registrationCode = new MutableLiveData<>();
+    private MutableLiveData<List<Emoji>> registrationCodeEmoji = new MutableLiveData<>();
+
     private MutableLiveData<Token> token = new MutableLiveData<>();
 
     private Callback<Token> callbackToken = new Callback<Token>() {
@@ -36,6 +37,8 @@ public final class HomeViewModel extends ViewModel {
             if (response.isSuccessful()) {
                 token.postValue(response.body());
             } else {
+                Token error = new Token("Error");
+                token.postValue(error);
                 Log.w("localDebug", "Received error, HTTP status is " + response.code());
                 Log.w("localDebug", "Registration code was : " + registrationCode.getValue());
                 try {
@@ -57,25 +60,20 @@ public final class HomeViewModel extends ViewModel {
 
     public void addNewEmoji(Emoji emoji) {
 
-        // TODO : Factorize this logic in a model class, and test it.
+        List<Emoji> emojisBuffer = registrationCodeEmoji.getValue();
 
-        List<Emoji> buffer = queue.getValue();
+        if (emojisBuffer == null) emojisBuffer = new LinkedList<>();
 
-        if (buffer == null) buffer = new LinkedList<>();
+        emojisBuffer.add(emoji);
 
-        // We do not support duplicate emojis.
-        if (buffer.contains(emoji)) return;
-
-        buffer.add(emoji);
-
-        if (buffer.size() == 4) {
-            Iterator<Emoji> emojis = buffer.iterator();
+        if (emojisBuffer.size() == 4) {
+            Iterator<Emoji> emojis = emojisBuffer.iterator();
             StringBuilder code = new StringBuilder();
             code.append("0x");
             while (emojis.hasNext()) {
                 code.append(emojis.next().getHex());
             }
-            buffer.clear();
+            emojisBuffer.clear();
             registrationCode.postValue(code.toString());
 
             RetrofitClient.getRetrofitInstance()
@@ -84,8 +82,13 @@ public final class HomeViewModel extends ViewModel {
                     .enqueue(callbackToken);
         }
 
-        queue.postValue(buffer);
-        selectedEmoji.postValue(new HashSet<>(buffer));
+        queue.postValue(emojisBuffer);
+        registrationCodeEmoji.postValue(emojisBuffer);
+        selectedEmoji.postValue(new HashSet<>(emojisBuffer));
+    }
+
+    public LiveData<List<Emoji>> getCodeEmoji() {
+        return this.registrationCodeEmoji;
     }
 
     public LiveData<Set<Emoji>> getSelectedEmoji() {
