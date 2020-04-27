@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
@@ -19,11 +20,13 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_QUESTION = 1;
     private PollViewModel state;
+    private LifecycleOwner lifecycleOwner;
 
     private List<Question> questions = new LinkedList<>();
 
     public QuestionAdapter(PollViewModel state, LifecycleOwner lifecycleOwner) {
         this.state = state;
+        this.lifecycleOwner = lifecycleOwner;
 
         state.getQuestions().observe(lifecycleOwner, newQuestions -> {
             for (Question q : newQuestions) {
@@ -36,10 +39,15 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private static class HeaderViewHolder extends RecyclerView.ViewHolder {
-
-        public HeaderViewHolder(@NonNull ViewGroup parent) {
+        private TextView title;
+        public HeaderViewHolder(@NonNull ViewGroup parent, PollViewModel state, LifecycleOwner lifecycleOwner) {
             super(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.poll_title, parent, false));
+            title = itemView.findViewById(R.id.poll_title);
+
+            state.getPoll().observe(lifecycleOwner, poll -> {
+                title.setText(poll.getTitle());
+            });
         }
     }
 
@@ -70,7 +78,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_HEADER:
-                return new HeaderViewHolder(parent);
+                return new HeaderViewHolder(parent, state, lifecycleOwner);
             case VIEW_TYPE_QUESTION:
                 return new QuestionViewHolder(parent);
             default:

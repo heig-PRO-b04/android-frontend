@@ -40,6 +40,14 @@ public class Home extends AppCompatActivity {
         emojiGrid.setAdapter(emojiAdapter);
         emojiGrid.setLayoutManager(manager);
 
+        state.getPollInfo().observe(this, poll -> {
+                    Intent intent = new Intent(this, PollActivity.class);
+                    intent.putExtra("idPoll", poll.get(0));
+                    intent.putExtra("idModerator", poll.get(1));
+                    intent.putExtra("token", state.getToken());
+                    startActivity(intent);
+            });
+          
         // Code of selected emojis
         RecyclerView emojiCode = findViewById(R.id.home_emoji_code);
         GridLayoutManager emojiCodeLayout = new GridLayoutManager(this, COLUMN_NBR);
@@ -52,18 +60,6 @@ public class Home extends AppCompatActivity {
         EmojiCodeAdapter emojiCodeAdapter = new EmojiCodeAdapter(state, this);
         emojiCode.setAdapter(emojiCodeAdapter);
         emojiCode.setLayoutManager(emojiCodeLayout);
-
-        state.getToken().observe(this, token -> {
-            if (token.getToken() == "Error") {
-                // TODO : Make it a bit prettier if possible, but at least, it does the job
-                Toast toast = Toast.makeText(this, "Wrong code !", Toast.LENGTH_LONG);
-                toast.setGravity(0, 0, 0);
-                toast.show();
-            } else {
-                Intent intent = new Intent(this, PollActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
     /**

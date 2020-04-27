@@ -7,6 +7,7 @@
     <item type="id" name="home_emoji_code_item" />
 
     <!-- Poll -->
+    <item type="id" name="poll_title" />
     <item type="id" name="poll_questions_view" />
     <item type="id" name="poll_question_item" />
     <item type="id" name="poll_answers_view" />
