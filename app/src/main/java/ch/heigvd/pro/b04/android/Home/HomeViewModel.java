@@ -117,7 +117,9 @@ public final class HomeViewModel extends AndroidViewModel {
             triedToGetToken = false;
         }
 
-        emojisBuffer.add(emoji);
+        if (emojisBuffer.size() < 4) {
+            emojisBuffer.add(emoji);
+        }
 
         if (emojisBuffer.size() == 4) {
             Iterator<Emoji> emojis = emojisBuffer.iterator();
