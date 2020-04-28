@@ -11,6 +11,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -32,14 +33,11 @@ public final class HomeViewModel extends AndroidViewModel {
     private Boolean triedToGetToken = false;
 
     private MutableLiveData<List<String>> pollInfo = new MutableLiveData<>();
-
     private MutableLiveData<Integer> codeColor = new MutableLiveData<>();
-
     private MutableLiveData<List<Emoji>> queue = new MutableLiveData<>();
-
     private MutableLiveData<Set<Emoji>> selectedEmoji = new MutableLiveData<>();
-
     private MutableLiveData<String> registrationCode = new MutableLiveData<>();
+    private MutableLiveData<List<Emoji>> registrationCodeEmoji = new MutableLiveData<>();
 
     private Callback<Session> callbackSession = new Callback<Session>() {
         @Override
@@ -67,12 +65,12 @@ public final class HomeViewModel extends AndroidViewModel {
             Log.e("localDebug", "We had a super bad error in callbackToken");
         }
     };
-    private MutableLiveData<List<Emoji>> registrationCodeEmoji = new MutableLiveData<>();
 
     private Callback<Token> callbackToken = new Callback<Token>() {
         @Override
         public void onResponse(Call<Token> call, Response<Token> response) {
             if (response.isSuccessful()) {
+                registrationCodeEmoji.postValue(new ArrayList<>());
                 token = response.body().getToken();
                 RetrofitClient.getRetrofitInstance()
                         .create(RockinAPI.class)
