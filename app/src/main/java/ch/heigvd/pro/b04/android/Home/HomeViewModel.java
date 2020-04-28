@@ -77,7 +77,8 @@ public final class HomeViewModel extends ViewModel {
             } else {
                 token = "Error";
                 triedToGetToken = true;
-                codeColor.postValue(Color.RED);
+                // TODO: use resource file
+                codeColor.postValue(Color.parseColor("#D81B60"));
 
                 Log.w("localDebug", "Received error, HTTP status is " + response.code());
                 Log.w("localDebug", "Registration code was : " + registrationCode.getValue());
