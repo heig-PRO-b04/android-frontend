@@ -2,9 +2,9 @@
 <resources>
     <!-- Home -->
     <item type="id" name="home_emoji_grid" />
-    <item type="id" name="home_emoji_item" />
+    <item type="id" name="home_grid_emoji_item" />
     <item type="id" name="home_emoji_code" />
-    <item type="id" name="home_emoji_code_item" />
+    <item type="id" name="home_code_emoji_item" />
 
     <!-- Poll -->
     <item type="id" name="poll_title" />
