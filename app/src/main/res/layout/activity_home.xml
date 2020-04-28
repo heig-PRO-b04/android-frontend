@@ -7,7 +7,7 @@
     tools:context=".Home.Home">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@id/home_emoji_view"
+        android:id="@id/home_emoji_grid"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipToPadding="false"
@@ -31,7 +31,7 @@
         app:layout_constraintBottom_toTopOf="@id/button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/home_emoji_view" />
+        app:layout_constraintTop_toBottomOf="@id/home_emoji_grid" />
 
     <Button
         android:id="@id/button"

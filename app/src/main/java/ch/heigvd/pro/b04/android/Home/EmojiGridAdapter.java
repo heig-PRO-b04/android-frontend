@@ -13,7 +13,7 @@ import java.util.Set;
 
 import ch.heigvd.pro.b04.android.R;
 
-public class EmojiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_EMOJI = 1;
@@ -21,7 +21,7 @@ public class EmojiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private HomeViewModel state;
     private Set<Integer> selected = new HashSet<>();
 
-    public EmojiAdapter(HomeViewModel state, LifecycleOwner lifecycleOwner) {
+    public EmojiGridAdapter(HomeViewModel state, LifecycleOwner lifecycleOwner) {
         this.state = state;
 
         state.getSelectedEmoji().observe(lifecycleOwner, emojis -> {

@@ -25,7 +25,7 @@ public class Home extends AppCompatActivity {
         state = new ViewModelProvider(this).get(HomeViewModel.class);
 
         // List of possible emojis
-        RecyclerView emojiGrid = findViewById(R.id.home_emoji_view);
+        RecyclerView emojiGrid = findViewById(R.id.home_emoji_grid);
         GridLayoutManager manager = new GridLayoutManager(this, COLUMN_NBR);
 
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -35,7 +35,7 @@ public class Home extends AppCompatActivity {
             }
         });
 
-        EmojiAdapter emojiAdapter = new EmojiAdapter(state, this);
+        EmojiGridAdapter emojiAdapter = new EmojiGridAdapter(state, this);
         emojiGrid.setAdapter(emojiAdapter);
         emojiGrid.setLayoutManager(manager);
 
