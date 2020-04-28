@@ -53,10 +53,7 @@ public class EmojiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             case 0:
                 break;
             default:
-                ((EmojiViewHolder) holder).bindEmoji(
-                        Emoji.values()[position - 1],
-                        selected.contains(position)
-                );
+                ((EmojiViewHolder) holder).bindEmoji(Emoji.values()[position - 1]);
                 break;
         }
     }
@@ -91,7 +88,7 @@ public class EmojiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             emojiButton = itemView.findViewById(R.id.home_emoji_item);
         }
 
-        private void bindEmoji(Emoji emoji, boolean selected) {
+        private void bindEmoji(Emoji emoji) {
             emojiButton.setImageResource(emoji.getEmoji());
             emojiButton.setOnClickListener(v -> state.addNewEmoji(emoji));
             emojiButton.setBackgroundColor(Color.TRANSPARENT);
