@@ -56,6 +56,9 @@ public class Home extends AppCompatActivity {
                 return position == 0 ? COLUMN_NBR : 1;
             }
         });
+
+        state.getCodeColor().observe(this, color -> emojiCode.setBackgroundColor(color));
+
         EmojiCodeAdapter emojiCodeAdapter = new EmojiCodeAdapter(state, this);
         emojiCode.setAdapter(emojiCodeAdapter);
         emojiCode.setLayoutManager(emojiCodeLayout);

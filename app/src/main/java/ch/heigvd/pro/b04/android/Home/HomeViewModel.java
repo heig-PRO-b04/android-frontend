@@ -1,5 +1,6 @@
 package ch.heigvd.pro.b04.android.Home;
 
+import android.graphics.Color;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -24,7 +25,11 @@ import retrofit2.Response;
 
 public final class HomeViewModel extends ViewModel {
     private String token;
+    private Boolean triedToGetToken = false;
+
     private MutableLiveData<List<String>> pollInfo = new MutableLiveData<>();
+
+    private MutableLiveData<Integer> codeColor = new MutableLiveData<>();
 
     private MutableLiveData<List<Emoji>> queue = new MutableLiveData<>();
 
@@ -71,8 +76,12 @@ public final class HomeViewModel extends ViewModel {
                         .enqueue(callbackSession);
             } else {
                 token = "Error";
+                triedToGetToken = true;
+                codeColor.postValue(Color.RED);
+
                 Log.w("localDebug", "Received error, HTTP status is " + response.code());
                 Log.w("localDebug", "Registration code was : " + registrationCode.getValue());
+
                 try {
                     Log.w("localDebug", response.errorBody().string());
                 } catch (IOException e) {
@@ -96,6 +105,12 @@ public final class HomeViewModel extends ViewModel {
 
         if (emojisBuffer == null) emojisBuffer = new LinkedList<>();
 
+        if (triedToGetToken) {
+            emojisBuffer.clear();
+            codeColor.postValue(Color.TRANSPARENT);
+            triedToGetToken = false;
+        }
+
         emojisBuffer.add(emoji);
 
         if (emojisBuffer.size() == 4) {
@@ -105,7 +120,6 @@ public final class HomeViewModel extends ViewModel {
             while (emojis.hasNext()) {
                 code.append(emojis.next().getHex());
             }
-            emojisBuffer.clear();
             registrationCode.postValue(code.toString());
 
             RetrofitClient.getRetrofitInstance()
@@ -134,6 +148,10 @@ public final class HomeViewModel extends ViewModel {
 
     public String getToken() {
         return token;
+    }
+
+    public LiveData<Integer> getCodeColor() {
+        return codeColor;
     }
 
 }
