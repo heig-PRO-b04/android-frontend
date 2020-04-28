@@ -88,16 +88,12 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        switch (position) {
-            case 0:
-                break;
-            default:
-                Question q = questions.get(position-1);
-                ((QuestionViewHolder) holder).bindQuestion(
-                        q,
-                        q.answered()
-                );
-                break;
+        if(position != 0) {
+            Question q = questions.get(position-1);
+            ((QuestionViewHolder) holder).bindQuestion(
+                    q,
+                    q.answered()
+            );
         }
     }
 

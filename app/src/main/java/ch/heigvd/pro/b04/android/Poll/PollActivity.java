@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 
+import java.io.Serializable;
+
 import ch.heigvd.pro.b04.android.Poll.Question.QuestionActivity;
 import ch.heigvd.pro.b04.android.Poll.Question.QuestionAdapter;
 import ch.heigvd.pro.b04.android.R;
@@ -37,9 +39,12 @@ public class PollActivity extends AppCompatActivity {
 
         state.getQuestionToView().observe(this, question -> {
             Intent questionIntent = new Intent(this, QuestionActivity.class);
+
             questionIntent.putExtra("idModerator", question.getIdModerator());
             questionIntent.putExtra("idPoll", question.getIdPoll());
             questionIntent.putExtra("idQuestion", question.getIdQuestion());
+            questionIntent.putExtra("token", token);
+
             startActivity(questionIntent);
         });
     }

@@ -3,20 +3,18 @@ package ch.heigvd.pro.b04.android.Poll.Question;
 import androidx.annotation.Nullable;
 
 public class Question {
-    private int
+    private String
             idModerator,
             idPoll,
-            idQuestion;
-    private String
+            idQuestion,
             title,
-            details;
-    private int
+            details,
             answerMin,
             answerMax;
 
-    public Question(int idModerator, int idPoll, int idQuestion,
+    public Question(String idModerator, String idPoll, String idQuestion,
                     String title, String details,
-                    int answerMin, int answerMax) {
+                    String answerMin, String answerMax) {
         this.idModerator = idModerator;
         this.idPoll = idPoll;
         this.idQuestion = idQuestion;
@@ -40,15 +38,15 @@ public class Question {
                 q.details.equals(details));
     }
 
-    public int getIdQuestion() {
+    public String getIdQuestion() {
         return idQuestion;
     }
 
-    public int getIdModerator() {
+    public String getIdModerator() {
         return idModerator;
     }
 
-    public int getIdPoll() {
+    public String getIdPoll() {
         return idPoll;
     }
 
@@ -60,11 +58,11 @@ public class Question {
         return details;
     }
 
-    public int getAnswerMin() {
+    public String getAnswerMin() {
         return answerMin;
     }
 
-    public int getAnswerMax() {
+    public String getAnswerMax() {
         return answerMax;
     }
 

@@ -33,16 +33,18 @@ public class PollViewModel extends ViewModel {
             if (response.isSuccessful()) {
                 Log.w("localDebug", call.request().url().toString());
                 List<Question> respQuestions = new LinkedList<>();
+
+                // Get all the Polls questions and post them in questions
                 for (QuestionDataModel question :
                         response.body()) {
                     respQuestions
                             .add(new Question(
-                                    Integer.parseInt(question.getIdModerator()),
-                                    Integer.parseInt(question.getIdPoll()),
-                                    Integer.parseInt(question.getIdQuestion()),
+                                    question.getIdModerator(),
+                                    question.getIdPoll(),
+                                    question.getIdQuestion(),
                                     question.getTitle(), question.getDetails(),
-                                    Integer.parseInt(question.getAnswerMin()),
-                                    Integer.parseInt(question.getAnswerMax()))
+                                    question.getAnswerMin(),
+                                    question.getAnswerMax())
                             );
                 }
                 questions.postValue(respQuestions);

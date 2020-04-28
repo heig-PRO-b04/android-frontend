@@ -22,12 +22,13 @@ public class QuestionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_question);
 
         Intent intent = getIntent();
-        int idModerator = intent.getIntExtra("idModerator", 0);
-        int idPoll = intent.getIntExtra("idPoll", 0);
-        int idQuestion = intent.getIntExtra("idQuestion", 0);
+        String idModerator = intent.getStringExtra("idModerator");
+        String idPoll = intent.getStringExtra("idPoll");
+        String idQuestion = intent.getStringExtra("idQuestion");
+        String token = intent.getStringExtra("token");
 
         state = new ViewModelProvider(this).get(QuestionViewModel.class);
-        state.getQuestions(idModerator, idPoll, idQuestion);
+        state.getQuestion(idModerator, idPoll, idQuestion, token);
 
         RecyclerView answerList = findViewById(R.id.question_answers_view);
         LinearLayoutManager manager = new LinearLayoutManager(this);

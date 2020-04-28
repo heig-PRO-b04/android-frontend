@@ -19,11 +19,14 @@ import ch.heigvd.pro.b04.android.R;
 public class AnswerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_ANSWER = 1;
+
+    private LifecycleOwner lifecycleOwner;
     private QuestionViewModel state;
 
     private List<Answer> answers = new LinkedList<>();
 
     public AnswerAdapter(QuestionViewModel state, LifecycleOwner lifecycleOwner) {
+        this.lifecycleOwner = lifecycleOwner;
         this.state = state;
 
         state.getAnswers().observe(lifecycleOwner, newAnswers -> {
@@ -39,14 +42,14 @@ public class AnswerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static class HeaderViewHolder extends RecyclerView.ViewHolder {
         private TextView title;
 
-        public HeaderViewHolder(@NonNull ViewGroup parent, QuestionViewModel state) {
+        public HeaderViewHolder(@NonNull ViewGroup parent, QuestionViewModel state, LifecycleOwner lifecycleOwner) {
             super(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.question_title, parent, false));
             title = itemView.findViewById(R.id.question);
-        }
 
-        private void setTitle(String t) {
-            title.setText(t);
+            state.getViewSelectedQuestion().observe(lifecycleOwner, selectedQuestion -> {
+                title.setText(selectedQuestion.getTitle());
+            });
         }
     }
 
@@ -77,7 +80,7 @@ public class AnswerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_HEADER:
-                return new HeaderViewHolder(parent, state);
+                return new HeaderViewHolder(parent, state, lifecycleOwner);
             case VIEW_TYPE_ANSWER:
                 return new AnswerViewHolder(parent);
             default:
@@ -87,18 +90,9 @@ public class AnswerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        switch (position) {
-            case 0:
-                // TODO : change values to correct ones
-                ((HeaderViewHolder) holder).setTitle(
-                        state.getQuestion(0, 0, 0).getTitle()
-                );
-                break;
-            default:
-                ((AnswerViewHolder) holder).bindAnswer(
-                        answers.get(position-1)
-                );
-                break;
+        if(position != 0) {
+            ((AnswerViewHolder) holder)
+                    .bindAnswer(answers.get(position-1));
         }
     }
 
