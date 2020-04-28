@@ -19,6 +19,7 @@ import ch.heigvd.pro.b04.android.R;
 public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_QUESTION = 1;
+
     private PollViewModel state;
     private LifecycleOwner lifecycleOwner;
 

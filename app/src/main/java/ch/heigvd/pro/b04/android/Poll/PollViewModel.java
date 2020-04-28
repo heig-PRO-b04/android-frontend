@@ -71,7 +71,7 @@ public class PollViewModel extends ViewModel {
         public void onResponse(Call<PollDataModel> call, Response<PollDataModel> response) {
             if (response.isSuccessful()) {
                 Log.w("localDebug", call.request().url().toString());
-                //poll.postValue(new Poll(response.body().getIdPoll(), response.body().getIdModerator(), response.body().getTitle()));
+                poll.postValue(new Poll(response.body().getIdPoll(), response.body().getIdModerator(), response.body().getTitle()));
 
                 RetrofitClient.getRetrofitInstance()
                         .create(RockinAPI.class)
