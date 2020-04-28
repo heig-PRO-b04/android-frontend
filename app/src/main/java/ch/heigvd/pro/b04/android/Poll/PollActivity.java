@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import ch.heigvd.pro.b04.android.Home.Home;
 import ch.heigvd.pro.b04.android.Poll.Question.QuestionActivity;
 import ch.heigvd.pro.b04.android.Poll.Question.QuestionAdapter;
 import ch.heigvd.pro.b04.android.R;
@@ -30,8 +29,7 @@ public class PollActivity extends AppCompatActivity {
         try {
             token = Persistent.getStoredTokenOrError(getApplicationContext());
         } catch (TokenNotSetException e) {
-            // No token was found so go back to main activity
-            startActivity(new Intent(this, Home.class));
+            finish();
         }
 
         state = new ViewModelProvider(this).get(PollViewModel.class);
