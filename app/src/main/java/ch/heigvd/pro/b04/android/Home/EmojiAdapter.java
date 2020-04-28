@@ -94,12 +94,7 @@ public class EmojiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private void bindEmoji(Emoji emoji, boolean selected) {
             emojiButton.setImageResource(emoji.getEmoji());
             emojiButton.setOnClickListener(v -> state.addNewEmoji(emoji));
-
-            if (selected) {
-                emojiButton.setBackgroundColor(Color.RED);
-            } else {
-                emojiButton.setBackgroundColor(Color.TRANSPARENT);
-            }
+            emojiButton.setBackgroundColor(Color.TRANSPARENT);
         }
     }
 }
