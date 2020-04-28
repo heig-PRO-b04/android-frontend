@@ -1,4 +1,4 @@
-package ch.heigvd.pro.b04.android.datamodel;
+package ch.heigvd.pro.b04.android.Datamodel;
 
 import com.google.gson.annotations.SerializedName;
 
