@@ -1,6 +1,5 @@
 package ch.heigvd.pro.b04.android.Home;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -91,7 +90,6 @@ public class EmojiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private void bindEmoji(Emoji emoji) {
             emojiButton.setImageResource(emoji.getEmoji());
             emojiButton.setOnClickListener(v -> state.addNewEmoji(emoji));
-            emojiButton.setBackgroundColor(Color.TRANSPARENT);
         }
     }
 }

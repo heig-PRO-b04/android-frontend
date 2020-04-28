@@ -13,10 +13,12 @@
         android:layout_height="0dp"
         android:padding="24dp"
         android:scaleType="centerInside"
+        android:background="@android:color/transparent"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+
         tools:src="@drawable/emoji_0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
