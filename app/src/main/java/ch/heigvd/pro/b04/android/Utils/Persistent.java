@@ -34,11 +34,9 @@ public final class Persistent {
      * @param token The token to write
      */
     public static void writeToken(Context context, String token) {
-        SharedPreferences.Editor editor = context
-                .getSharedPreferences(context.getString(R.string.data), Context.MODE_PRIVATE)
-                .edit();
-
-        editor.putString(context.getString(R.string.dataToken), token);
-        editor.apply();
+        context.getSharedPreferences(context.getString(R.string.data), Context.MODE_PRIVATE)
+                .edit()
+                .putString(context.getString(R.string.dataToken), token)
+                .apply();
     }
 }
