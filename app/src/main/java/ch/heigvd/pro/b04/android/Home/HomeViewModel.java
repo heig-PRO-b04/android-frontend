@@ -1,11 +1,14 @@
 package ch.heigvd.pro.b04.android.Home;
 
+import android.app.Application;
 import android.graphics.Color;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -14,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import ch.heigvd.pro.b04.android.R;
 import ch.heigvd.pro.b04.android.datamodel.Session;
 import ch.heigvd.pro.b04.android.datamodel.SessionCode;
 import ch.heigvd.pro.b04.android.datamodel.Token;
@@ -23,7 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public final class HomeViewModel extends ViewModel {
+public final class HomeViewModel extends AndroidViewModel {
     private String token;
     private Boolean triedToGetToken = false;
 
@@ -77,8 +81,8 @@ public final class HomeViewModel extends ViewModel {
             } else {
                 token = "Error";
                 triedToGetToken = true;
-                // TODO: use resource file
-                codeColor.postValue(Color.parseColor("#D81B60"));
+                codeColor.postValue(ContextCompat.getColor(getApplication().getApplicationContext(),
+                        R.color.colorAccent));
 
                 Log.w("localDebug", "Received error, HTTP status is " + response.code());
                 Log.w("localDebug", "Registration code was : " + registrationCode.getValue());
@@ -97,7 +101,8 @@ public final class HomeViewModel extends ViewModel {
         }
     };
 
-    public HomeViewModel() {
+    public HomeViewModel(@NonNull Application application) {
+        super(application);
     }
 
     public void addNewEmoji(Emoji emoji) {
