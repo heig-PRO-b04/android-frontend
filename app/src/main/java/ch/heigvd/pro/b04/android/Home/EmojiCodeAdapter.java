@@ -52,7 +52,7 @@ public class EmojiCodeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             super(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.home_code_emoji, parent, false));
 
-            emojiImage = itemView.findViewById(R.id.home_emoji_code_item);
+            emojiImage = itemView.findViewById(R.id.home_code_emoji_item);
         }
 
         private void bindEmoji(Emoji emoji) {

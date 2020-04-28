@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -26,7 +25,7 @@ public class Home extends AppCompatActivity {
         state = new ViewModelProvider(this).get(HomeViewModel.class);
 
         // List of possible emojis
-        RecyclerView emojiGrid = findViewById(R.id.home_emoji_view);
+        RecyclerView emojiGrid = findViewById(R.id.home_emoji_grid);
         GridLayoutManager manager = new GridLayoutManager(this, COLUMN_NBR);
 
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -36,7 +35,7 @@ public class Home extends AppCompatActivity {
             }
         });
 
-        EmojiAdapter emojiAdapter = new EmojiAdapter(state, this);
+        EmojiGridAdapter emojiAdapter = new EmojiGridAdapter(state, this);
         emojiGrid.setAdapter(emojiAdapter);
         emojiGrid.setLayoutManager(manager);
 
@@ -57,6 +56,9 @@ public class Home extends AppCompatActivity {
                 return position == 0 ? COLUMN_NBR : 1;
             }
         });
+
+        state.getCodeColor().observe(this, color -> emojiCode.setBackgroundColor(color));
+
         EmojiCodeAdapter emojiCodeAdapter = new EmojiCodeAdapter(state, this);
         emojiCode.setAdapter(emojiCodeAdapter);
         emojiCode.setLayoutManager(emojiCodeLayout);

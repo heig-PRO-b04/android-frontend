@@ -1,18 +1,24 @@
 package ch.heigvd.pro.b04.android.Home;
 
+import android.app.Application;
+import android.graphics.Color;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import ch.heigvd.pro.b04.android.R;
 import ch.heigvd.pro.b04.android.datamodel.Session;
 import ch.heigvd.pro.b04.android.datamodel.SessionCode;
 import ch.heigvd.pro.b04.android.datamodel.Token;
@@ -22,15 +28,16 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public final class HomeViewModel extends ViewModel {
+public final class HomeViewModel extends AndroidViewModel {
     private String token;
+    private Boolean triedToGetToken = false;
+
     private MutableLiveData<List<String>> pollInfo = new MutableLiveData<>();
-
+    private MutableLiveData<Integer> codeColor = new MutableLiveData<>();
     private MutableLiveData<List<Emoji>> queue = new MutableLiveData<>();
-
     private MutableLiveData<Set<Emoji>> selectedEmoji = new MutableLiveData<>();
-
     private MutableLiveData<String> registrationCode = new MutableLiveData<>();
+    private MutableLiveData<List<Emoji>> registrationCodeEmoji = new MutableLiveData<>();
 
     private Callback<Session> callbackSession = new Callback<Session>() {
         @Override
@@ -58,12 +65,12 @@ public final class HomeViewModel extends ViewModel {
             Log.e("localDebug", "We had a super bad error in callbackToken");
         }
     };
-    private MutableLiveData<List<Emoji>> registrationCodeEmoji = new MutableLiveData<>();
 
     private Callback<Token> callbackToken = new Callback<Token>() {
         @Override
         public void onResponse(Call<Token> call, Response<Token> response) {
             if (response.isSuccessful()) {
+                registrationCodeEmoji.postValue(new ArrayList<>());
                 token = response.body().getToken();
                 RetrofitClient.getRetrofitInstance()
                         .create(RockinAPI.class)
@@ -71,8 +78,13 @@ public final class HomeViewModel extends ViewModel {
                         .enqueue(callbackSession);
             } else {
                 token = "Error";
+                triedToGetToken = true;
+                codeColor.postValue(ContextCompat.getColor(getApplication().getApplicationContext(),
+                        R.color.colorAccent));
+
                 Log.w("localDebug", "Received error, HTTP status is " + response.code());
                 Log.w("localDebug", "Registration code was : " + registrationCode.getValue());
+
                 try {
                     Log.w("localDebug", response.errorBody().string());
                 } catch (IOException e) {
@@ -87,7 +99,8 @@ public final class HomeViewModel extends ViewModel {
         }
     };
 
-    public HomeViewModel() {
+    public HomeViewModel(@NonNull Application application) {
+        super(application);
     }
 
     public void addNewEmoji(Emoji emoji) {
@@ -96,7 +109,15 @@ public final class HomeViewModel extends ViewModel {
 
         if (emojisBuffer == null) emojisBuffer = new LinkedList<>();
 
-        emojisBuffer.add(emoji);
+        if (triedToGetToken) {
+            emojisBuffer.clear();
+            codeColor.postValue(Color.TRANSPARENT);
+            triedToGetToken = false;
+        }
+
+        if (emojisBuffer.size() < 4) {
+            emojisBuffer.add(emoji);
+        }
 
         if (emojisBuffer.size() == 4) {
             Iterator<Emoji> emojis = emojisBuffer.iterator();
@@ -105,7 +126,6 @@ public final class HomeViewModel extends ViewModel {
             while (emojis.hasNext()) {
                 code.append(emojis.next().getHex());
             }
-            emojisBuffer.clear();
             registrationCode.postValue(code.toString());
 
             RetrofitClient.getRetrofitInstance()
@@ -134,6 +154,10 @@ public final class HomeViewModel extends ViewModel {
 
     public String getToken() {
         return token;
+    }
+
+    public LiveData<Integer> getCodeColor() {
+        return codeColor;
     }
 
 }
