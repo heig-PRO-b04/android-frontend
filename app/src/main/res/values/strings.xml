@@ -1,8 +1,4 @@
 <resources>
-    <!-- App related: https://developer.android.com/training/data-storage/shared-preferences -->
-    <string name="data">ch.heigvd.pro.b04.android.DATA_FILE</string>
-    <string name="dataToken">TokenValue</string>
-
     <!-- General -->
     <string name="app_name">HEIG-VD PRO</string>
     <string name="poll_welcome">Here are the questions</string>
