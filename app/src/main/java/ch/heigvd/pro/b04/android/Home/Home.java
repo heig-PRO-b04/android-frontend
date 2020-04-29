@@ -43,7 +43,6 @@ public class Home extends AppCompatActivity {
                     Intent intent = new Intent(this, PollActivity.class);
                     intent.putExtra("idPoll", poll.get(0));
                     intent.putExtra("idModerator", poll.get(1));
-                    intent.putExtra("token", state.getToken());
                     startActivity(intent);
             });
           

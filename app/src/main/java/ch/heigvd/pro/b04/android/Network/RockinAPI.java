@@ -1,9 +1,9 @@
-package ch.heigvd.pro.b04.android.network;
+package ch.heigvd.pro.b04.android.Network;
 
-import ch.heigvd.pro.b04.android.datamodel.PollDataModel;
-import ch.heigvd.pro.b04.android.datamodel.Session;
-import ch.heigvd.pro.b04.android.datamodel.SessionCode;
-import ch.heigvd.pro.b04.android.datamodel.Token;
+import ch.heigvd.pro.b04.android.Datamodel.PollDataModel;
+import ch.heigvd.pro.b04.android.Datamodel.Session;
+import ch.heigvd.pro.b04.android.Datamodel.SessionCode;
+import ch.heigvd.pro.b04.android.Datamodel.Token;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;

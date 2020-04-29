@@ -18,12 +18,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import ch.heigvd.pro.b04.android.Datamodel.Session;
+import ch.heigvd.pro.b04.android.Datamodel.SessionCode;
+import ch.heigvd.pro.b04.android.Datamodel.Token;
+import ch.heigvd.pro.b04.android.Network.RetrofitClient;
+import ch.heigvd.pro.b04.android.Network.RockinAPI;
 import ch.heigvd.pro.b04.android.R;
-import ch.heigvd.pro.b04.android.datamodel.Session;
-import ch.heigvd.pro.b04.android.datamodel.SessionCode;
-import ch.heigvd.pro.b04.android.datamodel.Token;
-import ch.heigvd.pro.b04.android.network.RetrofitClient;
-import ch.heigvd.pro.b04.android.network.RockinAPI;
+import ch.heigvd.pro.b04.android.Utils.Persistent;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -72,6 +73,9 @@ public final class HomeViewModel extends AndroidViewModel {
             if (response.isSuccessful()) {
                 registrationCodeEmoji.postValue(new ArrayList<>());
                 token = response.body().getToken();
+
+                Persistent.writeToken(getApplication().getApplicationContext(), token);
+
                 RetrofitClient.getRetrofitInstance()
                         .create(RockinAPI.class)
                         .getSession(response.body().getToken())
