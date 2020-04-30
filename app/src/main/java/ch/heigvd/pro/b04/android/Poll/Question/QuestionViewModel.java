@@ -10,9 +10,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.heigvd.pro.b04.android.Datamodel.Question;
-import ch.heigvd.pro.b04.android.Poll.Answer.Answer;
 import ch.heigvd.pro.b04.android.Network.RetrofitClient;
 import ch.heigvd.pro.b04.android.Network.RockinAPI;
+import ch.heigvd.pro.b04.android.Poll.Answer.Answer;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

@@ -3,7 +3,7 @@ package ch.heigvd.pro.b04.android.Network;
 import java.util.List;
 
 import ch.heigvd.pro.b04.android.Datamodel.Question;
-import ch.heigvd.pro.b04.android.Datamodel.PollDataModel;
+import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Session;
 import ch.heigvd.pro.b04.android.Datamodel.SessionCode;
 import ch.heigvd.pro.b04.android.Datamodel.Token;
@@ -26,7 +26,7 @@ public interface RockinAPI {
             @Query("token") String userToken);
 
     @GET("/mod/{idModerator}/poll/{idPoll}")
-    Call<PollDataModel> getPoll(
+    Call<Poll> getPoll(
             @Path("idModerator") String idModerator,
             @Path("idPoll") String idPoll,
             @Query("token") String userToken);
