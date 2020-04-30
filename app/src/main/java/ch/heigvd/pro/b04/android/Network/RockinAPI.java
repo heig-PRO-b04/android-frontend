@@ -19,28 +19,33 @@ public interface RockinAPI {
 
     @POST("/connect")
     Call<Token> postConnect(
-            @Body SessionCode code);
+            @Body SessionCode code
+    );
 
     @GET("/session")
     Call<Session> getSession(
-            @Query("token") String userToken);
+            @Query("token") String userToken
+    );
 
     @GET("/mod/{idModerator}/poll/{idPoll}")
     Call<Poll> getPoll(
             @Path("idModerator") String idModerator,
             @Path("idPoll") String idPoll,
-            @Query("token") String userToken);
+            @Query("token") String userToken
+    );
 
     @GET("/mod/{idModerator}/poll/{idPoll}/question")
     Call<List<Question>> getQuestions(
             @Path("idModerator") String idModerator,
             @Path("idPoll") String idPoll,
-            @Query("token") String userToken);
+            @Query("token") String userToken
+    );
 
     @GET("/mod/{idModerator}/poll/{idPoll}/question/{idQuestion}")
     Call<Question> getQuestion(
             @Path("idModerator") String idModerator,
             @Path("idPoll") String idPoll,
             @Path("idQuestion") String idQuestion,
-            @Query("token") String token);
+            @Query("token") String token
+    );
 }
