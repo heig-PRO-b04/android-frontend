@@ -14,8 +14,7 @@ import java.util.List;
 
 import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
-import ch.heigvd.pro.b04.android.Network.RetrofitClient;
-import ch.heigvd.pro.b04.android.Network.RockinAPI;
+import ch.heigvd.pro.b04.android.Network.Rockin;
 import ch.heigvd.pro.b04.android.Utils.Exceptions.TokenNotSetException;
 import ch.heigvd.pro.b04.android.Utils.Persistent;
 import retrofit2.Call;
@@ -70,8 +69,7 @@ public class PollViewModel extends AndroidViewModel {
                     e.printStackTrace();
                 }
 
-                RetrofitClient.getRetrofitInstance()
-                        .create(RockinAPI.class)
+                Rockin.api()
                         .getQuestions(resp.getIdModerator(), resp.getIdPoll(), token)
                         .enqueue(callbackQuestions);
             } else {
@@ -118,9 +116,6 @@ public class PollViewModel extends AndroidViewModel {
     }
 
     public void getPoll(String idPoll, String idModerator, String token) {
-        RetrofitClient.getRetrofitInstance()
-                .create(RockinAPI.class)
-                .getPoll(idModerator, idPoll, token)
-                .enqueue(callbackPoll);
+        Rockin.api().getPoll(idModerator, idPoll, token).enqueue(callbackPoll);
     }
 }

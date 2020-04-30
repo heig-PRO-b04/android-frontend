@@ -10,8 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.heigvd.pro.b04.android.Datamodel.Question;
-import ch.heigvd.pro.b04.android.Network.RetrofitClient;
-import ch.heigvd.pro.b04.android.Network.RockinAPI;
+import ch.heigvd.pro.b04.android.Network.Rockin;
 import ch.heigvd.pro.b04.android.Poll.Answer.Answer;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,10 +53,7 @@ public class QuestionViewModel extends ViewModel {
     }
 
     public void getQuestion(String idModerator, String idPoll, String idQuestion, String token) {
-        RetrofitClient.getRetrofitInstance()
-                .create(RockinAPI.class)
-                .getQuestion(idModerator, idPoll, idQuestion, token)
-                .enqueue(callbackQuestion);
+        Rockin.api().getQuestion(idModerator, idPoll, idQuestion, token).enqueue(callbackQuestion);
     }
 
     public MutableLiveData<Question> getViewSelectedQuestion() {
