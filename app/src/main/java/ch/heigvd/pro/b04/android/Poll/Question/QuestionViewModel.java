@@ -9,14 +9,13 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.heigvd.pro.b04.android.network.RetrofitClient;
-import ch.heigvd.pro.b04.android.network.RockinAPI;
+import ch.heigvd.pro.b04.android.Datamodel.QuestionDataModel;
+import ch.heigvd.pro.b04.android.Poll.Answer.Answer;
+import ch.heigvd.pro.b04.android.Network.RetrofitClient;
+import ch.heigvd.pro.b04.android.Network.RockinAPI;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import ch.heigvd.pro.b04.android.Poll.Answer.Answer;
-import ch.heigvd.pro.b04.android.datamodel.QuestionDataModel;
 
 public class QuestionViewModel extends ViewModel {
     private MutableLiveData<Question> question = new MutableLiveData<>();

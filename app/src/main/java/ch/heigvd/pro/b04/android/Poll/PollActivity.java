@@ -1,30 +1,36 @@
 package ch.heigvd.pro.b04.android.Poll;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
-
-import java.io.Serializable;
-
 import ch.heigvd.pro.b04.android.Poll.Question.QuestionActivity;
 import ch.heigvd.pro.b04.android.Poll.Question.QuestionAdapter;
 import ch.heigvd.pro.b04.android.R;
+import ch.heigvd.pro.b04.android.Utils.Exceptions.TokenNotSetException;
+import ch.heigvd.pro.b04.android.Utils.Persistent;
 
 public class PollActivity extends AppCompatActivity {
     private PollViewModel state;
 
-        @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_poll);
         Intent intent = getIntent();
         String idPoll = intent.getStringExtra("idPoll");
         String idModerator = intent.getStringExtra("idModerator");
-        String token = intent.getStringExtra("token");
+
+        String token = null;
+        try {
+            token = Persistent.getStoredTokenOrError(getApplicationContext());
+        } catch (TokenNotSetException e) {
+            finish();
+        }
 
         state = new ViewModelProvider(this).get(PollViewModel.class);
         state.getPoll(idPoll, idModerator, token);
@@ -43,7 +49,7 @@ public class PollActivity extends AppCompatActivity {
             questionIntent.putExtra("idModerator", question.getIdModerator());
             questionIntent.putExtra("idPoll", question.getIdPoll());
             questionIntent.putExtra("idQuestion", question.getIdQuestion());
-            questionIntent.putExtra("token", token);
+            // TODO questionIntent.putExtra("token", token);
 
             startActivity(questionIntent);
         });

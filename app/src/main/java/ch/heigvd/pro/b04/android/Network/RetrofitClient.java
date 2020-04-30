@@ -1,4 +1,4 @@
-package ch.heigvd.pro.b04.android.network;
+package ch.heigvd.pro.b04.android.Network;
 
 import ch.heigvd.pro.b04.android.BuildConfig;
 import retrofit2.Retrofit;
