@@ -49,7 +49,6 @@ public class PollActivity extends AppCompatActivity {
             questionIntent.putExtra("idModerator", question.getIdModerator());
             questionIntent.putExtra("idPoll", question.getIdPoll());
             questionIntent.putExtra("idQuestion", question.getIdQuestion());
-            // TODO questionIntent.putExtra("token", token);
 
             startActivity(questionIntent);
         });
