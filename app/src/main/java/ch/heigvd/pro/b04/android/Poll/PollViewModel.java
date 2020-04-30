@@ -10,8 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.heigvd.pro.b04.android.Poll.Poll.Poll;
-import ch.heigvd.pro.b04.android.Poll.Question.Question;
-import ch.heigvd.pro.b04.android.Datamodel.QuestionDataModel;
+import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.Datamodel.PollDataModel;
 import ch.heigvd.pro.b04.android.Network.RetrofitClient;
 import ch.heigvd.pro.b04.android.Network.RockinAPI;
@@ -28,27 +27,12 @@ public class PollViewModel extends ViewModel {
     /**********************
      * Callback variables *
      **********************/
-    private Callback<List<QuestionDataModel>> callbackQuestions = new Callback<List<QuestionDataModel>>() {
+    private Callback<List<Question>> callbackQuestions = new Callback<List<Question>>() {
         @Override
-        public void onResponse(Call<List<QuestionDataModel>> call, Response<List<QuestionDataModel>> response) {
+        public void onResponse(Call<List<Question>> call, Response<List<Question>> response) {
             if (response.isSuccessful()) {
                 Log.w("localDebug", call.request().url().toString());
-                List<Question> respQuestions = new LinkedList<>();
-
-                // Get all the Polls questions and post them in questions
-                for (QuestionDataModel question :
-                        response.body()) {
-                    respQuestions
-                            .add(new Question(
-                                    question.getIdModerator(),
-                                    question.getIdPoll(),
-                                    question.getIdQuestion(),
-                                    question.getTitle(), question.getDetails(),
-                                    question.getAnswerMin(),
-                                    question.getAnswerMax())
-                            );
-                }
-                questions.postValue(respQuestions);
+                questions.postValue(response.body());
             } else {
                 Log.w("localDebug", "Received error, HTTP status is " + response.code());
                 Log.w("localDebug", "The request was " + call.request().url());
@@ -62,7 +46,7 @@ public class PollViewModel extends ViewModel {
         }
 
         @Override
-        public void onFailure(Call<List<QuestionDataModel>> call, Throwable t) {
+        public void onFailure(Call<List<Question>> call, Throwable t) {
             Log.e("localDebug", "We had a super bad error in callbackQuestions : " + call.request().url());
             Log.e("localDebug", "The error is : " + t.getMessage());
         }

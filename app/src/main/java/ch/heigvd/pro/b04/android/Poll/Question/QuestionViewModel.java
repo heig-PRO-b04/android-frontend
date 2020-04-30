@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.heigvd.pro.b04.android.Datamodel.QuestionDataModel;
+import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.Poll.Answer.Answer;
 import ch.heigvd.pro.b04.android.Network.RetrofitClient;
 import ch.heigvd.pro.b04.android.Network.RockinAPI;
@@ -21,15 +21,12 @@ public class QuestionViewModel extends ViewModel {
     private MutableLiveData<Question> question = new MutableLiveData<>();
     private MutableLiveData<List<Answer>> answers = new MutableLiveData<>(new LinkedList<>());
 
-    private Callback<QuestionDataModel> callbackQuestion = new Callback<QuestionDataModel>() {
+    private Callback<Question> callbackQuestion = new Callback<Question>() {
         @Override
-        public void onResponse(Call<QuestionDataModel> call, Response<QuestionDataModel> response) {
+        public void onResponse(Call<Question> call, Response<Question> response) {
             if (response.isSuccessful()) {
                 Log.w("localDebug", call.request().url().toString());
-                Question respQuestion = new Question(response.body().getIdModerator(), response.body().getIdPoll(), response.body().getIdQuestion(),
-                        response.body().getTitle(), response.body().getDetails(),
-                        response.body().getAnswerMin(), response.body().getAnswerMax());
-                question.postValue(respQuestion);
+                question.postValue(response.body());
 
             } else {
                 Log.w("localDebug", "Received error, HTTP status is " + response.code());
@@ -44,7 +41,7 @@ public class QuestionViewModel extends ViewModel {
         }
 
         @Override
-        public void onFailure(Call<QuestionDataModel> call, Throwable t) {
+        public void onFailure(Call<Question> call, Throwable t) {
             Log.e("localDebug", "We had a super bad error in callbackQuestions : " + call.request().url());
             Log.e("localDebug", "The error is : " + t.getMessage());
         }

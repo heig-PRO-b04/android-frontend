@@ -3,7 +3,7 @@ package ch.heigvd.pro.b04.android.Poll.Poll;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.heigvd.pro.b04.android.Poll.Question.Question;
+import ch.heigvd.pro.b04.android.Datamodel.Question;
 
 public class Poll {
     private String id;
