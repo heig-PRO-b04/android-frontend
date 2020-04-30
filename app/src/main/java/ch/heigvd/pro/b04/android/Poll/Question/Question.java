@@ -28,6 +28,8 @@ public class Question {
 
     @Override
     public boolean equals(@Nullable Object obj) {
+        if (obj == null)
+            return false;
         Question q = (Question) obj;
         return (q.idModerator == idModerator &&
                 q.answerMax == answerMax &&
