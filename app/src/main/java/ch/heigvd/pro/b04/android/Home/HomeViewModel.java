@@ -21,8 +21,7 @@ import java.util.Set;
 import ch.heigvd.pro.b04.android.Datamodel.Session;
 import ch.heigvd.pro.b04.android.Datamodel.SessionCode;
 import ch.heigvd.pro.b04.android.Datamodel.Token;
-import ch.heigvd.pro.b04.android.Network.RetrofitClient;
-import ch.heigvd.pro.b04.android.Network.RockinAPI;
+import ch.heigvd.pro.b04.android.Network.Rockin;
 import ch.heigvd.pro.b04.android.R;
 import ch.heigvd.pro.b04.android.Utils.Persistent;
 import retrofit2.Call;
@@ -75,11 +74,7 @@ public final class HomeViewModel extends AndroidViewModel {
                 token = response.body().getToken();
 
                 Persistent.writeToken(getApplication().getApplicationContext(), token);
-
-                RetrofitClient.getRetrofitInstance()
-                        .create(RockinAPI.class)
-                        .getSession(response.body().getToken())
-                        .enqueue(callbackSession);
+                Rockin.api().getSession(token).enqueue(callbackSession);
             } else {
                 token = "Error";
                 triedToGetToken = true;
@@ -132,11 +127,7 @@ public final class HomeViewModel extends AndroidViewModel {
             }
             registrationCode.postValue(code.toString());
 
-            RetrofitClient.getRetrofitInstance()
-                    .create(RockinAPI.class)
-                    .postConnect(new SessionCode(code.toString()))
-                    .enqueue(callbackToken);
-
+            Rockin.api().postConnect(new SessionCode(code.toString())).enqueue(callbackToken);
         }
 
         queue.postValue(emojisBuffer);
@@ -156,12 +147,7 @@ public final class HomeViewModel extends AndroidViewModel {
         return this.selectedEmoji;
     }
 
-    public String getToken() {
-        return token;
-    }
-
     public LiveData<Integer> getCodeColor() {
         return codeColor;
     }
-
 }

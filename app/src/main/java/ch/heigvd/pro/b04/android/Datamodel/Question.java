@@ -2,7 +2,9 @@ package ch.heigvd.pro.b04.android.Datamodel;
 
 import com.google.gson.annotations.SerializedName;
 
-public class QuestionDataModel {
+import java.io.Serializable;
+
+public class Question implements Serializable {
     @SerializedName("idModerator")
     private String idModerator;
 
@@ -23,6 +25,8 @@ public class QuestionDataModel {
 
     @SerializedName("answerMax")
     private String answerMax;
+
+    private boolean answered;
 
     public String getIdModerator() {
         return idModerator;
@@ -50,5 +54,9 @@ public class QuestionDataModel {
 
     public String getAnswerMax() {
         return answerMax;
+    }
+
+    public boolean answered() {
+        return answered;
     }
 }

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.Poll.PollViewModel;
 import ch.heigvd.pro.b04.android.R;
 
@@ -91,10 +92,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if(position != 0) {
             Question q = questions.get(position-1);
-            ((QuestionViewHolder) holder).bindQuestion(
-                    q,
-                    q.answered()
-            );
+            ((QuestionViewHolder) holder).bindQuestion(q, q.answered() );
         }
     }
 

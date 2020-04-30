@@ -1,26 +1,28 @@
 package ch.heigvd.pro.b04.android.Poll;
 
+import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.heigvd.pro.b04.android.Poll.Poll.Poll;
-import ch.heigvd.pro.b04.android.Poll.Question.Question;
-import ch.heigvd.pro.b04.android.Datamodel.QuestionDataModel;
-import ch.heigvd.pro.b04.android.Datamodel.PollDataModel;
-import ch.heigvd.pro.b04.android.Network.RetrofitClient;
-import ch.heigvd.pro.b04.android.Network.RockinAPI;
-
+import ch.heigvd.pro.b04.android.Datamodel.Poll;
+import ch.heigvd.pro.b04.android.Datamodel.Question;
+import ch.heigvd.pro.b04.android.Network.Rockin;
+import ch.heigvd.pro.b04.android.Utils.Exceptions.TokenNotSetException;
+import ch.heigvd.pro.b04.android.Utils.Persistent;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PollViewModel extends ViewModel {
+public class PollViewModel extends AndroidViewModel {
+    private Context context;
     private MutableLiveData<Poll> poll = new MutableLiveData<>();
     private MutableLiveData<Question> questionToView = new MutableLiveData<>();
     private MutableLiveData<List<Question>> questions = new MutableLiveData<>(new LinkedList<>());
@@ -28,27 +30,12 @@ public class PollViewModel extends ViewModel {
     /**********************
      * Callback variables *
      **********************/
-    private Callback<List<QuestionDataModel>> callbackQuestions = new Callback<List<QuestionDataModel>>() {
+    private Callback<List<Question>> callbackQuestions = new Callback<List<Question>>() {
         @Override
-        public void onResponse(Call<List<QuestionDataModel>> call, Response<List<QuestionDataModel>> response) {
+        public void onResponse(Call<List<Question>> call, Response<List<Question>> response) {
             if (response.isSuccessful()) {
                 Log.w("localDebug", call.request().url().toString());
-                List<Question> respQuestions = new LinkedList<>();
-
-                // Get all the Polls questions and post them in questions
-                for (QuestionDataModel question :
-                        response.body()) {
-                    respQuestions
-                            .add(new Question(
-                                    question.getIdModerator(),
-                                    question.getIdPoll(),
-                                    question.getIdQuestion(),
-                                    question.getTitle(), question.getDetails(),
-                                    question.getAnswerMin(),
-                                    question.getAnswerMax())
-                            );
-                }
-                questions.postValue(respQuestions);
+                questions.postValue(response.body());
             } else {
                 Log.w("localDebug", "Received error, HTTP status is " + response.code());
                 Log.w("localDebug", "The request was " + call.request().url());
@@ -62,21 +49,28 @@ public class PollViewModel extends ViewModel {
         }
 
         @Override
-        public void onFailure(Call<List<QuestionDataModel>> call, Throwable t) {
+        public void onFailure(Call<List<Question>> call, Throwable t) {
             Log.e("localDebug", "We had a super bad error in callbackQuestions : " + call.request().url());
             Log.e("localDebug", "The error is : " + t.getMessage());
         }
     };
-    private Callback<PollDataModel> callbackPoll = new Callback<PollDataModel>() {
+    private Callback<Poll> callbackPoll = new Callback<Poll>() {
         @Override
-        public void onResponse(Call<PollDataModel> call, Response<PollDataModel> response) {
+        public void onResponse(Call<Poll> call, Response<Poll> response) {
             if (response.isSuccessful()) {
                 Log.w("localDebug", call.request().url().toString());
-                poll.postValue(new Poll(response.body().getIdPoll(), response.body().getIdModerator(), response.body().getTitle()));
+                Poll resp = response.body();
+                poll.postValue(resp);
 
-                RetrofitClient.getRetrofitInstance()
-                        .create(RockinAPI.class)
-                        .getQuestions(response.body().getIdModerator(), response.body().getIdPoll(), call.request().url().query().substring(6))
+                String token = null;
+                try {
+                    token = Persistent.getStoredTokenOrError(context);
+                } catch (TokenNotSetException e) {
+                    e.printStackTrace();
+                }
+
+                Rockin.api()
+                        .getQuestions(resp.getIdModerator(), resp.getIdPoll(), token)
                         .enqueue(callbackQuestions);
             } else {
                 Log.w("localDebug", "Received error, HTTP status is " + response.code());
@@ -91,7 +85,7 @@ public class PollViewModel extends ViewModel {
         }
 
         @Override
-        public void onFailure(Call<PollDataModel> call, Throwable t) {
+        public void onFailure(Call<Poll> call, Throwable t) {
             Log.e("localDebug", "We had a super bad error in callbackPollDataModel");
         }
     };
@@ -99,7 +93,10 @@ public class PollViewModel extends ViewModel {
     /**
      * Constructor
      */
-    public PollViewModel() {}
+    public PollViewModel(@NonNull Application application) {
+        super(application);
+        context = application.getApplicationContext();
+    }
 
     public MutableLiveData<Poll> getPoll() {
         return poll;
@@ -119,9 +116,6 @@ public class PollViewModel extends ViewModel {
     }
 
     public void getPoll(String idPoll, String idModerator, String token) {
-        RetrofitClient.getRetrofitInstance()
-                .create(RockinAPI.class)
-                .getPoll(idModerator, idPoll, token)
-                .enqueue(callbackPoll);
+        Rockin.api().getPoll(idModerator, idPoll, token).enqueue(callbackPoll);
     }
 }

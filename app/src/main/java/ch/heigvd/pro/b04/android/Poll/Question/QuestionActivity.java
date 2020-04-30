@@ -1,17 +1,20 @@
 package ch.heigvd.pro.b04.android.Poll.Question;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-
+import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.Poll.Answer.AnswerAdapter;
 import ch.heigvd.pro.b04.android.Poll.PollActivity;
 import ch.heigvd.pro.b04.android.R;
+import ch.heigvd.pro.b04.android.Utils.Exceptions.TokenNotSetException;
+import ch.heigvd.pro.b04.android.Utils.Persistent;
 
 public class QuestionActivity extends AppCompatActivity {
     private QuestionViewModel state;
@@ -22,13 +25,16 @@ public class QuestionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_question);
 
         Intent intent = getIntent();
-        String idModerator = intent.getStringExtra("idModerator");
-        String idPoll = intent.getStringExtra("idPoll");
-        String idQuestion = intent.getStringExtra("idQuestion");
-        String token = intent.getStringExtra("token");
+        Question question = (Question) intent.getSerializableExtra("question");
+        String token = null;
+        try {
+            token = Persistent.getStoredTokenOrError(getApplicationContext());
+        } catch (TokenNotSetException e) {
+            finish();
+        }
 
         state = new ViewModelProvider(this).get(QuestionViewModel.class);
-        state.getQuestion(idModerator, idPoll, idQuestion, token);
+        state.setQuestion(question);
 
         RecyclerView answerList = findViewById(R.id.question_answers_view);
         LinearLayoutManager manager = new LinearLayoutManager(this);
