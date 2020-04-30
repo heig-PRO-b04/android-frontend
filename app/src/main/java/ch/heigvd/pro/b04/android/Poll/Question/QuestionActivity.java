@@ -8,16 +8,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
-import ch.heigvd.pro.b04.android.Poll.Answer.Answer;
 import ch.heigvd.pro.b04.android.Poll.Answer.AnswerAdapter;
 import ch.heigvd.pro.b04.android.Poll.PollActivity;
 import ch.heigvd.pro.b04.android.R;
 
 public class QuestionActivity extends AppCompatActivity {
     private QuestionViewModel state;
-    private Question question;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,17 +22,13 @@ public class QuestionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_question);
 
         Intent intent = getIntent();
-        int id = intent.getIntExtra("QUESTION_ID", 0);
-
-        System.out.println("Question id : " + id);
-
-        //TODO : get question from backend (from id)
-        question = new Question(id, "This is the chosen question", new Answer[]{new Answer(1, "first answer"), new Answer(2, "second answer")});
+        String idModerator = intent.getStringExtra("idModerator");
+        String idPoll = intent.getStringExtra("idPoll");
+        String idQuestion = intent.getStringExtra("idQuestion");
+        String token = intent.getStringExtra("token");
 
         state = new ViewModelProvider(this).get(QuestionViewModel.class);
-        state.setQuestion(question.getQuestion());
-        state.addAnswer(new Answer(1, "first answer"));
-        state.addAnswer(new Answer(2, "second answer"));
+        state.getQuestion(idModerator, idPoll, idQuestion, token);
 
         RecyclerView answerList = findViewById(R.id.question_answers_view);
         LinearLayoutManager manager = new LinearLayoutManager(this);

@@ -19,6 +19,7 @@ import ch.heigvd.pro.b04.android.R;
 public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_QUESTION = 1;
+
     private PollViewModel state;
     private LifecycleOwner lifecycleOwner;
 
@@ -62,7 +63,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         private void bindQuestion(Question question, boolean answered) {
-            questionButton.setText(question.getQuestion());
+            questionButton.setText(question.getTitle());
             questionButton.setOnClickListener(v -> state.goToQuestion(question));
 
             if (answered) {
@@ -88,16 +89,12 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        switch (position) {
-            case 0:
-                break;
-            default:
-                Question q = questions.get(position-1);
-                ((QuestionViewHolder) holder).bindQuestion(
-                        q,
-                        q.answered()
-                );
-                break;
+        if(position != 0) {
+            Question q = questions.get(position-1);
+            ((QuestionViewHolder) holder).bindQuestion(
+                    q,
+                    q.answered()
+            );
         }
     }
 
