@@ -27,7 +27,7 @@ public class Question implements Serializable {
     private String answerMax;
 
     @SerializedName("indexInPoll")
-    private int indexInPoll;
+    private double indexInPoll;
 
     private boolean answered;
 
@@ -63,7 +63,7 @@ public class Question implements Serializable {
         return answered;
     }
 
-    public int getIndexInPoll() {
+    public double getIndexInPoll() {
         return indexInPoll;
     }
 }

@@ -19,7 +19,6 @@ import ch.heigvd.pro.b04.android.Utils.Persistent;
 public class QuestionActivity extends AppCompatActivity {
     private QuestionViewModel state;
     private String idPoll,  idModerator;
-    private int questionIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +37,6 @@ public class QuestionActivity extends AppCompatActivity {
         state = new ViewModelProvider(this).get(QuestionViewModel.class);
         idModerator = question.getIdModerator();
         idPoll = question.getIdPoll();
-        questionIndex = question.getIndexInPoll();
 
         state.setQuestion(question);
         state.requestAnswers(token, question);
