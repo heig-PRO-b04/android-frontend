@@ -1,6 +1,7 @@
 package ch.heigvd.pro.b04.android.Home;
 
 import android.app.Application;
+import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 
@@ -10,7 +11,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,6 +31,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public final class HomeViewModel extends AndroidViewModel {
+    private Context context;
     private String token;
     private Boolean triedToGetToken = false;
 
@@ -54,6 +55,28 @@ public final class HomeViewModel extends AndroidViewModel {
         pollInfo.postValue(info);
     }
 
+    /**
+     * Helper method that sets the current state correctly in case of error while retrieving the
+     * token
+     */
+    private void setBadTokenErrorValues() {
+        token = "Error";
+        triedToGetToken = true;
+        codeColor.postValue(ContextCompat.getColor(context, R.color.colorAccent));
+    }
+
+    /**
+     * Helper method to setup the current state when we successfully retrieve a token
+     * @param token The retrieved token
+     */
+    private void onSuccessfulToken(String token) {
+        Objects.requireNonNull(token);
+
+        registrationCodeEmoji.postValue(new ArrayList<>());
+        Persistent.writeToken(context, token);
+        Rockin.api().getSession(token).enqueue(callbackSession);
+    }
+
     private Callback<Session> callbackSession = new Callback<Session>() {
         @Override
         public void onResponse(Call<Session> call, Response<Session> response) {
@@ -74,36 +97,23 @@ public final class HomeViewModel extends AndroidViewModel {
         @Override
         public void onResponse(Call<Token> call, Response<Token> response) {
             if (response.isSuccessful()) {
-                registrationCodeEmoji.postValue(new ArrayList<>());
-                token = response.body().getToken();
-
-                Persistent.writeToken(getApplication().getApplicationContext(), token);
-                Rockin.api().getSession(token).enqueue(callbackSession);
+                onSuccessfulToken(response.body().getToken());
             } else {
-                token = "Error";
-                triedToGetToken = true;
-                codeColor.postValue(ContextCompat.getColor(getApplication().getApplicationContext(),
-                        R.color.colorAccent));
-
-                Log.w("localDebug", "Received error, HTTP status is " + response.code());
+                setBadTokenErrorValues();
+                LocalDebug.logUnsuccessfulRequest(call, response);
                 Log.w("localDebug", "Registration code was : " + registrationCode.getValue());
-
-                try {
-                    Log.w("localDebug", response.errorBody().string());
-                } catch (IOException e) {
-                    Log.e("localDebug", "Error in error, rip");
-                }
             }
         }
 
         @Override
         public void onFailure(Call<Token> call, Throwable t) {
-            Log.e("localDebug", "We had a super bad error in callbackToken");
+            LocalDebug.logFailedRequest(call, t);
         }
     };
 
     public HomeViewModel(@NonNull Application application) {
         super(application);
+        this.context = getApplication().getApplicationContext();
     }
 
     public void addNewEmoji(Emoji emoji) {
