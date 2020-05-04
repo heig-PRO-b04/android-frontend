@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import ch.heigvd.pro.b04.android.Datamodel.Session;
@@ -23,6 +24,7 @@ import ch.heigvd.pro.b04.android.Datamodel.SessionCode;
 import ch.heigvd.pro.b04.android.Datamodel.Token;
 import ch.heigvd.pro.b04.android.Network.Rockin;
 import ch.heigvd.pro.b04.android.R;
+import ch.heigvd.pro.b04.android.Utils.LocalDebug;
 import ch.heigvd.pro.b04.android.Utils.Persistent;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,30 +41,32 @@ public final class HomeViewModel extends AndroidViewModel {
     private MutableLiveData<String> registrationCode = new MutableLiveData<>();
     private MutableLiveData<List<Emoji>> registrationCodeEmoji = new MutableLiveData<>();
 
+    /**
+     * This helper method saves a session in our poll info Live Data
+     * @param session The session to save
+     */
+    private void saveSessionInPollInfo(Session session) {
+        Objects.requireNonNull(session);
+
+        List<String> info = new LinkedList<>();
+        info.add(session.getIdPoll());
+        info.add(session.getIdModerator());
+        pollInfo.postValue(info);
+    }
+
     private Callback<Session> callbackSession = new Callback<Session>() {
         @Override
         public void onResponse(Call<Session> call, Response<Session> response) {
             if (response.isSuccessful()) {
-                Log.w("localDebug", "Success, session is " + response.body().getStatus());
-                List<String> info = new LinkedList<>();
-                info.add(response.body().getIdPoll());
-                info.add(response.body().getIdModerator());
-                pollInfo.postValue(info);
+                saveSessionInPollInfo(response.body());
             } else {
-                Log.w("localDebug", "Received error, HTTP status is " + response.code());
-                Log.w("localDebug", "The request was " + call.request().url());
-
-                try {
-                    Log.w("localDebug", response.errorBody().string());
-                } catch (IOException e) {
-                    Log.e("localDebug", "Error in error, rip");
-                }
+                LocalDebug.logUnsuccessfulRequest(call, response);
             }
         }
 
         @Override
         public void onFailure(Call<Session> call, Throwable t) {
-            Log.e("localDebug", "We had a super bad error in callbackToken");
+            LocalDebug.logFailedRequest(call, t);
         }
     };
 
