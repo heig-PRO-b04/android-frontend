@@ -18,6 +18,8 @@ import ch.heigvd.pro.b04.android.Utils.Persistent;
 
 public class QuestionActivity extends AppCompatActivity {
     private QuestionViewModel state;
+    private String idPoll,  idModerator;
+    private int questionIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,10 @@ public class QuestionActivity extends AppCompatActivity {
         }
 
         state = new ViewModelProvider(this).get(QuestionViewModel.class);
+        idModerator = question.getIdModerator();
+        idPoll = question.getIdPoll();
+        questionIndex = question.getIndexInPoll();
+
         state.setQuestion(question);
         state.requestAnswers(token, question);
 
@@ -44,36 +50,24 @@ public class QuestionActivity extends AppCompatActivity {
 
         answerList.setAdapter(answerAdapter);
         answerList.setLayoutManager(manager);
-/*
-        state.getSelectedAnswers().observe(this, answers -> {
-            for (Answer a: answers) {
-                question.answer(a);
-            }
-
-            if (question.getNumberOfAnswers() == answers.size()) {
-                question.answered();
-                System.out.println("All needed answers selected");
-            }
-
-            System.out.println("An Answer was selected");
-        });
-*/
     }
 
     public void goBack(View view) {
-        Intent intent = new Intent(this, QuestionActivity.class);
-        // TODO : get the previous question
+        Intent intent = new Intent(this, QuestionActivity.class)
+                .putExtra("question", state.getPreviousQuestion());
         startActivity(intent);
     }
 
     public void goNext(View view) {
-        Intent intent = new Intent(this, QuestionActivity.class);
-        // TODO : get the next question
+        Intent intent = new Intent(this, QuestionActivity.class)
+                .putExtra("question", state.getNextQuestion());
         startActivity(intent);
     }
 
     public void exitQuestion(View view) {
         Intent intent = new Intent(this, PollActivity.class);
+        intent.putExtra("idPoll", idPoll);
+        intent.putExtra("idModerator", idModerator);
         startActivity(intent);
     }
 }

@@ -26,6 +26,9 @@ public class Question implements Serializable {
     @SerializedName("answerMax")
     private String answerMax;
 
+    @SerializedName("indexInPoll")
+    private int indexInPoll;
+
     private boolean answered;
 
     public String getIdModerator() {
@@ -58,5 +61,9 @@ public class Question implements Serializable {
 
     public boolean answered() {
         return answered;
+    }
+
+    public int getIndexInPoll() {
+        return indexInPoll;
     }
 }

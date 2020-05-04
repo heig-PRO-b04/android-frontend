@@ -61,4 +61,12 @@ public class QuestionViewModel extends ViewModel {
                         token)
                 .enqueue(callbackAnswers);
     }
+
+    public Question getPreviousQuestion() {
+        return null;
+    }
+
+    public Question getNextQuestion() {
+        return null;
+    }
 }
