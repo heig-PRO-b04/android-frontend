@@ -2,13 +2,11 @@ package ch.heigvd.pro.b04.android.Poll;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,6 +14,7 @@ import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.Network.Rockin;
 import ch.heigvd.pro.b04.android.Utils.Exceptions.TokenNotSetException;
+import ch.heigvd.pro.b04.android.Utils.LocalDebug;
 import ch.heigvd.pro.b04.android.Utils.Persistent;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,61 +33,58 @@ public class PollViewModel extends AndroidViewModel {
         @Override
         public void onResponse(Call<List<Question>> call, Response<List<Question>> response) {
             if (response.isSuccessful()) {
-                Log.w("localDebug", call.request().url().toString());
                 questions.postValue(response.body());
             } else {
-                Log.w("localDebug", "Received error, HTTP status is " + response.code());
-                Log.w("localDebug", "The request was " + call.request().url());
-
-                try {
-                    Log.w("localDebug", response.errorBody().string());
-                } catch (IOException e) {
-                    Log.e("localDebug", "Error in error, rip");
-                }
+                LocalDebug.logUnsuccessfulRequest(call, response);
             }
         }
 
         @Override
         public void onFailure(Call<List<Question>> call, Throwable t) {
-            Log.e("localDebug", "We had a super bad error in callbackQuestions : " + call.request().url());
-            Log.e("localDebug", "The error is : " + t.getMessage());
+            LocalDebug.logFailedRequest(call, t);
         }
     };
     private Callback<Poll> callbackPoll = new Callback<Poll>() {
         @Override
         public void onResponse(Call<Poll> call, Response<Poll> response) {
             if (response.isSuccessful()) {
-                Log.w("localDebug", call.request().url().toString());
-                Poll resp = response.body();
-                poll.postValue(resp);
-
-                String token = null;
                 try {
-                    token = Persistent.getStoredTokenOrError(context);
+                    saveNewPoll(response.body());
                 } catch (TokenNotSetException e) {
-                    e.printStackTrace();
+                    LocalDebug.logTokenNotSet(e);
                 }
-
-                Rockin.api()
-                        .getQuestions(resp.getIdModerator(), resp.getIdPoll(), token)
-                        .enqueue(callbackQuestions);
             } else {
-                Log.w("localDebug", "Received error, HTTP status is " + response.code());
-                Log.w("localDebug", "The request was " + call.request().url());
-
-                try {
-                    Log.w("localDebug", response.errorBody().string());
-                } catch (IOException e) {
-                    Log.e("localDebug", "Error in error, rip");
-                }
+                LocalDebug.logUnsuccessfulRequest(call, response);
             }
         }
 
         @Override
         public void onFailure(Call<Poll> call, Throwable t) {
-            Log.e("localDebug", "We had a super bad error in callbackPollDataModel");
+            LocalDebug.logFailedRequest(call, t);
         }
     };
+
+    /**
+     * Helper method used to save the new poll
+     * @param newPoll The new poll to save
+     * @throws TokenNotSetException is thrown if the token doesn't exist
+     */
+    private void saveNewPoll(Poll newPoll) throws TokenNotSetException {
+        poll.postValue(newPoll);
+        sendGetQuestionRequest();
+    }
+
+    /**
+     * Helper method used to send a new request to get the questions
+     * @throws TokenNotSetException is thrown if the token doesn't exist
+     */
+    private void sendGetQuestionRequest() throws TokenNotSetException {
+        String token = Persistent.getStoredTokenOrError(context);
+
+        Rockin.api()
+                .getQuestions(poll.getValue().getIdModerator(), poll.getValue().getIdPoll(), token)
+                .enqueue(callbackQuestions);
+    }
 
     /**
      * Constructor

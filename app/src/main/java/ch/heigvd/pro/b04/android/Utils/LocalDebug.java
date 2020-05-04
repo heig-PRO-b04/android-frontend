@@ -4,24 +4,30 @@ import android.util.Log;
 
 import java.io.IOException;
 
+import ch.heigvd.pro.b04.android.Utils.Exceptions.TokenNotSetException;
 import retrofit2.Call;
 import retrofit2.Response;
 
 public class LocalDebug {
+    private static String TAG = "localDebug";
     private LocalDebug() {};
 
     public static <T> void logUnsuccessfulRequest(Call<T> call, Response<T> response) {
-        Log.w("localDebug", "Received error, HTTP status is " + response.code());
-        Log.w("localDebug", "The request was " + call.request().url());
+        Log.w(TAG, "Received error, HTTP status is " + response.code());
+        Log.w(TAG, "The request was " + call.request().url());
 
         try {
-            Log.w("localDebug", response.errorBody().string());
+            Log.w(TAG, response.errorBody().string());
         } catch (IOException e) {
-            Log.e("localDebug", "Parsing errorBody");
+            Log.e(TAG, "Parsing errorBody");
         }
     }
 
     public static <T> void logFailedRequest(Call<T> call, Throwable t) {
-        Log.e("localDebug", "Error in " + call.request().url() + " : " + t.getMessage());
+        Log.e(TAG, "Error in " + call.request().url() + " : " + t.getMessage());
+    }
+
+    public static void logTokenNotSet(TokenNotSetException e) {
+        Log.e(TAG, e.getMessage());
     }
 }
