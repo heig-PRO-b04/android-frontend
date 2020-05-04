@@ -125,9 +125,11 @@ public final class HomeViewModel extends AndroidViewModel {
             reinitializeEmojiBuffer();
         }
 
-        if (emojisBuffer.size() < 4) {
+        if(emojisBuffer.size() < 4) {
             emojisBuffer.add(emoji);
-        } else if (emojisBuffer.size() == 4) {
+        }
+
+        if (emojisBuffer.size() == 4) {
             sendConnectRequest();
         }
 
