@@ -32,7 +32,6 @@ import retrofit2.Response;
 
 public final class HomeViewModel extends AndroidViewModel {
     private Context context;
-    private String token;
     private Boolean triedToGetToken = false;
 
     private MutableLiveData<List<String>> pollInfo = new MutableLiveData<>();
@@ -60,7 +59,6 @@ public final class HomeViewModel extends AndroidViewModel {
      * token
      */
     private void setBadTokenErrorValues() {
-        token = "Error";
         triedToGetToken = true;
         codeColor.postValue(ContextCompat.getColor(context, R.color.colorAccent));
     }
@@ -117,36 +115,57 @@ public final class HomeViewModel extends AndroidViewModel {
     }
 
     public void addNewEmoji(Emoji emoji) {
-
         List<Emoji> emojisBuffer = registrationCodeEmoji.getValue();
 
-        if (emojisBuffer == null) emojisBuffer = new LinkedList<>();
+        if (emojisBuffer == null) {
+            emojisBuffer = new LinkedList<>();
+        }
 
         if (triedToGetToken) {
-            emojisBuffer.clear();
-            codeColor.postValue(Color.TRANSPARENT);
-            triedToGetToken = false;
+            reinitializeEmojiBuffer();
         }
 
         if (emojisBuffer.size() < 4) {
             emojisBuffer.add(emoji);
+        } else if (emojisBuffer.size() == 4) {
+            sendConnectRequest();
         }
 
-        if (emojisBuffer.size() == 4) {
-            Iterator<Emoji> emojis = emojisBuffer.iterator();
-            StringBuilder code = new StringBuilder();
-            code.append("0x");
-            while (emojis.hasNext()) {
-                code.append(emojis.next().getHex());
-            }
-            registrationCode.postValue(code.toString());
+        saveEmojiBufferState(emojisBuffer);
+    }
 
-            Rockin.api().postConnect(new SessionCode(code.toString())).enqueue(callbackToken);
-        }
-
+    /**
+     * Helper method to save the state of the emoji buffer
+     * @param emojisBuffer The list of Emoji that we want to save
+     */
+    private void saveEmojiBufferState(@NonNull List<Emoji> emojisBuffer) {
         queue.postValue(emojisBuffer);
         registrationCodeEmoji.postValue(emojisBuffer);
         selectedEmoji.postValue(new HashSet<>(emojisBuffer));
+    }
+
+    /**
+     * Helper method used to send a connection request to the server
+     */
+    private void sendConnectRequest() {
+        Iterator<Emoji> emojis = registrationCodeEmoji.getValue().iterator();
+        StringBuilder code = new StringBuilder().append("0x");
+
+        while (emojis.hasNext()) {
+            code.append(emojis.next().getHex());
+        }
+
+        registrationCode.postValue(code.toString());
+        Rockin.api().postConnect(new SessionCode(code.toString())).enqueue(callbackToken);
+    }
+
+    /**
+     * Helper method used to clean up the buffer state
+     */
+    private void reinitializeEmojiBuffer() {
+        registrationCodeEmoji.getValue().clear();
+        codeColor.postValue(Color.TRANSPARENT);
+        triedToGetToken = false;
     }
 
     public LiveData<List<Emoji>> getCodeEmoji() {
