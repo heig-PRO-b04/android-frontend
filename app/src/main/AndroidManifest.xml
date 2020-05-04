@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Polls">
-        <activity android:name=".Poll.Question.QuestionActivity" />
+        <activity android:name=".Question.QuestionActivity" />
         <activity android:name=".Poll.PollActivity" />
 
         <!-- Remote font loading from Google Fonts. -->

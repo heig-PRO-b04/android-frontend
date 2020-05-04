@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import ch.heigvd.pro.b04.android.Poll.Question.QuestionActivity;
-import ch.heigvd.pro.b04.android.Poll.Question.QuestionAdapter;
+import ch.heigvd.pro.b04.android.Question.QuestionActivity;
+import ch.heigvd.pro.b04.android.Question.QuestionAdapter;
 import ch.heigvd.pro.b04.android.R;
 import ch.heigvd.pro.b04.android.Utils.Exceptions.TokenNotSetException;
 import ch.heigvd.pro.b04.android.Utils.Persistent;

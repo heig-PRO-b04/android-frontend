@@ -1,4 +1,4 @@
-package ch.heigvd.pro.b04.android.Poll.Answer;
+package ch.heigvd.pro.b04.android.Question.Answer;
 
 import androidx.annotation.Nullable;
 
