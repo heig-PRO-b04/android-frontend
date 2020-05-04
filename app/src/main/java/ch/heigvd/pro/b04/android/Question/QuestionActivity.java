@@ -1,4 +1,4 @@
-package ch.heigvd.pro.b04.android.Poll.Question;
+package ch.heigvd.pro.b04.android.Question;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ch.heigvd.pro.b04.android.Datamodel.Question;
-import ch.heigvd.pro.b04.android.Poll.Answer.AnswerAdapter;
+import ch.heigvd.pro.b04.android.Question.Answer.AnswerAdapter;
 import ch.heigvd.pro.b04.android.Poll.PollActivity;
 import ch.heigvd.pro.b04.android.R;
 import ch.heigvd.pro.b04.android.Utils.Exceptions.TokenNotSetException;

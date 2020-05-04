@@ -1,4 +1,4 @@
-package ch.heigvd.pro.b04.android.Poll.Question;
+package ch.heigvd.pro.b04.android.Question;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
