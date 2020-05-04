@@ -2,6 +2,7 @@ package ch.heigvd.pro.b04.android.Network;
 
 import java.util.List;
 
+import ch.heigvd.pro.b04.android.Datamodel.Answer;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Session;
@@ -43,6 +44,14 @@ public interface RockinAPI {
 
     @GET("/mod/{idModerator}/poll/{idPoll}/question/{idQuestion}")
     Call<Question> getQuestion(
+            @Path("idModerator") String idModerator,
+            @Path("idPoll") String idPoll,
+            @Path("idQuestion") String idQuestion,
+            @Query("token") String token
+    );
+
+    @GET("/mod/{idModerator}/poll/{idPoll}/question/{idQuestion}/answer")
+    Call<List<Answer>> getAnswers(
             @Path("idModerator") String idModerator,
             @Path("idPoll") String idPoll,
             @Path("idQuestion") String idQuestion,

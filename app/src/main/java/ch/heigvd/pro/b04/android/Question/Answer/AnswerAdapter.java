@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.heigvd.pro.b04.android.Datamodel.Answer;
 import ch.heigvd.pro.b04.android.Question.QuestionViewModel;
 import ch.heigvd.pro.b04.android.R;
 
@@ -64,7 +65,7 @@ public class AnswerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
         private void bindAnswer(Answer answer) {
-            answerButton.setText(answer.getAnswer());
+            answerButton.setText(answer.getTitle());
             //answerButton.setOnClickListener(v -> answer.select());
 
             if (answer.isSelected()) {

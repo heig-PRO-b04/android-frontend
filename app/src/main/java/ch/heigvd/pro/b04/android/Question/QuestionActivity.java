@@ -35,6 +35,7 @@ public class QuestionActivity extends AppCompatActivity {
 
         state = new ViewModelProvider(this).get(QuestionViewModel.class);
         state.setQuestion(question);
+        state.requestAnswers(token, question);
 
         RecyclerView answerList = findViewById(R.id.question_answers_view);
         LinearLayoutManager manager = new LinearLayoutManager(this);
@@ -55,7 +56,8 @@ public class QuestionActivity extends AppCompatActivity {
             }
 
             System.out.println("An Answer was selected");
-        });*/
+        });
+*/
     }
 
     public void goBack(View view) {
