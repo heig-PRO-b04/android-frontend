@@ -71,18 +71,18 @@ public class PollViewModel extends AndroidViewModel {
      */
     private void saveNewPoll(Poll newPoll) throws TokenNotSetException {
         poll.postValue(newPoll);
-        sendGetQuestionRequest();
+        sendGetQuestionRequest(newPoll);
     }
 
     /**
      * Helper method used to send a new request to get the questions
      * @throws TokenNotSetException is thrown if the token doesn't exist
      */
-    private void sendGetQuestionRequest() throws TokenNotSetException {
+    private void sendGetQuestionRequest(Poll poll) throws TokenNotSetException {
         String token = Persistent.getStoredTokenOrError(context);
 
         Rockin.api()
-                .getQuestions(poll.getValue().getIdModerator(), poll.getValue().getIdPoll(), token)
+                .getQuestions(poll.getIdModerator(), poll.getIdPoll(), token)
                 .enqueue(callbackQuestions);
     }
 
