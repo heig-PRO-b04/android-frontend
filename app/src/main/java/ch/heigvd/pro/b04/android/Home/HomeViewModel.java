@@ -60,7 +60,7 @@ public final class HomeViewModel extends AndroidViewModel {
      */
     private void setBadTokenErrorValues() {
         triedToGetToken = true;
-        codeColor.postValue(ContextCompat.getColor(context, R.color.colorAccent));
+        setEmojiCodeColor(R.color.colorAccent);
     }
 
     /**
@@ -150,6 +150,7 @@ public final class HomeViewModel extends AndroidViewModel {
      * Helper method used to send a connection request to the server
      */
     private void sendConnectRequest() {
+        setEmojiCodeColor(R.color.seaside_050);
         Iterator<Emoji> emojis = registrationCodeEmoji.getValue().iterator();
         StringBuilder code = new StringBuilder().append("0x");
 
@@ -162,11 +163,19 @@ public final class HomeViewModel extends AndroidViewModel {
     }
 
     /**
+     * Helper method to change the color of the emoji code
+     * @param color Represents the color, should be a resource like R.color.xxx or Color.xxx
+     */
+    private void setEmojiCodeColor(int color) {
+        codeColor.postValue(ContextCompat.getColor(context, color));
+    }
+
+    /**
      * Helper method used to clean up the buffer state
      */
     private void reinitializeEmojiBuffer() {
         registrationCodeEmoji.getValue().clear();
-        codeColor.postValue(Color.TRANSPARENT);
+        setEmojiCodeColor(Color.TRANSPARENT);
         triedToGetToken = false;
     }
 
