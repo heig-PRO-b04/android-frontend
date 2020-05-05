@@ -30,6 +30,15 @@ public final class Persistent {
         }
     }
 
+    public static boolean isTokenSet(Context context) {
+        try {
+            getStoredTokenOrError(context);
+            return true;
+        } catch (TokenNotSetException e) {
+            return false;
+        }
+    }
+
     /**
      * This function will write the token to the Shared Preferences
      * @param context The app context. Needed to access the Shared Preferences

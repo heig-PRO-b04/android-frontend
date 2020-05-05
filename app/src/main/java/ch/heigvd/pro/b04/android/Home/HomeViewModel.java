@@ -72,6 +72,10 @@ public final class HomeViewModel extends AndroidViewModel {
 
         registrationCodeEmoji.postValue(new ArrayList<>());
         Persistent.writeToken(context, token);
+        sendGetSessionRequest(token);
+    }
+
+    public void sendGetSessionRequest(String token) {
         Rockin.api().getSession(token).enqueue(callbackSession);
     }
 
