@@ -14,6 +14,9 @@ public class Question implements Serializable {
     @SerializedName("idQuestion")
     private String idQuestion;
 
+    @SerializedName("indexInPoll")
+    private double indexInPoll;
+
     @SerializedName("title")
     private String title;
 
@@ -58,5 +61,9 @@ public class Question implements Serializable {
 
     public boolean answered() {
         return answered;
+    }
+
+    public double getIndexInPoll() {
+        return indexInPoll;
     }
 }
