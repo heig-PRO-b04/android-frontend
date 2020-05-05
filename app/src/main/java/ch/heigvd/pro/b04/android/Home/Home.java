@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import ch.heigvd.pro.b04.android.Poll.PollActivity;
 import ch.heigvd.pro.b04.android.R;
+import ch.heigvd.pro.b04.android.Utils.Exceptions.TokenNotSetException;
+import ch.heigvd.pro.b04.android.Utils.Persistent;
 
 public class Home extends AppCompatActivity {
     private static final int COLUMN_NBR = 4;
@@ -23,6 +25,13 @@ public class Home extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         state = new ViewModelProvider(this).get(HomeViewModel.class);
+
+        try {
+            String token = Persistent.getStoredTokenOrError(getApplicationContext());
+            state.sendGetSessionRequest(token);
+        } catch (TokenNotSetException e) {
+            // Do nothing, this is the expected state !
+        }
 
         // List of possible emojis
         RecyclerView emojiGrid = findViewById(R.id.home_emoji_grid);

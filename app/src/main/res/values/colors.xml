@@ -3,6 +3,7 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="colorError">#F5414C</color>
 
     <color name="seaside_050">#E1F5FE</color>
     <color name="seaside_100">#B3E5FC</color>
