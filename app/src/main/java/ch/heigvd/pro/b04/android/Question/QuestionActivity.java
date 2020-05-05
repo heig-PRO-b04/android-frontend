@@ -44,20 +44,6 @@ public class QuestionActivity extends AppCompatActivity {
 
         answerList.setAdapter(answerAdapter);
         answerList.setLayoutManager(manager);
-/*
-        state.getSelectedAnswers().observe(this, answers -> {
-            for (Answer a: answers) {
-                question.answer(a);
-            }
-
-            if (question.getNumberOfAnswers() == answers.size()) {
-                question.answered();
-                System.out.println("All needed answers selected");
-            }
-
-            System.out.println("An Answer was selected");
-        });
-*/
     }
 
     public void goBack(View view) {
