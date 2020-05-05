@@ -153,7 +153,7 @@ public final class HomeViewModel extends AndroidViewModel {
      * Helper method used to send a connection request to the server
      */
     private void sendConnectRequest() {
-        setEmojiCodeColor(R.color.seaside_050);
+        setEmojiCodeColor(R.color.seaside_200);
         Iterator<Emoji> emojis = registrationCodeEmoji.getValue().iterator();
         StringBuilder code = new StringBuilder().append("0x");
 
@@ -178,7 +178,7 @@ public final class HomeViewModel extends AndroidViewModel {
      */
     private void reinitializeEmojiBuffer() {
         registrationCodeEmoji.getValue().clear();
-        setEmojiCodeColor(R.color.seaside_200);
+        setEmojiCodeColor(R.color.seaside_050);
         triedToGetToken = false;
     }
 
