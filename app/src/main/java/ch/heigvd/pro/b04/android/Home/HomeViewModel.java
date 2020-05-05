@@ -60,7 +60,7 @@ public final class HomeViewModel extends AndroidViewModel {
      */
     private void setBadTokenErrorValues() {
         triedToGetToken = true;
-        setEmojiCodeColor(R.color.colorAccent);
+        setEmojiCodeColor(R.color.colorError);
     }
 
     /**
