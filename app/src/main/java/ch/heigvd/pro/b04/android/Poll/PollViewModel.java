@@ -7,12 +7,12 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.Network.Rockin;
+import ch.heigvd.pro.b04.android.Question.QuestionUtils;
 import ch.heigvd.pro.b04.android.Utils.Exceptions.TokenNotSetException;
 import ch.heigvd.pro.b04.android.Utils.LocalDebug;
 import ch.heigvd.pro.b04.android.Utils.Persistent;
@@ -24,26 +24,10 @@ public class PollViewModel extends AndroidViewModel {
     private Context context;
     private MutableLiveData<Poll> poll = new MutableLiveData<>();
     private MutableLiveData<Question> questionToView = new MutableLiveData<>();
-    private MutableLiveData<List<Question>> questions = new MutableLiveData<>(new LinkedList<>());
 
     /**********************
      * Callback variables *
      **********************/
-    private Callback<List<Question>> callbackQuestions = new Callback<List<Question>>() {
-        @Override
-        public void onResponse(Call<List<Question>> call, Response<List<Question>> response) {
-            if (response.isSuccessful()) {
-                questions.postValue(response.body());
-            } else {
-                LocalDebug.logUnsuccessfulRequest(call, response);
-            }
-        }
-
-        @Override
-        public void onFailure(Call<List<Question>> call, Throwable t) {
-            LocalDebug.logFailedRequest(call, t);
-        }
-    };
     private Callback<Poll> callbackPoll = new Callback<Poll>() {
         @Override
         public void onResponse(Call<Poll> call, Response<Poll> response) {
@@ -80,10 +64,7 @@ public class PollViewModel extends AndroidViewModel {
      */
     private void sendGetQuestionRequest(Poll poll) throws TokenNotSetException {
         String token = Persistent.getStoredTokenOrError(context);
-
-        Rockin.api()
-                .getQuestions(poll.getIdModerator(), poll.getIdPoll(), token)
-                .enqueue(callbackQuestions);
+        QuestionUtils.sendGetQuestionRequest(poll, token);
     }
 
     /**
@@ -103,7 +84,7 @@ public class PollViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<List<Question>> getQuestions() {
-        return questions;
+        return QuestionUtils.getQuestions();
     }
 
     public MutableLiveData<Question> getQuestionToView() {
