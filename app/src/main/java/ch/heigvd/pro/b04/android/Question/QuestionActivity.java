@@ -58,7 +58,11 @@ public class QuestionActivity extends AppCompatActivity {
     }
 
     public void exitQuestion(View view) {
-        Intent intent = new Intent(this, PollActivity.class);
+        Question q = state.getCurrentQuestion().getValue();
+
+        Intent intent = new Intent(this, PollActivity.class)
+                .putExtra("idPoll", q.getIdPoll())
+                .putExtra("idModerator", q.getIdModerator());
         startActivity(intent);
     }
 }
