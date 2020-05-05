@@ -1,4 +1,4 @@
-package ch.heigvd.pro.b04.android.Question.Answer;
+package ch.heigvd.pro.b04.android.Question;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -30,7 +30,7 @@ public class AnswerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.lifecycleOwner = lifecycleOwner;
         this.state = state;
 
-        state.getAnswers().observe(lifecycleOwner, newAnswers -> {
+        state.getCurQuestionAnswers().observe(lifecycleOwner, newAnswers -> {
             for (Answer a : newAnswers) {
                 if (!answers.contains(a))
                     answers.add(a);
