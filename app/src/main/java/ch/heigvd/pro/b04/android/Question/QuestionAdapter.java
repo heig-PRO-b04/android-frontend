@@ -13,27 +13,26 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.heigvd.pro.b04.android.Datamodel.Question;
-import ch.heigvd.pro.b04.android.Poll.PollViewModel;
+import ch.heigvd.pro.b04.android.Datamodel.Answer;
 import ch.heigvd.pro.b04.android.R;
 
 public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private static final int VIEW_TYPE_HEADER = 0;
-    private static final int VIEW_TYPE_QUESTION = 1;
+    private static final int VIEW_TYPE_ANSWER = 1;
 
-    private PollViewModel state;
     private LifecycleOwner lifecycleOwner;
+    private QuestionViewModel state;
 
-    private List<Question> questions = new LinkedList<>();
+    private List<Answer> answers = new LinkedList<>();
 
-    public QuestionAdapter(PollViewModel state, LifecycleOwner lifecycleOwner) {
-        this.state = state;
+    public QuestionAdapter(QuestionViewModel state, LifecycleOwner lifecycleOwner) {
         this.lifecycleOwner = lifecycleOwner;
+        this.state = state;
 
-        state.getQuestions().observe(lifecycleOwner, newQuestions -> {
-            for (Question q : newQuestions) {
-                if (!questions.contains(q))
-                    questions.add(q);
+        state.getCurrentAnswers().observe(lifecycleOwner, newAnswers -> {
+            for (Answer a : newAnswers) {
+                if (!answers.contains(a))
+                    answers.add(a);
             }
 
             notifyDataSetChanged();
@@ -42,35 +41,36 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private static class HeaderViewHolder extends RecyclerView.ViewHolder {
         private TextView title;
-        public HeaderViewHolder(@NonNull ViewGroup parent, PollViewModel state, LifecycleOwner lifecycleOwner) {
-            super(LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.poll_title, parent, false));
-            title = itemView.findViewById(R.id.poll_title);
 
-            state.getPoll().observe(lifecycleOwner, poll -> {
-                title.setText(poll.getTitle());
+        public HeaderViewHolder(@NonNull ViewGroup parent, QuestionViewModel state, LifecycleOwner lifecycleOwner) {
+            super(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.question_title, parent, false));
+            title = itemView.findViewById(R.id.question);
+
+            state.getCurrentQuestion().observe(lifecycleOwner, selectedQuestion -> {
+                title.setText(selectedQuestion.getTitle());
             });
         }
     }
 
-    private class QuestionViewHolder extends RecyclerView.ViewHolder {
-        private Button questionButton;
+    private class AnswerViewHolder extends RecyclerView.ViewHolder {
+        private Button answerButton;
 
-        private QuestionViewHolder(@NonNull ViewGroup parent) {
+        private AnswerViewHolder(@NonNull ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.poll_question, parent, false));
+                    .inflate(R.layout.question_answers, parent, false));
 
-            questionButton = itemView.findViewById(R.id.poll_question_item);
+            answerButton = itemView.findViewById(R.id.question_answer_item);
         }
 
-        private void bindQuestion(Question question, boolean answered) {
-            questionButton.setText(question.getTitle());
-            questionButton.setOnClickListener(v -> state.goToQuestion(question));
+        private void bindAnswer(Answer answer) {
+            answerButton.setText(answer.getTitle());
+            //answerButton.setOnClickListener(v -> answer.select());
 
-            if (answered) {
-                questionButton.setBackgroundColor(Color.GREEN);
+            if (answer.isSelected()) {
+                answerButton.setBackgroundColor(Color.GREEN);
             } else {
-                questionButton.setBackgroundColor(Color.WHITE);
+                answerButton.setBackgroundColor(Color.WHITE);
             }
         }
     }
@@ -81,8 +81,8 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         switch (viewType) {
             case VIEW_TYPE_HEADER:
                 return new HeaderViewHolder(parent, state, lifecycleOwner);
-            case VIEW_TYPE_QUESTION:
-                return new QuestionViewHolder(parent);
+            case VIEW_TYPE_ANSWER:
+                return new AnswerViewHolder(parent);
             default:
                 throw new IllegalStateException("Unknown view type.");
         }
@@ -91,21 +91,21 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if(position != 0) {
-            Question q = questions.get(position-1);
-            ((QuestionViewHolder) holder).bindQuestion(q, q.answered() );
+            ((AnswerViewHolder) holder)
+                    .bindAnswer(answers.get(position-1));
         }
     }
 
     @Override
     public int getItemCount() {
-        return questions.size() + 1;
+        return answers.size() + 1;
     }
 
     @Override
     public int getItemViewType(int position) {
         return position == 0
                 ? VIEW_TYPE_HEADER
-                : VIEW_TYPE_QUESTION;
+                : VIEW_TYPE_ANSWER;
     }
 
 }
