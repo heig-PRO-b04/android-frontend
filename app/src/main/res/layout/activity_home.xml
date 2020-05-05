@@ -13,14 +13,14 @@
         android:clipToPadding="false"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
-        app:layout_constraintBottom_toTopOf="@id/home_emoji_code"
+        app:layout_constraintBottom_toTopOf="@id/home_emoji_code_card_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@id/home_emoji_code"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@id/home_emoji_code_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
@@ -29,10 +29,30 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
+        app:cardCornerRadius="4dp"
+        app:cardBackgroundColor="@color/seaside_200"
         app:layout_constraintBottom_toTopOf="@id/button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/home_emoji_grid" />
+        app:layout_constraintTop_toBottomOf="@id/home_emoji_grid"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@id/home_emoji_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/transparent"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
+
+    </com.google.android.material.card.MaterialCardView>
 
     <Button
         android:id="@id/button"
