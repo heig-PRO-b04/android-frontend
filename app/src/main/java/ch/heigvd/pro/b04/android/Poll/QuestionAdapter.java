@@ -1,4 +1,4 @@
-package ch.heigvd.pro.b04.android.Question;
+package ch.heigvd.pro.b04.android.Poll;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -14,7 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.heigvd.pro.b04.android.Datamodel.Question;
-import ch.heigvd.pro.b04.android.Poll.PollViewModel;
 import ch.heigvd.pro.b04.android.R;
 
 public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
