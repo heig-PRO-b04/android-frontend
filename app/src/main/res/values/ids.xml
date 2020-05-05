@@ -5,6 +5,7 @@
     <item type="id" name="home_grid_emoji_item" />
     <item type="id" name="home_emoji_code" />
     <item type="id" name="home_code_emoji_item" />
+    <item type="id" name="home_emoji_code_card_view" />
 
     <!-- Poll -->
     <item type="id" name="poll_title" />

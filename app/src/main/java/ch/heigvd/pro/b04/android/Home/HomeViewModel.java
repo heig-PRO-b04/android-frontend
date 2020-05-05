@@ -2,7 +2,6 @@ package ch.heigvd.pro.b04.android.Home;
 
 import android.app.Application;
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -154,7 +153,7 @@ public final class HomeViewModel extends AndroidViewModel {
      * Helper method used to send a connection request to the server
      */
     private void sendConnectRequest() {
-        setEmojiCodeColor(R.color.seaside_050);
+        setEmojiCodeColor(R.color.seaside_200);
         Iterator<Emoji> emojis = registrationCodeEmoji.getValue().iterator();
         StringBuilder code = new StringBuilder().append("0x");
 
@@ -179,7 +178,7 @@ public final class HomeViewModel extends AndroidViewModel {
      */
     private void reinitializeEmojiBuffer() {
         registrationCodeEmoji.getValue().clear();
-        setEmojiCodeColor(Color.TRANSPARENT);
+        setEmojiCodeColor(R.color.seaside_050);
         triedToGetToken = false;
     }
 
