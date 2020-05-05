@@ -25,9 +25,9 @@ public class PollViewModel extends AndroidViewModel {
     private MutableLiveData<Poll> poll = new MutableLiveData<>();
     private MutableLiveData<Question> questionToView = new MutableLiveData<>();
 
-    /**********************
-     * Callback variables *
-     **********************/
+    private String idPoll;
+    private String idModerator;
+
     private Callback<Poll> callbackPoll = new Callback<Poll>() {
         @Override
         public void onResponse(Call<Poll> call, Response<Poll> response) {
@@ -91,7 +91,15 @@ public class PollViewModel extends AndroidViewModel {
         return questionToView;
     }
 
-    public void getPollFromBackend(String idPoll, String idModerator, String token) {
+    public void getPollFromBackend(String token) {
         Rockin.api().getPoll(idModerator, idPoll, token).enqueue(callbackPoll);
+    }
+
+    public void setIdPoll(String idPoll) {
+        this.idPoll = idPoll;
+    }
+
+    public void setIdModerator(String idModerator) {
+        this.idModerator = idModerator;
     }
 }

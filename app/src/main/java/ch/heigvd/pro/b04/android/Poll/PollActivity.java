@@ -22,8 +22,6 @@ public class PollActivity extends AppCompatActivity {
         setContentView(R.layout.activity_poll);
 
         Intent intent = getIntent();
-        String idPoll = intent.getStringExtra("idPoll");
-        String idModerator = intent.getStringExtra("idModerator");
 
         String token = null;
         try {
@@ -33,7 +31,11 @@ public class PollActivity extends AppCompatActivity {
         }
 
         state = new ViewModelProvider(this).get(PollViewModel.class);
-        state.getPollFromBackend(idPoll, idModerator, token);
+
+        state.setIdPoll(intent.getStringExtra("idPoll"));
+        state.setIdModerator(intent.getStringExtra("idModerator"));
+
+        state.getPollFromBackend(token);
 
         RecyclerView questionList = findViewById(R.id.poll_questions_view);
         LinearLayoutManager manager = new LinearLayoutManager(this);
