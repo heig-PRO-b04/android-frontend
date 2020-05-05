@@ -2,7 +2,9 @@ package ch.heigvd.pro.b04.android.Datamodel;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Poll {
+import java.io.Serializable;
+
+public class Poll implements Serializable {
     @SerializedName("idModerator")
     private String idModerator;
 

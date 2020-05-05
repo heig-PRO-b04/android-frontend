@@ -14,10 +14,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.heigvd.pro.b04.android.Datamodel.Answer;
-import ch.heigvd.pro.b04.android.Question.QuestionViewModel;
 import ch.heigvd.pro.b04.android.R;
 
-public class AnswerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
+public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_ANSWER = 1;
 
@@ -26,11 +25,11 @@ public class AnswerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private List<Answer> answers = new LinkedList<>();
 
-    public AnswerAdapter(QuestionViewModel state, LifecycleOwner lifecycleOwner) {
+    public QuestionAdapter(QuestionViewModel state, LifecycleOwner lifecycleOwner) {
         this.lifecycleOwner = lifecycleOwner;
         this.state = state;
 
-        state.getCurQuestionAnswers().observe(lifecycleOwner, newAnswers -> {
+        state.getCurrentQuestionAnswers().observe(lifecycleOwner, newAnswers -> {
             for (Answer a : newAnswers) {
                 if (!answers.contains(a))
                     answers.add(a);
@@ -48,7 +47,7 @@ public class AnswerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     .inflate(R.layout.question_title, parent, false));
             title = itemView.findViewById(R.id.question);
 
-            state.getViewSelectedQuestion().observe(lifecycleOwner, selectedQuestion -> {
+            state.getCurrentQuestion().observe(lifecycleOwner, selectedQuestion -> {
                 title.setText(selectedQuestion.getTitle());
             });
         }

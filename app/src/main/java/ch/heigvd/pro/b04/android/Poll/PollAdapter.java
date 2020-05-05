@@ -16,7 +16,7 @@ import java.util.List;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.R;
 
-public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
+public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_QUESTION = 1;
 
@@ -25,7 +25,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private List<Question> questions = new LinkedList<>();
 
-    public QuestionAdapter(PollViewModel state, LifecycleOwner lifecycleOwner) {
+    public PollAdapter(PollViewModel state, LifecycleOwner lifecycleOwner) {
         this.state = state;
         this.lifecycleOwner = lifecycleOwner;
 

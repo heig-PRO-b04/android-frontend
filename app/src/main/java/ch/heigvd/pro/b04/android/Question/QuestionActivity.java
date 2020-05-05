@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
-import ch.heigvd.pro.b04.android.Question.Answer.AnswerAdapter;
 import ch.heigvd.pro.b04.android.Poll.PollActivity;
 import ch.heigvd.pro.b04.android.R;
 import ch.heigvd.pro.b04.android.Utils.Exceptions.TokenNotSetException;
@@ -26,6 +26,7 @@ public class QuestionActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Question question = (Question) intent.getSerializableExtra("question");
+        Poll poll = (Poll) intent.getSerializableExtra("poll");
         String token = null;
         try {
             token = Persistent.getStoredTokenOrError(getApplicationContext());
@@ -34,28 +35,26 @@ public class QuestionActivity extends AppCompatActivity {
         }
 
         state = new ViewModelProvider(this).get(QuestionViewModel.class);
-        state.setQuestion(question);
-        state.requestAnswers(token, question);
+
+        String finalToken = token;
+        state.getCurrentQuestion().observe(this, q -> state.requestAnswers(finalToken, q));
+
+        state.setCurrentQuestion(question);
+        state.getAllQuestionsFromBackend(poll, token);
 
         RecyclerView answerList = findViewById(R.id.question_answers_view);
         LinearLayoutManager manager = new LinearLayoutManager(this);
 
-        AnswerAdapter answerAdapter = new AnswerAdapter(state, this);
+        QuestionAdapter questionAdapter = new QuestionAdapter(state, this);
 
-        answerList.setAdapter(answerAdapter);
+        answerList.setAdapter(questionAdapter);
         answerList.setLayoutManager(manager);
     }
 
     public void goBack(View view) {
-        Intent intent = new Intent(this, QuestionActivity.class);
-        // TODO : get the previous question
-        startActivity(intent);
     }
 
     public void goNext(View view) {
-        Intent intent = new Intent(this, QuestionActivity.class);
-        // TODO : get the next question
-        startActivity(intent);
     }
 
     public void exitQuestion(View view) {
