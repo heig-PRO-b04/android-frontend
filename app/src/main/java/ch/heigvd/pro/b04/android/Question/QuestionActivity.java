@@ -52,9 +52,11 @@ public class QuestionActivity extends AppCompatActivity {
     }
 
     public void goBack(View view) {
+        state.changeToPreviousQuestion();
     }
 
     public void goNext(View view) {
+        state.changeToNextQuestion();
     }
 
     public void exitQuestion(View view) {

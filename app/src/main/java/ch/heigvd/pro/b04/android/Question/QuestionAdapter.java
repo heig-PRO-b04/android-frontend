@@ -29,7 +29,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.lifecycleOwner = lifecycleOwner;
         this.state = state;
 
-        state.getCurrentQuestionAnswers().observe(lifecycleOwner, newAnswers -> {
+        state.getCurrentAnswers().observe(lifecycleOwner, newAnswers -> {
             for (Answer a : newAnswers) {
                 if (!answers.contains(a))
                     answers.add(a);
