@@ -33,7 +33,7 @@ public class PollActivity extends AppCompatActivity {
         }
 
         state = new ViewModelProvider(this).get(PollViewModel.class);
-        state.getPoll(idPoll, idModerator, token);
+        state.getPollFromBackend(idPoll, idModerator, token);
 
         RecyclerView questionList = findViewById(R.id.poll_questions_view);
         LinearLayoutManager manager = new LinearLayoutManager(this);

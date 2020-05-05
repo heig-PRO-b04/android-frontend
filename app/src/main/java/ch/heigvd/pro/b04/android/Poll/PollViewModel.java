@@ -99,7 +99,6 @@ public class PollViewModel extends AndroidViewModel {
     }
 
     public void goToQuestion(Question question) {
-        System.out.println("Question was selected...\n");
         questionToView.postValue(question);
     }
 
@@ -111,7 +110,7 @@ public class PollViewModel extends AndroidViewModel {
         return questionToView;
     }
 
-    public void getPoll(String idPoll, String idModerator, String token) {
+    public void getPollFromBackend(String idPoll, String idModerator, String token) {
         Rockin.api().getPoll(idModerator, idPoll, token).enqueue(callbackPoll);
     }
 }
