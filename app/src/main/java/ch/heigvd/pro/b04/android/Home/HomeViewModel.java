@@ -2,7 +2,6 @@ package ch.heigvd.pro.b04.android.Home;
 
 import android.app.Application;
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -179,7 +178,7 @@ public final class HomeViewModel extends AndroidViewModel {
      */
     private void reinitializeEmojiBuffer() {
         registrationCodeEmoji.getValue().clear();
-        setEmojiCodeColor(Color.TRANSPARENT);
+        setEmojiCodeColor(R.color.transparent);
         triedToGetToken = false;
     }
 
