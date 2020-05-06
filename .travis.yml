@@ -33,6 +33,6 @@ jobs:
     - script:
         - echo 'apiUrl="https://api.rockin.app"' > local.properties
         - ./gradlew clean assembleProductionAPI testProductionAPIDebugUnitTest
-        - if [ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "master" && "$TRAVIS_REPO" == "heig-PRO-b04/android-frontend" ];
+        - if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "master" && "$TRAVIS_REPO" == "heig-PRO-b04/android-frontend" ]];
            then bash ./.travis/deploy.sh;
           fi
