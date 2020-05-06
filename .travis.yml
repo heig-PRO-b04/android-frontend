@@ -41,5 +41,7 @@ jobs:
         - echo 'apiUrl="https://api.rockin.app"' > local.properties
         - ./gradlew clean assembleProductionAPI testProductionAPIDebugUnitTest
     - stage: deploy
+      if: branch = master AND repo = heig-PRO-b04/android-frontend
       script:
-        - echo 'This is where deployment goes'
+        - cd app/build/outputs/apk/productionAPI/debug/
+        - curl -F document=@app-productionAPI-debug.apk https://api.telegram.org/bot${TL_TOKEN}/sendDocument?chat_id=rockindev
