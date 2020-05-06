@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
-import ch.heigvd.pro.b04.android.Poll.PollActivity;
 import ch.heigvd.pro.b04.android.R;
 import ch.heigvd.pro.b04.android.Utils.Exceptions.TokenNotSetException;
 import ch.heigvd.pro.b04.android.Utils.Persistent;
@@ -60,11 +59,6 @@ public class QuestionActivity extends AppCompatActivity {
     }
 
     public void exitQuestion(View view) {
-        Question q = state.getCurrentQuestion().getValue();
-
-        Intent intent = new Intent(this, PollActivity.class)
-                .putExtra("idPoll", q.getIdPoll())
-                .putExtra("idModerator", q.getIdModerator());
-        startActivity(intent);
+        finish();
     }
 }
