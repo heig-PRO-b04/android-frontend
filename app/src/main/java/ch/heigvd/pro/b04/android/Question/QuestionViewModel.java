@@ -37,7 +37,7 @@ public class QuestionViewModel extends ViewModel {
     };
 
     private void saveAnswers(List<Answer> answers) {
-        this.currentAnswers.postValue(answers);
+        currentAnswers.postValue(answers);
     }
 
     public QuestionViewModel() {}
@@ -46,7 +46,7 @@ public class QuestionViewModel extends ViewModel {
         return currentAnswers;
     }
 
-    public void requestAnswers(String token, Question question) {
+    public void setAnswers(String token, Question question) {
         if (question == null)
             return;
 

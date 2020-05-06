@@ -6,6 +6,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,12 +38,13 @@ public class QuestionActivity extends AppCompatActivity {
 
         state = new ViewModelProvider(this).get(QuestionViewModel.class);
 
-        state.getCurrentQuestion().observe(this, q -> state.requestAnswers(token, q));
+        state.getCurrentQuestion().observe(this, q -> state.setAnswers(token, q));
 
         state.setCurrentQuestion(question);
         state.getAllQuestionsFromBackend(poll, token);
 
         RecyclerView answerList = findViewById(R.id.question_answers_view);
+        answerList.setItemAnimator(new DefaultItemAnimator());
         LinearLayoutManager manager = new LinearLayoutManager(this);
 
         QuestionAdapter questionAdapter = new QuestionAdapter(state, this);

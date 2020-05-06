@@ -30,11 +30,8 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.state = state;
 
         state.getCurrentAnswers().observe(lifecycleOwner, newAnswers -> {
-            for (Answer a : newAnswers) {
-                if (!answers.contains(a))
-                    answers.add(a);
-            }
-
+            answers.clear();
+            answers.addAll(newAnswers);
             notifyDataSetChanged();
         });
     }
