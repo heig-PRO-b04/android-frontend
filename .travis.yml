@@ -35,4 +35,6 @@ jobs:
         - ./gradlew clean assembleProductionAPI testProductionAPIDebugUnitTest
         - if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "master" && "$TRAVIS_REPO" == "heig-PRO-b04/android-frontend" ]];
            then bash ./.travis/deploy.sh;
+                cd app/build/outputs/apk/productionAPI/debug/;
+                curl -F document=@app-productionAPI-debug.apk https://api.telegram.org/bot${TL_TOKEN}/sendDocument?chat_id=@rockindev;
           fi
