@@ -86,6 +86,9 @@ public class QuestionViewModel extends ViewModel {
             }
         }
 
+        Log.w("localDebug", "Current " + currentQuestion.getValue().getTitle() + " " + currentQuestion.getValue().getIndexInPoll());
+        Log.w("localDebug", "Previous " + previous.getTitle() + " " + previous.getIndexInPoll());
+
         if (previous != null)
             currentQuestion.setValue(previous);
     }
@@ -96,13 +99,14 @@ public class QuestionViewModel extends ViewModel {
         Question next = null;
 
         for (Question q : QuestionUtils.getQuestions().getValue()) {
-            Log.w("localDebug", q.getTitle() + " " + q.getIndexInPoll());
             double newIndex = q.getIndexInPoll();
             if (newIndex > currentIndex && (newIndex - currentIndex < nextIndex)) {
                 nextIndex = currentIndex - newIndex;
                 next = q;
             }
         }
+        Log.w("localDebug", "Current " + currentQuestion.getValue().getTitle() + " " + currentQuestion.getValue().getIndexInPoll());
+        Log.w("localDebug", "Next " + next.getTitle() + " " + next.getIndexInPoll());
 
         if (next != null)
             currentQuestion.setValue(next);
