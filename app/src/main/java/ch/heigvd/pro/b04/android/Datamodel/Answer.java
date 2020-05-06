@@ -10,10 +10,10 @@ public class Answer {
     private String idPoll;
 
     @SerializedName("idQuestion")
-    private String idQuestion;
+    private long idQuestion;
 
     @SerializedName("idAnswer")
-    private String idAnswer;
+    private long idAnswer;
 
     @SerializedName("title")
     private String title;
@@ -31,11 +31,11 @@ public class Answer {
         return idPoll;
     }
 
-    public String getIdQuestion() {
+    public long getIdQuestion() {
         return idQuestion;
     }
 
-    public String getIdAnswer() {
+    public long getIdAnswer() {
         return idAnswer;
     }
 
