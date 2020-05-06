@@ -28,19 +28,12 @@ android:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
 
-stages:
-  - name: build
-  - name: deploy
-    if: branch = master AND repo = heig-PRO-b04/android-frontend
-
-
 jobs:
   include:
-    - stage: build
-      script:
+    - script:
         - echo 'apiUrl="https://api.rockin.app"' > local.properties
         - ./gradlew clean assembleProductionAPI testProductionAPIDebugUnitTest
-    - stage: deploy
-      if: branch = master AND repo = heig-PRO-b04/android-frontend
-      script:
-        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash .travis/deploy.sh; fi'
+    - script:
+        - if [ "$TRAVIS_PULL_REQUEST" == "false" && $TRAVIS_BRANCH == "master" && $TRAVIS_REPO = "heig-PRO-b04/android-frontend" ];
+           then bash .travis/deploy.sh;
+          fi
