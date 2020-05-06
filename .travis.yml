@@ -28,6 +28,18 @@ android:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
 
-script:
-    - echo 'apiUrl="https://api.rockin.app"' > local.properties
-    - ./gradlew clean assembleProductionAPI testProductionAPIDebugUnitTest
+stages:
+  - name: build
+  - name: deploy
+    if: branch = master AND repo = heig-PRO-b04/android-frontend
+
+
+jobs:
+  include:
+    - stage: build
+      script:
+        - echo 'apiUrl="https://api.rockin.app"' > local.properties
+        - ./gradlew clean assembleProductionAPI testProductionAPIDebugUnitTest
+    - stage: deploy
+      script:
+        - echo 'This is where deployment goes'
