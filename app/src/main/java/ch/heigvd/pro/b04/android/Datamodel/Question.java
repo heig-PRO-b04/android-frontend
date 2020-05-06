@@ -13,7 +13,7 @@ public class Question implements Serializable {
     private String idPoll;
 
     @SerializedName("idQuestion")
-    private String idQuestion;
+    private long idQuestion;
 
     @SerializedName("indexInPoll")
     private double indexInPoll;
@@ -40,7 +40,7 @@ public class Question implements Serializable {
         return idPoll;
     }
 
-    public String getIdQuestion() {
+    public long getIdQuestion() {
         return idQuestion;
     }
 

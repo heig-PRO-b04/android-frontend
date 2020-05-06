@@ -1,7 +1,5 @@
 package ch.heigvd.pro.b04.android.Question;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -39,7 +37,7 @@ public class QuestionViewModel extends ViewModel {
     };
 
     private void saveAnswers(List<Answer> answers) {
-        this.currentAnswers.postValue(answers);
+        currentAnswers.postValue(answers);
     }
 
     public QuestionViewModel() {}
@@ -48,7 +46,7 @@ public class QuestionViewModel extends ViewModel {
         return currentAnswers;
     }
 
-    public void requestAnswers(String token, Question question) {
+    public void setAnswers(String token, Question question) {
         if (question == null)
             return;
 
@@ -56,7 +54,7 @@ public class QuestionViewModel extends ViewModel {
                 .getAnswers(
                         question.getIdModerator(),
                         question.getIdPoll(),
-                        question.getIdQuestion(),
+                        String.valueOf(question.getIdQuestion()),
                         token)
                 .enqueue(callbackAnswers);
     }
@@ -75,36 +73,35 @@ public class QuestionViewModel extends ViewModel {
 
     public void changeToPreviousQuestion() {
         double currentIndex = currentQuestion.getValue().getIndexInPoll();
-        double previousIndex = Double.MAX_VALUE;
-        Question previous = null;
+        double candidateIndex = Double.MIN_VALUE;
+        Question candidate = null;
 
         for (Question q : QuestionUtils.getQuestions().getValue()) {
             double newIndex = q.getIndexInPoll();
-            if (newIndex < currentIndex && (currentIndex - newIndex < previousIndex)) {
-                previousIndex = currentIndex - newIndex;
-                previous = q;
+            if (newIndex < currentIndex && newIndex > candidateIndex) {
+                candidateIndex = newIndex;
+                candidate = q;
             }
         }
 
-        if (previous != null)
-            currentQuestion.setValue(previous);
+        if (candidate != null)
+            currentQuestion.setValue(candidate);
     }
 
     public void changeToNextQuestion() {
         double currentIndex = currentQuestion.getValue().getIndexInPoll();
-        double nextIndex = Double.MAX_VALUE;
-        Question next = null;
+        double candidateIndex = Double.MAX_VALUE;
+        Question candidate = null;
 
         for (Question q : QuestionUtils.getQuestions().getValue()) {
-            Log.w("localDebug", q.getTitle() + " " + q.getIndexInPoll());
             double newIndex = q.getIndexInPoll();
-            if (newIndex > currentIndex && (newIndex - currentIndex < nextIndex)) {
-                nextIndex = currentIndex - newIndex;
-                next = q;
-            }
+            if (newIndex > currentIndex && newIndex < candidateIndex) {
+                    candidateIndex = newIndex;
+                    candidate = q;
+                }
         }
 
-        if (next != null)
-            currentQuestion.setValue(next);
+        if (candidate != null)
+            currentQuestion.setValue(candidate);
     }
 }

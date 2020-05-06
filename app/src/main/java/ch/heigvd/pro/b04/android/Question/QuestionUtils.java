@@ -1,5 +1,7 @@
 package ch.heigvd.pro.b04.android.Question;
 
+import android.os.Handler;
+
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.LinkedList;
@@ -14,13 +16,41 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class QuestionUtils {
-    private static MutableLiveData<List<Question>> localQuestions =
-            new MutableLiveData<>(new LinkedList<>());
+    private static QuestionUtils instance;
+    private static int DELAY_IN_MILLIS = 1000;
+
+    private MutableLiveData<List<Question>> localQuestions = new MutableLiveData<>(new LinkedList<>());
+    private Poll poll;
+    private String token;
+
+    private QuestionUtils(Poll poll, String token) {
+        setup(poll, token);
+    }
 
     private QuestionUtils() {
     }
 
-    private static Callback<List<Question>> callbackQuestions = new Callback<List<Question>>() {
+    private void setup(Poll poll, String token) {
+        this.poll = poll;
+        this.token = token;
+
+        setupRepeatedHandler();
+    }
+
+    private void setupRepeatedHandler() {
+        Handler handler = new Handler();
+
+        handler.postDelayed(new Runnable(){
+            public void run(){
+                Rockin.api()
+                        .getQuestions(poll.getIdModerator(), poll.getIdPoll(), token)
+                        .enqueue(callbackQuestions);
+                handler.postDelayed(this, DELAY_IN_MILLIS);
+            }
+        }, DELAY_IN_MILLIS);
+    }
+
+    private Callback<List<Question>> callbackQuestions = new Callback<List<Question>>() {
         @Override
         public void onResponse(Call<List<Question>> call, Response<List<Question>> response) {
             if (response.isSuccessful()) {
@@ -37,12 +67,17 @@ public class QuestionUtils {
     };
 
     public static void sendGetQuestionRequest(Poll poll, String token) {
-        Rockin.api()
-                .getQuestions(poll.getIdModerator(), poll.getIdPoll(), token)
-                .enqueue(callbackQuestions);
+        if (instance == null) {
+            instance = new QuestionUtils(poll, token);
+        } else {
+            instance.setup(poll, token);
+        }
     }
 
     public static MutableLiveData<List<Question>> getQuestions() {
-        return localQuestions;
+        if (instance == null)
+            instance = new QuestionUtils();
+
+        return instance.localQuestions;
     }
 }
