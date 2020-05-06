@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,10 +31,8 @@ public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
         this.lifecycleOwner = lifecycleOwner;
 
         state.getQuestions().observe(lifecycleOwner, newQuestions -> {
-            for (Question q : newQuestions) {
-                if (!questions.contains(q))
-                    questions.add(q);
-            }
+            questions = newQuestions;
+            Collections.sort(questions, (o1, o2) -> Double.compare(o1.getIndexInPoll(), o2.getIndexInPoll()));
 
             notifyDataSetChanged();
         });
