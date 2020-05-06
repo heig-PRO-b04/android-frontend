@@ -43,5 +43,4 @@ jobs:
     - stage: deploy
       if: branch = master AND repo = heig-PRO-b04/android-frontend
       script:
-        - cd app/build/outputs/apk/productionAPI/debug/
-        - curl -F document=@app-productionAPI-debug.apk https://api.telegram.org/bot${TL_TOKEN}/sendDocument?chat_id=rockindev
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash .travis/deploy.sh; fi'
