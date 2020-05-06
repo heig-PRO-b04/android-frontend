@@ -1,7 +1,5 @@
 package ch.heigvd.pro.b04.android.Question;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -75,40 +73,35 @@ public class QuestionViewModel extends ViewModel {
 
     public void changeToPreviousQuestion() {
         double currentIndex = currentQuestion.getValue().getIndexInPoll();
-        double previousIndex = Double.MAX_VALUE;
-        Question previous = null;
+        double candidateIndex = Double.MIN_VALUE;
+        Question candidate = null;
 
         for (Question q : QuestionUtils.getQuestions().getValue()) {
             double newIndex = q.getIndexInPoll();
-            if (newIndex < currentIndex && (currentIndex - newIndex < previousIndex)) {
-                previousIndex = currentIndex - newIndex;
-                previous = q;
+            if (newIndex < currentIndex && newIndex > candidateIndex) {
+                candidateIndex = newIndex;
+                candidate = q;
             }
         }
 
-        Log.w("localDebug", "Current " + currentQuestion.getValue().getTitle() + " " + currentQuestion.getValue().getIndexInPoll());
-        Log.w("localDebug", "Previous " + previous.getTitle() + " " + previous.getIndexInPoll());
-
-        if (previous != null)
-            currentQuestion.setValue(previous);
+        if (candidate != null)
+            currentQuestion.setValue(candidate);
     }
 
     public void changeToNextQuestion() {
         double currentIndex = currentQuestion.getValue().getIndexInPoll();
-        double nextIndex = Double.MAX_VALUE;
-        Question next = null;
+        double candidateIndex = Double.MAX_VALUE;
+        Question candidate = null;
 
         for (Question q : QuestionUtils.getQuestions().getValue()) {
             double newIndex = q.getIndexInPoll();
-            if (newIndex > currentIndex && (newIndex - currentIndex < nextIndex)) {
-                nextIndex = currentIndex - newIndex;
-                next = q;
-            }
+            if (newIndex > currentIndex && newIndex < candidateIndex) {
+                    candidateIndex = newIndex;
+                    candidate = q;
+                }
         }
-        Log.w("localDebug", "Current " + currentQuestion.getValue().getTitle() + " " + currentQuestion.getValue().getIndexInPoll());
-        Log.w("localDebug", "Next " + next.getTitle() + " " + next.getIndexInPoll());
 
-        if (next != null)
-            currentQuestion.setValue(next);
+        if (candidate != null)
+            currentQuestion.setValue(candidate);
     }
 }
