@@ -66,6 +66,7 @@ public interface RockinAPI {
             @Path("idPoll") String idPoll,
             @Path("idQuestion") String idQuestion,
             @Path("idAnswer") String idAnswer,
-            @Query("token") String token
+            @Query("token") String token,
+            @Body Answer answer
     );
 }

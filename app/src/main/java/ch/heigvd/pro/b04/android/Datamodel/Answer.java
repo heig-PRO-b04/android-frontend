@@ -2,6 +2,8 @@ package ch.heigvd.pro.b04.android.Datamodel;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
+
 public class Answer {
     @SerializedName("idModerator")
     private String idModerator;
@@ -21,6 +23,7 @@ public class Answer {
     @SerializedName("description")
     private String description;
 
+    @SerializedName("checked")
     private boolean selected;
 
     public String getIdModerator() {
@@ -53,5 +56,18 @@ public class Answer {
 
     public void toggle() {
         selected = !selected;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Answer answer = (Answer) o;
+        return  Objects.equals(idModerator, answer.idModerator) &&
+                Objects.equals(idPoll, answer.idPoll) &&
+                Objects.equals(idQuestion, answer.idQuestion) &&
+                Objects.equals(title, answer.title) &&
+                Objects.equals(description, answer.description);
     }
 }

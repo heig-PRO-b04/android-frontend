@@ -14,13 +14,13 @@ import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.Network.Rockin;
 import ch.heigvd.pro.b04.android.Utils.LocalDebug;
-import ch.heigvd.pro.b04.android.Utils.Persistent;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class QuestionViewModel extends ViewModel {
+    private Answer checkedAnswer;
     private String token;
     private MutableLiveData<Question> currentQuestion = new MutableLiveData<>();
     private MutableLiveData<List<Answer>> currentAnswers = new MutableLiveData<>(new LinkedList<>());
@@ -44,18 +44,18 @@ public class QuestionViewModel extends ViewModel {
     private Callback<ResponseBody> callbackVote = new Callback<ResponseBody>() {
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-            if (response.isSuccessful()) {
-                // TODO
-                Log.e("LocalDebug", "Callback code is " + response.code());
-                Log.e("LocalDebug", "Request was " + call.request().url());
-            } else {
+            if (!response.isSuccessful()) {
                 LocalDebug.logUnsuccessfulRequest(call, response);
+                checkedAnswer.toggle();
+            } else {
+                Log.e("Clarisse", "" + checkedAnswer.isSelected());
             }
         }
 
         @Override
         public void onFailure(Call<ResponseBody> call, Throwable t) {
             LocalDebug.logFailedRequest(call, t);
+            checkedAnswer.toggle();
         }
     };
 
@@ -130,12 +130,15 @@ public class QuestionViewModel extends ViewModel {
     }
 
     public void selectAnswer(Answer answer) {
+        answer.toggle();
+        checkedAnswer = answer;
         Rockin.api().voteForAnswer(
                     answer.getIdModerator(),
                     answer.getIdPoll(),
                     answer.getIdQuestion(),
                     answer.getIdAnswer(),
-                    token
+                    token,
+                    answer
                 ).enqueue(callbackVote);
     }
 }
