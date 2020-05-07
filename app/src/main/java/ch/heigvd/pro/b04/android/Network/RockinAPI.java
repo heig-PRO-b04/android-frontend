@@ -64,8 +64,8 @@ public interface RockinAPI {
     Call<ResponseBody> voteForAnswer(
             @Path("idModerator") String idModerator,
             @Path("idPoll") String idPoll,
-            @Path("idQuestion") String idQuestion,
-            @Path("idAnswer") String idAnswer,
+            @Path("idQuestion") long idQuestion,
+            @Path("idAnswer") long idAnswer,
             @Query("token") String token,
             @Body Answer answer
     );
