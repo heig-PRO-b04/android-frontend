@@ -20,6 +20,7 @@ import ch.heigvd.pro.b04.android.R;
 public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_QUESTION = 1;
+    private static final long HEADER_ID = -1;
 
     private PollViewModel state;
     private LifecycleOwner lifecycleOwner;
@@ -29,6 +30,7 @@ public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
     public PollAdapter(PollViewModel state, LifecycleOwner lifecycleOwner) {
         this.state = state;
         this.lifecycleOwner = lifecycleOwner;
+        setHasStableIds(true);
 
         state.getQuestions().observe(lifecycleOwner, newQuestions -> {
             questions = newQuestions;
@@ -36,6 +38,14 @@ public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
 
             notifyDataSetChanged();
         });
+    }
+
+    @Override
+    public long getItemId(int position) {
+        if (position == 0)
+            return HEADER_ID;
+
+        return questions.get(position - 1).getIdQuestion();
     }
 
     private static class HeaderViewHolder extends RecyclerView.ViewHolder {

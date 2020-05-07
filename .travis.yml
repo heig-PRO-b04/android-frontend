@@ -28,6 +28,13 @@ android:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
 
-script:
-    - echo 'apiUrl="https://api.rockin.app"' > local.properties
-    - ./gradlew clean assembleProductionAPI testProductionAPIDebugUnitTest
+jobs:
+  include:
+    - script:
+        - echo 'apiUrl="https://api.rockin.app"' > local.properties
+        - ./gradlew clean assembleProductionAPI testProductionAPIDebugUnitTest
+        - if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "master" && "$TRAVIS_REPO_SLUG" == "heig-PRO-b04/android-frontend" ]];
+           then bash ./.travis/deploy.sh;
+                cd app/build/outputs/apk/productionAPI/debug/;
+                curl -F document=@app-productionAPI-debug.apk https://api.telegram.org/bot${TL_TOKEN}/sendDocument?chat_id=@rockindev;
+          fi

@@ -19,6 +19,7 @@ import ch.heigvd.pro.b04.android.R;
 public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_ANSWER = 1;
+    private static final long HEADER_ID = -1;
 
     private LifecycleOwner lifecycleOwner;
     private QuestionViewModel state;
@@ -28,15 +29,21 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public QuestionAdapter(QuestionViewModel state, LifecycleOwner lifecycleOwner) {
         this.lifecycleOwner = lifecycleOwner;
         this.state = state;
+        setHasStableIds(true);
 
         state.getCurrentAnswers().observe(lifecycleOwner, newAnswers -> {
-            for (Answer a : newAnswers) {
-                if (!answers.contains(a))
-                    answers.add(a);
-            }
-
+            answers.clear();
+            answers.addAll(newAnswers);
             notifyDataSetChanged();
         });
+    }
+
+    @Override
+    public long getItemId(int position) {
+        if (position == 0)
+            return HEADER_ID;
+
+        return answers.get(position - 1).getIdAnswer();
     }
 
     private static class HeaderViewHolder extends RecyclerView.ViewHolder {

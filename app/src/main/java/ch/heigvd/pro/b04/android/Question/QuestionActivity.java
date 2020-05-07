@@ -6,6 +6,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,22 +27,24 @@ public class QuestionActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Question question = (Question) intent.getSerializableExtra("question");
         Poll poll = (Poll) intent.getSerializableExtra("poll");
-        String token = null;
+
+        String tmptoken = null;
         try {
-            token = Persistent.getStoredTokenOrError(getApplicationContext());
+            tmptoken = Persistent.getStoredTokenOrError(getApplicationContext());
         } catch (TokenNotSetException e) {
             finish();
         }
+        final String token = tmptoken;
 
         state = new ViewModelProvider(this).get(QuestionViewModel.class);
 
-        String finalToken = token;
-        state.getCurrentQuestion().observe(this, q -> state.requestAnswers(finalToken, q));
+        state.getCurrentQuestion().observe(this, q -> state.setAnswers(token, q));
 
         state.setCurrentQuestion(question);
         state.getAllQuestionsFromBackend(poll, token);
 
         RecyclerView answerList = findViewById(R.id.question_answers_view);
+        answerList.setItemAnimator(new DefaultItemAnimator());
         LinearLayoutManager manager = new LinearLayoutManager(this);
 
         QuestionAdapter questionAdapter = new QuestionAdapter(state, this);
