@@ -143,14 +143,6 @@ public class QuestionViewModel extends ViewModel {
     public void selectAnswer(Answer answer) {
         Question question = currentQuestion.getValue();
         int counter = nbrVotesForCurrentQuestion.getValue();
-        /*
-        for (Answer a : currentAnswers.getValue()) {
-            if (a.isChecked()) {
-                ++counter;
-            }
-        }
-        nbrVotesForCurrentQuestion.postValue(counter);
-         */
 
         if (question != null &&
             question.getIdQuestion() == answer.getIdQuestion() &&
