@@ -20,6 +20,7 @@ import retrofit2.Response;
 public class QuestionViewModel extends ViewModel {
     private Answer checkedAnswer;
     private String token;
+    private MutableLiveData<Integer> nbrVotesForCurrentQuestion = new MutableLiveData<>();
     private MutableLiveData<Question> currentQuestion = new MutableLiveData<>();
     private MutableLiveData<List<Answer>> currentAnswers = new MutableLiveData<>(new LinkedList<>());
 
@@ -28,6 +29,13 @@ public class QuestionViewModel extends ViewModel {
         public void onResponse(Call<List<Answer>> call, Response<List<Answer>> response) {
             if (response.isSuccessful()) {
                 saveAnswers(response.body());
+                int counter = 0;
+                for (Answer a : response.body()) {
+                    if (a.isChecked()) {
+                        ++counter;
+                    }
+                }
+                nbrVotesForCurrentQuestion.postValue(counter);
             } else {
                 LocalDebug.logUnsuccessfulRequest(call, response);
             }
@@ -45,6 +53,13 @@ public class QuestionViewModel extends ViewModel {
             if (!response.isSuccessful()) {
                 LocalDebug.logUnsuccessfulRequest(call, response);
                 checkedAnswer.toggle();
+            } else {
+                int counter = nbrVotesForCurrentQuestion.getValue();
+                if (checkedAnswer.isChecked()) {
+                    nbrVotesForCurrentQuestion.postValue(counter + 1);
+                } else {
+                    nbrVotesForCurrentQuestion.postValue(counter - 1);
+                }
             }
         }
 
@@ -126,15 +141,36 @@ public class QuestionViewModel extends ViewModel {
     }
 
     public void selectAnswer(Answer answer) {
-        answer.toggle();
-        checkedAnswer = answer;
-        Rockin.api().voteForAnswer(
+        Question question = currentQuestion.getValue();
+        int counter = nbrVotesForCurrentQuestion.getValue();
+        /*
+        for (Answer a : currentAnswers.getValue()) {
+            if (a.isChecked()) {
+                ++counter;
+            }
+        }
+        nbrVotesForCurrentQuestion.postValue(counter);
+         */
+
+        if (question != null &&
+            question.getIdQuestion() == answer.getIdQuestion() &&
+            (question.getAnswerMax() > counter ||
+             question.getAnswerMax() == 0)) {
+
+            answer.toggle();
+            checkedAnswer = answer;
+            Rockin.api().voteForAnswer(
                     answer.getIdModerator(),
                     answer.getIdPoll(),
                     answer.getIdQuestion(),
                     answer.getIdAnswer(),
                     token,
                     answer
-                ).enqueue(callbackVote);
+            ).enqueue(callbackVote);
+        }
+    }
+
+    public MutableLiveData<Integer> getNbrVotesForCurrentQuestion() {
+        return nbrVotesForCurrentQuestion;
     }
 }

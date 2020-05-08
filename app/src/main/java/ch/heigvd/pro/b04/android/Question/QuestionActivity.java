@@ -3,6 +3,7 @@ package ch.heigvd.pro.b04.android.Question;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -37,6 +38,14 @@ public class QuestionActivity extends AppCompatActivity {
         final String token = tmptoken;
 
         state = new ViewModelProvider(this).get(QuestionViewModel.class);
+        TextView alert = findViewById(R.id.question_answers_alert);
+        state.getNbrVotesForCurrentQuestion().observe(this, nbrVotes -> {
+            if (question.getAnswerMin() > nbrVotes ) {
+                alert.setText(R.string.answers_min_alerts);
+            } else {
+                alert.setText("");
+            }
+        });
 
         state.getCurrentQuestion().observe(this, q -> state.setAnswers(token, q));
 

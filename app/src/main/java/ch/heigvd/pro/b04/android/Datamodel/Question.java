@@ -25,10 +25,10 @@ public class Question implements Serializable {
     private String details;
 
     @SerializedName("answerMin")
-    private String answerMin;
+    private int answerMin;
 
     @SerializedName("answerMax")
-    private String answerMax;
+    private int answerMax;
 
     private boolean answered;
 
@@ -52,11 +52,11 @@ public class Question implements Serializable {
         return details;
     }
 
-    public String getAnswerMin() {
+    public int getAnswerMin() {
         return answerMin;
     }
 
-    public String getAnswerMax() {
+    public int getAnswerMax() {
         return answerMax;
     }
 
@@ -86,5 +86,9 @@ public class Question implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(idModerator, idPoll, idQuestion, indexInPoll, title, details, answerMin, answerMax, answered);
+    }
+
+    public void setAnswered(boolean answered) {
+        this.answered = answered;
     }
 }

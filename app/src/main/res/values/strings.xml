@@ -11,4 +11,10 @@
     <!-- Question -->
     <string name="question_bask_button">Back</string>
 
+    <!-- Alerts -->
+    <string name="answers_min_alerts">
+        There are not enough answers. Your current vote will not be sent.
+    </string>
+
+
 </resources>
