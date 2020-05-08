@@ -1,5 +1,6 @@
 package ch.heigvd.pro.b04.android.Question;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -23,12 +24,14 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private LifecycleOwner lifecycleOwner;
     private QuestionViewModel state;
+    private Context context;
 
     private List<Answer> answers = new LinkedList<>();
 
-    public QuestionAdapter(QuestionViewModel state, LifecycleOwner lifecycleOwner) {
+    public QuestionAdapter(QuestionViewModel state, LifecycleOwner lifecycleOwner, Context context) {
         this.lifecycleOwner = lifecycleOwner;
         this.state = state;
+        this.context = context;
         setHasStableIds(true);
 
         state.getCurrentAnswers().observe(lifecycleOwner, newAnswers -> {
@@ -75,7 +78,8 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             answerButton.setOnClickListener(v -> {
                 state.selectAnswer(answer);
                 if (answer.isSelected()) {
-                    answerButton.setBackgroundColor(Color.GREEN);
+                    answerButton.setBackgroundColor(
+                            context.getResources().getColor(R.color.colorSelected));
                 } else {
                     answerButton.setBackgroundColor(Color.WHITE);
                 }
