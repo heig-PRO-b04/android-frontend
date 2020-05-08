@@ -77,7 +77,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             answerButton.setText(answer.getTitle());
             answerButton.setOnClickListener(v -> {
                 state.selectAnswer(answer);
-                if (answer.isSelected()) {
+                if (answer.isChecked()) {
                     answerButton.setBackgroundColor(
                             context.getResources().getColor(R.color.colorSelected));
                 } else {

@@ -24,7 +24,7 @@ public class Answer {
     private String description;
 
     @SerializedName("checked")
-    private boolean selected;
+    private boolean checked;
 
     public String getIdModerator() {
         return idModerator;
@@ -50,12 +50,12 @@ public class Answer {
         return description;
     }
 
-    public boolean isSelected() {
-        return selected;
+    public boolean isChecked() {
+        return checked;
     }
 
     public void toggle() {
-        selected = !selected;
+        checked = !checked;
     }
 
     @Override

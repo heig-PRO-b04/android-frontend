@@ -47,8 +47,6 @@ public class QuestionViewModel extends ViewModel {
             if (!response.isSuccessful()) {
                 LocalDebug.logUnsuccessfulRequest(call, response);
                 checkedAnswer.toggle();
-            } else {
-                Log.e("Clarisse", "" + checkedAnswer.isSelected());
             }
         }
 
