@@ -47,7 +47,7 @@ public class QuestionActivity extends AppCompatActivity {
         answerList.setItemAnimator(new DefaultItemAnimator());
         LinearLayoutManager manager = new LinearLayoutManager(this);
 
-        QuestionAdapter questionAdapter = new QuestionAdapter(state, this);
+        QuestionAdapter questionAdapter = new QuestionAdapter(state, this, getApplicationContext());
 
         answerList.setAdapter(questionAdapter);
         answerList.setLayoutManager(manager);

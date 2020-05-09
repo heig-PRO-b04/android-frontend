@@ -12,11 +12,14 @@ import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.Network.Rockin;
 import ch.heigvd.pro.b04.android.Utils.LocalDebug;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class QuestionViewModel extends ViewModel {
+    private Answer checkedAnswer;
+    private String token;
     private MutableLiveData<Question> currentQuestion = new MutableLiveData<>();
     private MutableLiveData<List<Answer>> currentAnswers = new MutableLiveData<>(new LinkedList<>());
 
@@ -33,6 +36,22 @@ public class QuestionViewModel extends ViewModel {
         @Override
         public void onFailure(Call<List<Answer>> call, Throwable t) {
             LocalDebug.logFailedRequest(call, t);
+        }
+    };
+
+    private Callback<ResponseBody> callbackVote = new Callback<ResponseBody>() {
+        @Override
+        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            if (!response.isSuccessful()) {
+                LocalDebug.logUnsuccessfulRequest(call, response);
+                checkedAnswer.toggle();
+            }
+        }
+
+        @Override
+        public void onFailure(Call<ResponseBody> call, Throwable t) {
+            LocalDebug.logFailedRequest(call, t);
+            checkedAnswer.toggle();
         }
     };
 
@@ -60,6 +79,7 @@ public class QuestionViewModel extends ViewModel {
     }
 
     public void getAllQuestionsFromBackend(Poll poll, String token) {
+        this.token = token;
         QuestionUtils.sendGetQuestionRequest(poll, token);
     }
 
@@ -103,5 +123,18 @@ public class QuestionViewModel extends ViewModel {
 
         if (candidate != null)
             currentQuestion.setValue(candidate);
+    }
+
+    public void selectAnswer(Answer answer) {
+        answer.toggle();
+        checkedAnswer = answer;
+        Rockin.api().voteForAnswer(
+                    answer.getIdModerator(),
+                    answer.getIdPoll(),
+                    answer.getIdQuestion(),
+                    answer.getIdAnswer(),
+                    token,
+                    answer
+                ).enqueue(callbackVote);
     }
 }

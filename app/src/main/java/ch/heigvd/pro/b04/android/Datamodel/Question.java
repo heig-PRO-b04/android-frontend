@@ -74,9 +74,7 @@ public class Question implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Question question = (Question) o;
-        return Double.compare(question.indexInPoll, indexInPoll) == 0 &&
-                answered == question.answered &&
-                Objects.equals(idModerator, question.idModerator) &&
+        return  Objects.equals(idModerator, question.idModerator) &&
                 Objects.equals(idPoll, question.idPoll) &&
                 Objects.equals(idQuestion, question.idQuestion) &&
                 Objects.equals(title, question.title) &&
