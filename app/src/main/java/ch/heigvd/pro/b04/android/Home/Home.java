@@ -92,6 +92,7 @@ public class Home extends AppCompatActivity {
         new IntentIntegrator(this)
                 .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
                 .setPrompt("Scan the QR Code associated with your Poll")
+                .setBeepEnabled(false)
                 .initiateScan();
     }
 
