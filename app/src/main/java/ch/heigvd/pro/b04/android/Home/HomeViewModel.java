@@ -133,7 +133,8 @@ public final class HomeViewModel extends AndroidViewModel {
         }
 
         if (emojisBuffer.size() == 4) {
-            sendConnectRequest();
+            String code = buildCodeFromEmojis();
+            sendConnectRequest(code);
         }
 
         saveEmojiBufferState(emojisBuffer);
@@ -149,20 +150,24 @@ public final class HomeViewModel extends AndroidViewModel {
         selectedEmoji.postValue(new HashSet<>(emojisBuffer));
     }
 
-    /**
-     * Helper method used to send a connection request to the server
-     */
-    private void sendConnectRequest() {
-        setEmojiCodeColor(R.color.seaside_200);
+    private String buildCodeFromEmojis() {
         Iterator<Emoji> emojis = registrationCodeEmoji.getValue().iterator();
         StringBuilder code = new StringBuilder().append("0x");
 
         while (emojis.hasNext()) {
             code.append(emojis.next().getHex());
         }
+        return code.toString();
+    }
 
-        registrationCode.postValue(code.toString());
-        Rockin.api().postConnect(new SessionCode(code.toString())).enqueue(callbackToken);
+    /**
+     * Helper method used to send a connection request to the server
+     */
+    public void sendConnectRequest(String code) {
+        setEmojiCodeColor(R.color.seaside_200);
+
+        registrationCode.postValue(code);
+        Rockin.api().postConnect(new SessionCode(code)).enqueue(callbackToken);
     }
 
     /**

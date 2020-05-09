@@ -2,15 +2,19 @@ package ch.heigvd.pro.b04.android.Home;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import ch.heigvd.pro.b04.android.Poll.PollActivity;
 import ch.heigvd.pro.b04.android.Utils.Exceptions.TokenNotSetException;
@@ -82,19 +86,28 @@ public class Home extends AppCompatActivity {
     /**
      * Called when the user taps the Send button
      *
-     * @param view
+     * @param view The button which called the method
      */
     public void scanQR(View view) {
-        //TODO voir comment récupérer le code QR et le passer au serveur ou je sais pas quoi
-        try {
-            Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-            intent.putExtra("SCAN_MODE", "QR_CODE_MODE"); // "PRODUCT_MODE for bar codes
+        new IntentIntegrator(this)
+                .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
+                .setPrompt("Scan the QR Code associated with your Poll")
+                .initiateScan();
+    }
 
-            startActivityForResult(intent, 0);
-        } catch (Exception e) {
-            Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
-            Intent marketIntent = new Intent(Intent.ACTION_VIEW, marketUri);
-            startActivity(marketIntent);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (intentResult == null) {
+            super.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
+
+        String code = intentResult.getContents();
+        if (code == null) {
+            Toast.makeText(this, "QR code failed", Toast.LENGTH_LONG).show();
+        } else {
+            state.sendConnectRequest(code);
         }
     }
 }
