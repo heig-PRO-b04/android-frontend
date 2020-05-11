@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ch.heigvd.pro.b04.android.Authentication.AuthenticationTokenLiveData;
 import ch.heigvd.pro.b04.android.Question.QuestionActivity;
 import ch.heigvd.pro.b04.android.R;
 
@@ -19,6 +20,7 @@ public class PollActivity extends AppCompatActivity {
     public static final String EXTRA_TOKEN = "token";
 
     private PollViewModel state;
+    private AuthenticationTokenLiveData tokenLiveData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,13 +29,7 @@ public class PollActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        // String token = null;
-        // try {
-        //     token = Persistent.getStoredTokenOrError(getApplicationContext());
-        // } catch (TokenNotSetException e) {
-        //     finish();
-        // }
-
+        tokenLiveData = new AuthenticationTokenLiveData(this);
         state = new ViewModelProvider(this, new PollViewModelFactory(
                 getApplication(),
                 intent.getStringExtra(EXTRA_TOKEN),
@@ -62,4 +58,9 @@ public class PollActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        tokenLiveData.logout();
+        super.onBackPressed();
+    }
 }
