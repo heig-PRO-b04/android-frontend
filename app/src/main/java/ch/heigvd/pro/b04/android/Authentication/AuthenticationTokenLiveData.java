@@ -28,6 +28,7 @@ public class AuthenticationTokenLiveData extends LiveData<Optional<String>> {
     private SharedPreferences preferences;
 
     public AuthenticationTokenLiveData(Context context) {
+        super(Optional.empty());
         this.preferences = context.getSharedPreferences(PREFERENCE_FILE, Context.MODE_PRIVATE);
     }
 

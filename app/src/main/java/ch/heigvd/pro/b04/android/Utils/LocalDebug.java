@@ -4,7 +4,6 @@ import android.util.Log;
 
 import java.io.IOException;
 
-import ch.heigvd.pro.b04.android.Utils.Exceptions.TokenNotSetException;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -25,9 +24,5 @@ public class LocalDebug {
 
     public static <T> void logFailedRequest(Call<T> call, Throwable t) {
         Log.e(TAG, "Error in " + call.request().url() + " : " + t.getMessage());
-    }
-
-    public static void logTokenNotSet(TokenNotSetException e) {
-        Log.e(TAG, e.getMessage());
     }
 }

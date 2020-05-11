@@ -88,7 +88,7 @@ public class QuestionViewModel extends ViewModel {
                 .getAnswers(
                         question.getIdModerator(),
                         question.getIdPoll(),
-                        String.valueOf(question.getIdQuestion()),
+                        question.getIdQuestion(),
                         token)
                 .enqueue(callbackAnswers);
     }

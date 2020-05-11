@@ -1,5 +1,7 @@
 package ch.heigvd.pro.b04.android.Network;
 
+import androidx.lifecycle.LiveData;
+
 import java.util.List;
 
 import ch.heigvd.pro.b04.android.Datamodel.Answer;
@@ -26,44 +28,51 @@ public interface RockinAPI {
     );
 
     @GET("/session")
-    Call<Session> getSession(
+    LiveData<Session> getSession(
             @Query("token") String userToken
     );
 
     @GET("/mod/{idModerator}/poll/{idPoll}")
-    Call<Poll> getPoll(
-            @Path("idModerator") String idModerator,
-            @Path("idPoll") String idPoll,
+    LiveData<Poll> getPoll(
+            @Path("idModerator") long idModerator,
+            @Path("idPoll") long idPoll,
+            @Query("token") String userToken
+    );
+
+    @GET("/mod/{idModerator}/poll/{idPoll}")
+    Call<Poll> getPollViaCall(
+            @Path("idModerator") long idModerator,
+            @Path("idPoll") long idPoll,
             @Query("token") String userToken
     );
 
     @GET("/mod/{idModerator}/poll/{idPoll}/question")
     Call<List<Question>> getQuestions(
-            @Path("idModerator") String idModerator,
-            @Path("idPoll") String idPoll,
+            @Path("idModerator") long idModerator,
+            @Path("idPoll") long idPoll,
             @Query("token") String userToken
     );
 
     @GET("/mod/{idModerator}/poll/{idPoll}/question/{idQuestion}")
     Call<Question> getQuestion(
-            @Path("idModerator") String idModerator,
-            @Path("idPoll") String idPoll,
-            @Path("idQuestion") String idQuestion,
+            @Path("idModerator") long idModerator,
+            @Path("idPoll") long idPoll,
+            @Path("idQuestion") long idQuestion,
             @Query("token") String token
     );
 
     @GET("/mod/{idModerator}/poll/{idPoll}/question/{idQuestion}/answer")
     Call<List<Answer>> getAnswers(
-            @Path("idModerator") String idModerator,
-            @Path("idPoll") String idPoll,
-            @Path("idQuestion") String idQuestion,
+            @Path("idModerator") long idModerator,
+            @Path("idPoll") long idPoll,
+            @Path("idQuestion") long idQuestion,
             @Query("token") String token
     );
 
     @PUT("/mod/{idModerator}/poll/{idPoll}/question/{idQuestion}/answer/{idAnswer}/vote")
     Call<ResponseBody> voteForAnswer(
-            @Path("idModerator") String idModerator,
-            @Path("idPoll") String idPoll,
+            @Path("idModerator") long idModerator,
+            @Path("idPoll") long idPoll,
             @Path("idQuestion") long idQuestion,
             @Path("idAnswer") long idAnswer,
             @Query("token") String token,

@@ -7,10 +7,10 @@ import java.util.Objects;
 
 public class Question implements Serializable {
     @SerializedName("idModerator")
-    private String idModerator;
+    private long idModerator;
 
     @SerializedName("idPoll")
-    private String idPoll;
+    private long idPoll;
 
     @SerializedName("idQuestion")
     private long idQuestion;
@@ -32,11 +32,11 @@ public class Question implements Serializable {
 
     private boolean answered;
 
-    public String getIdModerator() {
+    public long getIdModerator() {
         return idModerator;
     }
 
-    public String getIdPoll() {
+    public long getIdPoll() {
         return idPoll;
     }
 
@@ -79,6 +79,7 @@ public class Question implements Serializable {
                 Objects.equals(idQuestion, question.idQuestion) &&
                 Objects.equals(title, question.title) &&
                 Objects.equals(details, question.details) &&
+                Objects.equals(answered, question.answered) &&
                 Objects.equals(answerMin, question.answerMin) &&
                 Objects.equals(answerMax, question.answerMax);
     }

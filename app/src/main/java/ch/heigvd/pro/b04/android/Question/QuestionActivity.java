@@ -14,10 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.R;
-import ch.heigvd.pro.b04.android.Utils.Exceptions.TokenNotSetException;
-import ch.heigvd.pro.b04.android.Utils.Persistent;
 
 public class QuestionActivity extends AppCompatActivity {
+
+    public static final String EXTRA_TOKEN = "token";
+
     private QuestionViewModel state;
 
     @Override
@@ -29,13 +30,7 @@ public class QuestionActivity extends AppCompatActivity {
         Question question = (Question) intent.getSerializableExtra("question");
         Poll poll = (Poll) intent.getSerializableExtra("poll");
 
-        String tmptoken = null;
-        try {
-            tmptoken = Persistent.getStoredTokenOrError(getApplicationContext());
-        } catch (TokenNotSetException e) {
-            finish();
-        }
-        final String token = tmptoken;
+        final String token = getIntent().getStringExtra(EXTRA_TOKEN);
 
         state = new ViewModelProvider(this).get(QuestionViewModel.class);
         TextView alert = findViewById(R.id.question_answers_alert);
