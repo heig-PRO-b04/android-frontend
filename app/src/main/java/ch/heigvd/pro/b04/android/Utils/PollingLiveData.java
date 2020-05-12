@@ -41,5 +41,6 @@ public class PollingLiveData extends LiveData<Unit> {
         super.onInactive();
         timer.cancel();
         timer.purge();
+        timer = new Timer();
     }
 }
