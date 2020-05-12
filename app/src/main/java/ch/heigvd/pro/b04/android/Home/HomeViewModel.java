@@ -36,26 +36,12 @@ public final class HomeViewModel extends AndroidViewModel {
     private Context context;
     private Boolean triedToGetToken = false;
 
-    private MutableLiveData<List<String>> pollInfo = new MutableLiveData<>();
     private MutableLiveData<Integer> codeColor = new MutableLiveData<>();
     private MutableLiveData<List<Emoji>> queue = new MutableLiveData<>();
     private MutableLiveData<Set<Emoji>> selectedEmoji = new MutableLiveData<>();
     private MutableLiveData<String> registrationCode = new MutableLiveData<>();
     private MutableLiveData<List<Emoji>> registrationCodeEmoji = new MutableLiveData<>();
     private AuthenticationTokenLiveData tokenData = new AuthenticationTokenLiveData(getApplication());
-
-    /**
-     * This helper method saves a session in our poll info Live Data
-     * @param session The session to save
-     */
-    private void saveSessionInPollInfo(Session session) {
-        Objects.requireNonNull(session);
-
-        List<String> info = new LinkedList<>();
-        info.add(session.getIdPoll());
-        info.add(session.getIdModerator());
-        pollInfo.postValue(info);
-    }
 
     /**
      * Helper method that sets the current state correctly in case of error while retrieving the
@@ -76,22 +62,6 @@ public final class HomeViewModel extends AndroidViewModel {
         registrationCodeEmoji.postValue(new ArrayList<>());
         tokenData.login(token);
     }
-
-    private Callback<Session> callbackSession = new Callback<Session>() {
-        @Override
-        public void onResponse(Call<Session> call, Response<Session> response) {
-            if (response.isSuccessful()) {
-                saveSessionInPollInfo(response.body());
-            } else {
-                LocalDebug.logUnsuccessfulRequest(call, response);
-            }
-        }
-
-        @Override
-        public void onFailure(Call<Session> call, Throwable t) {
-            LocalDebug.logFailedRequest(call, t);
-        }
-    };
 
     private Callback<Token> callbackToken = new Callback<Token>() {
         @Override
