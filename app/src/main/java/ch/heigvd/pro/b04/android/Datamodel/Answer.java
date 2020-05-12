@@ -6,10 +6,10 @@ import java.util.Objects;
 
 public class Answer {
     @SerializedName("idModerator")
-    private String idModerator;
+    private long idModerator;
 
     @SerializedName("idPoll")
-    private String idPoll;
+    private long idPoll;
 
     @SerializedName("idQuestion")
     private long idQuestion;
@@ -26,11 +26,11 @@ public class Answer {
     @SerializedName("checked")
     private boolean checked;
 
-    public String getIdModerator() {
+    public long getIdModerator() {
         return idModerator;
     }
 
-    public String getIdPoll() {
+    public long getIdPoll() {
         return idPoll;
     }
 

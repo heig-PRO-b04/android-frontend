@@ -6,20 +6,20 @@ import java.io.Serializable;
 
 public class Poll implements Serializable {
     @SerializedName("idModerator")
-    private String idModerator;
+    private int idModerator;
 
     @SerializedName("idPoll")
-    private String idPoll;
+    private int idPoll;
 
     @SerializedName("title")
     private String title;
 
 
-    public String getIdModerator() {
+    public int getIdModerator() {
         return idModerator;
     }
 
-    public String getIdPoll() {
+    public int getIdPoll() {
         return idPoll;
     }
 

@@ -9,13 +9,18 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ch.heigvd.pro.b04.android.Authentication.AuthenticationTokenLiveData;
 import ch.heigvd.pro.b04.android.Question.QuestionActivity;
 import ch.heigvd.pro.b04.android.R;
-import ch.heigvd.pro.b04.android.Utils.Exceptions.TokenNotSetException;
-import ch.heigvd.pro.b04.android.Utils.Persistent;
 
 public class PollActivity extends AppCompatActivity {
+
+    public static final String EXTRA_ID_MODERATOR = "idModerator";
+    public static final String EXTRA_ID_POLL = "idPoll";
+    public static final String EXTRA_TOKEN = "token";
+
     private PollViewModel state;
+    private AuthenticationTokenLiveData tokenLiveData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,19 +29,15 @@ public class PollActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        String token = null;
-        try {
-            token = Persistent.getStoredTokenOrError(getApplicationContext());
-        } catch (TokenNotSetException e) {
-            finish();
-        }
+        tokenLiveData = new AuthenticationTokenLiveData(this);
+        state = new ViewModelProvider(this, new PollViewModelFactory(
+                getApplication(),
+                intent.getStringExtra(EXTRA_TOKEN),
+                intent.getIntExtra(EXTRA_ID_MODERATOR, 0),
+                intent.getIntExtra(EXTRA_ID_POLL, 0)
+        )).get(PollViewModel.class);
 
-        state = new ViewModelProvider(this).get(PollViewModel.class);
-
-        state.setIdPoll(intent.getStringExtra("idPoll"));
-        state.setIdModerator(intent.getStringExtra("idModerator"));
-
-        state.getPollFromBackend(token);
+        state.getPollFromBackend();
 
         RecyclerView questionList = findViewById(R.id.poll_questions_view);
         questionList.setItemAnimator(new DefaultItemAnimator());
@@ -49,6 +50,7 @@ public class PollActivity extends AppCompatActivity {
 
         state.getQuestionToView().observe(this, question -> {
             Intent questionIntent = new Intent(this, QuestionActivity.class)
+                    .putExtra(QuestionActivity.EXTRA_TOKEN, intent.getStringExtra(EXTRA_TOKEN))
                     .putExtra("question", question)
                     .putExtra("poll", state.getPoll().getValue());
 
@@ -56,4 +58,9 @@ public class PollActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        tokenLiveData.logout();
+        super.onBackPressed();
+    }
 }

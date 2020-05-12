@@ -16,9 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Poll.PollActivity;
-import ch.heigvd.pro.b04.android.Utils.Exceptions.TokenNotSetException;
-import ch.heigvd.pro.b04.android.Utils.Persistent;
 
 import static ch.heigvd.pro.b04.android.R.id;
 import static ch.heigvd.pro.b04.android.R.layout;
@@ -26,6 +25,7 @@ import static ch.heigvd.pro.b04.android.R.layout;
 public class Home extends AppCompatActivity {
     private static final int COLUMN_NBR = 4;
     private HomeViewModel state;
+    private NavigateToPollViewModel navigate;
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -34,13 +34,7 @@ public class Home extends AppCompatActivity {
         setContentView(layout.activity_home);
 
         state = new ViewModelProvider(this).get(HomeViewModel.class);
-
-        try {
-            String token = Persistent.getStoredTokenOrError(getApplicationContext());
-            state.sendGetSessionRequest(token);
-        } catch (TokenNotSetException e) {
-            // Do nothing, this is the expected state !
-        }
+        navigate = new ViewModelProvider(this).get(NavigateToPollViewModel.class);
 
         // List of possible emojis
         RecyclerView emojiGrid = findViewById(id.home_emoji_grid);
@@ -57,13 +51,22 @@ public class Home extends AppCompatActivity {
         emojiGrid.setAdapter(emojiAdapter);
         emojiGrid.setLayoutManager(manager);
 
-        state.getPollInfo().observe(this, poll -> {
-                    Intent intent = new Intent(this, PollActivity.class);
-                    intent.putExtra("idPoll", poll.get(0));
-                    intent.putExtra("idModerator", poll.get(1));
-                    startActivity(intent);
-            });
-          
+        navigate.displayedPoll().observe(this, navigationInfo -> {
+
+            // The different interesting fields.
+            String token = navigationInfo.first;
+            Poll poll = navigationInfo.second;
+
+            // Build out navigation intent.
+            Intent intent = new Intent(this, PollActivity.class);
+            intent.putExtra(PollActivity.EXTRA_TOKEN, token);
+            intent.putExtra(PollActivity.EXTRA_ID_POLL, poll.getIdPoll());
+            intent.putExtra(PollActivity.EXTRA_ID_MODERATOR, poll.getIdModerator());
+
+            // Start the activity.
+            startActivity(intent);
+        });
+
         // Code of selected emojis
         CardView emojiCardView = findViewById(id.home_emoji_code_card_view);
 

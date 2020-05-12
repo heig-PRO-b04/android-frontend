@@ -12,6 +12,7 @@ public class RetrofitClient {
             retrofit = new retrofit2.Retrofit.Builder()
                     .baseUrl(BuildConfig.API_URL)
                     .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(new LiveDataCallAdapterFactory())
                     .build();
         }
 

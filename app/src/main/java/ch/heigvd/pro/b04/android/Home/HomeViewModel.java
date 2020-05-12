@@ -3,6 +3,7 @@ package ch.heigvd.pro.b04.android.Home;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
+import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -16,15 +17,17 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
+import ch.heigvd.pro.b04.android.Authentication.AuthenticationTokenLiveData;
+import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Session;
 import ch.heigvd.pro.b04.android.Datamodel.SessionCode;
 import ch.heigvd.pro.b04.android.Datamodel.Token;
 import ch.heigvd.pro.b04.android.Network.Rockin;
 import ch.heigvd.pro.b04.android.R;
 import ch.heigvd.pro.b04.android.Utils.LocalDebug;
-import ch.heigvd.pro.b04.android.Utils.Persistent;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,25 +36,12 @@ public final class HomeViewModel extends AndroidViewModel {
     private Context context;
     private Boolean triedToGetToken = false;
 
-    private MutableLiveData<List<String>> pollInfo = new MutableLiveData<>();
     private MutableLiveData<Integer> codeColor = new MutableLiveData<>();
     private MutableLiveData<List<Emoji>> queue = new MutableLiveData<>();
     private MutableLiveData<Set<Emoji>> selectedEmoji = new MutableLiveData<>();
     private MutableLiveData<String> registrationCode = new MutableLiveData<>();
     private MutableLiveData<List<Emoji>> registrationCodeEmoji = new MutableLiveData<>();
-
-    /**
-     * This helper method saves a session in our poll info Live Data
-     * @param session The session to save
-     */
-    private void saveSessionInPollInfo(Session session) {
-        Objects.requireNonNull(session);
-
-        List<String> info = new LinkedList<>();
-        info.add(session.getIdPoll());
-        info.add(session.getIdModerator());
-        pollInfo.postValue(info);
-    }
+    private AuthenticationTokenLiveData tokenData = new AuthenticationTokenLiveData(getApplication());
 
     /**
      * Helper method that sets the current state correctly in case of error while retrieving the
@@ -70,29 +60,8 @@ public final class HomeViewModel extends AndroidViewModel {
         Objects.requireNonNull(token);
 
         registrationCodeEmoji.postValue(new ArrayList<>());
-        Persistent.writeToken(context, token);
-        sendGetSessionRequest(token);
+        tokenData.login(token);
     }
-
-    public void sendGetSessionRequest(String token) {
-        Rockin.api().getSession(token).enqueue(callbackSession);
-    }
-
-    private Callback<Session> callbackSession = new Callback<Session>() {
-        @Override
-        public void onResponse(Call<Session> call, Response<Session> response) {
-            if (response.isSuccessful()) {
-                saveSessionInPollInfo(response.body());
-            } else {
-                LocalDebug.logUnsuccessfulRequest(call, response);
-            }
-        }
-
-        @Override
-        public void onFailure(Call<Session> call, Throwable t) {
-            LocalDebug.logFailedRequest(call, t);
-        }
-    };
 
     private Callback<Token> callbackToken = new Callback<Token>() {
         @Override
@@ -189,10 +158,6 @@ public final class HomeViewModel extends AndroidViewModel {
 
     public LiveData<List<Emoji>> getCodeEmoji() {
         return this.registrationCodeEmoji;
-    }
-
-    public MutableLiveData<List<String>> getPollInfo() {
-        return this.pollInfo;
     }
 
     public LiveData<Set<Emoji>> getSelectedEmoji() {
