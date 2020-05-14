@@ -11,8 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.Observer;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,10 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.util.List;
-
 import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Poll.PollActivity;
+import ch.heigvd.pro.b04.android.R;
 
 import static ch.heigvd.pro.b04.android.R.id;
 import static ch.heigvd.pro.b04.android.R.layout;
@@ -67,7 +65,21 @@ public class Home extends AppCompatActivity {
         // Views
         CardView emojiCardView = findViewById(id.home_code_card_view);
         Button scanningButton = findViewById(id.button);
-        state.getCodeColor().observe(this, emojiCardView::setCardBackgroundColor);
+        state.getRequestState().observe(this, state -> {
+            int color;
+            switch (state) {
+                case ERROR:
+                    color = R.color.colorError;
+                    break;
+                case SENDING:
+                    color = R.color.seaside_200;
+                    break;
+                default:
+                    color = android.R.color.white;
+            }
+
+            emojiCardView.setCardBackgroundColor(ContextCompat.getColor(this, color));
+        });
 
         // RecyclerView
         RecyclerView emojiCode = findViewById(id.home_code_recycler_view);
