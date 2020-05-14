@@ -143,7 +143,6 @@ public class QuestionViewModel extends ViewModel {
     public void selectAnswer(Answer answer) {
         Question question = currentQuestion.getValue();
         int counter = nbrVotesForCurrentQuestion.getValue();
-        //Log.e("Clarisse", "select answer");
 
         if (question != null &&
             question.getIdQuestion() == answer.getIdQuestion() &&
@@ -151,7 +150,6 @@ public class QuestionViewModel extends ViewModel {
              question.getAnswerMax() == 0 ||
              answer.isChecked())) {
 
-            //Log.e("Clarisse", "toggle");
             answer.toggle();
             checkedAnswer = answer;
             Rockin.api().voteForAnswer(
