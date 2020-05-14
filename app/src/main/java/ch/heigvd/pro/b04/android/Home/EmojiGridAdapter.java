@@ -21,18 +21,9 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static final int VIEW_TYPE_EMOJI = 1;
 
     private HomeViewModel state;
-    private Set<Integer> selected = new HashSet<>();
 
-    public EmojiGridAdapter(HomeViewModel state, LifecycleOwner lifecycleOwner) {
+    public EmojiGridAdapter(HomeViewModel state) {
         this.state = state;
-
-        state.getSelectedEmoji().observe(lifecycleOwner, emojis -> {
-            selected.clear();
-            for (Emoji emoji : emojis) {
-                selected.add(emoji.ordinal() + 1);
-            }
-            notifyDataSetChanged();
-        });
     }
 
     @NonNull
