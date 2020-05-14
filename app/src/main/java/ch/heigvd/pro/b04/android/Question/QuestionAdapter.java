@@ -73,16 +73,27 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             answerButton = itemView.findViewById(R.id.question_answer_item);
         }
 
+        private void updateButtonColor(Answer answer) {
+            if (answer.isChecked()) {
+                answerButton.setBackgroundColor(
+                        context.getResources().getColor(R.color.colorSelected));
+            } else {
+                answerButton.setBackgroundColor(Color.WHITE);
+            }
+        }
+
         private void bindAnswer(Answer answer) {
-            answerButton.setText(answer.getTitle());
+            String text = answer.getTitle();
+            if(!answer.getDescription().equals("")) {
+                text += " : " + answer.getDescription();
+            }
+
+            answerButton.setText(text);
+            updateButtonColor(answer);
+          
             answerButton.setOnClickListener(v -> {
                 state.selectAnswer(answer);
-                if (answer.isChecked()) {
-                    answerButton.setBackgroundColor(
-                            context.getResources().getColor(R.color.colorSelected));
-                } else {
-                    answerButton.setBackgroundColor(Color.WHITE);
-                }
+                updateButtonColor(answer);
             });
         }
     }

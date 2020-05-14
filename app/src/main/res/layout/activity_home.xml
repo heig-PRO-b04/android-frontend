@@ -7,22 +7,21 @@
     tools:context=".Home.Home">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@id/home_emoji_grid"
+        android:id="@id/home_grid"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
-        app:layout_constraintBottom_toTopOf="@id/home_emoji_code_card_view"
+        app:layout_constraintBottom_toTopOf="@id/home_code_card_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <com.google.android.material.card.MaterialCardView
-        android:id="@id/home_emoji_code_card_view"
+        android:id="@id/home_code_card_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="64dp"
         android:clipToPadding="false"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
@@ -34,24 +33,9 @@
         app:layout_constraintBottom_toTopOf="@id/button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/home_emoji_grid"
+        app:layout_constraintTop_toBottomOf="@id/home_grid"
         >
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@id/home_emoji_code"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/transparent"
-            app:layout_constraintBottom_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent" />
-
+        <include layout="@layout/home_code_card_view" />
     </com.google.android.material.card.MaterialCardView>
 
     <Button
