@@ -3,6 +3,7 @@
     <!-- Home -->
     <item type="id" name="home_grid" />
     <item type="id" name="home_grid_item" />
+    <item type="id" name="home_grid_item_icon" />
     <item type="id" name="home_code_card_view" />
     <item type="id" name="home_code_recycler_view" />
     <item type="id" name="home_code_item" />
