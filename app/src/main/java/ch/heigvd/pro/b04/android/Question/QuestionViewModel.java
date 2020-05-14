@@ -147,7 +147,8 @@ public class QuestionViewModel extends ViewModel {
         if (question != null &&
             question.getIdQuestion() == answer.getIdQuestion() &&
             (question.getAnswerMax() > counter ||
-             question.getAnswerMax() == 0)) {
+             question.getAnswerMax() == 0 ||
+             answer.isChecked())) {
 
             answer.toggle();
             checkedAnswer = answer;
