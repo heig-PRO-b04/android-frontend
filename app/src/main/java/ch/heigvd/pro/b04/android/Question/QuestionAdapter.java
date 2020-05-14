@@ -83,9 +83,14 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         private void bindAnswer(Answer answer) {
-            answerButton.setText(answer.getTitle());
-            updateButtonColor(answer);
+            String text = answer.getTitle();
+            if(!answer.getDescription().equals("")) {
+                text += " : " + answer.getDescription();
+            }
 
+            answerButton.setText(text);
+            updateButtonColor(answer);
+          
             answerButton.setOnClickListener(v -> {
                 state.selectAnswer(answer);
                 updateButtonColor(answer);
