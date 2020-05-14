@@ -15,6 +15,7 @@
     <string name="answers_min_alerts">
         There are not enough answers. Your current vote will not be sent.
     </string>
+    <string name="code_clear_description">Clear</string>
 
 
 </resources>

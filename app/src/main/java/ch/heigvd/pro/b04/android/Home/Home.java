@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -36,8 +37,13 @@ public class Home extends AppCompatActivity {
         state = new ViewModelProvider(this).get(HomeViewModel.class);
         navigate = new ViewModelProvider(this).get(NavigateToPollViewModel.class);
 
-        // List of possible emojis
-        RecyclerView emojiGrid = findViewById(id.home_emoji_grid);
+        setupEmojiGrid();
+        setupEmojiCardView();
+        setupNavigation();
+    }
+
+    private void setupEmojiGrid() {
+        RecyclerView emojiGrid = findViewById(id.home_grid);
         GridLayoutManager manager = new GridLayoutManager(this, COLUMN_NBR);
 
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -50,7 +56,32 @@ public class Home extends AppCompatActivity {
         EmojiGridAdapter emojiAdapter = new EmojiGridAdapter(state, this);
         emojiGrid.setAdapter(emojiAdapter);
         emojiGrid.setLayoutManager(manager);
+    }
 
+    private void setupEmojiCardView() {
+        // CardView
+        CardView emojiCardView = findViewById(id.home_code_card_view);
+        state.getCodeColor().observe(this, emojiCardView::setCardBackgroundColor);
+
+        // RecyclerView
+        RecyclerView emojiCode = findViewById(id.home_code_recycler_view);
+        GridLayoutManager emojiCodeLayout = new GridLayoutManager(this, COLUMN_NBR);
+        EmojiCodeAdapter emojiCodeAdapter = new EmojiCodeAdapter(state, this);
+
+        emojiCode.setAdapter(emojiCodeAdapter);
+        emojiCode.setLayoutManager(emojiCodeLayout);
+
+        // Clear button
+        ImageButton clearButton = findViewById(id.home_code_clear);
+        clearButton.setOnClickListener(v -> state.clearOneEmoji());
+        clearButton.setOnLongClickListener(v -> {
+            state.reinitializeEmojiBuffer();
+            return true;
+        });
+        state.getClearButtonRes().observe(this, clearButton::setImageDrawable);
+    }
+
+    private void setupNavigation() {
         navigate.displayedPoll().observe(this, navigationInfo -> {
 
             // The different interesting fields.
@@ -66,24 +97,6 @@ public class Home extends AppCompatActivity {
             // Start the activity.
             startActivity(intent);
         });
-
-        // Code of selected emojis
-        CardView emojiCardView = findViewById(id.home_emoji_code_card_view);
-
-        RecyclerView emojiCode = findViewById(id.home_emoji_code);
-        GridLayoutManager emojiCodeLayout = new GridLayoutManager(this, COLUMN_NBR);
-        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                return position == 0 ? COLUMN_NBR : 1;
-            }
-        });
-
-        state.getCodeColor().observe(this, color -> emojiCardView.setCardBackgroundColor(color));
-
-        EmojiCodeAdapter emojiCodeAdapter = new EmojiCodeAdapter(state, this);
-        emojiCode.setAdapter(emojiCodeAdapter);
-        emojiCode.setLayoutManager(emojiCodeLayout);
     }
 
     /**

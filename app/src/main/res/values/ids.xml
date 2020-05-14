@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Home -->
-    <item type="id" name="home_emoji_grid" />
-    <item type="id" name="home_grid_emoji_item" />
-    <item type="id" name="home_emoji_code" />
-    <item type="id" name="home_code_emoji_item" />
-    <item type="id" name="home_emoji_code_card_view" />
+    <item type="id" name="home_grid" />
+    <item type="id" name="home_grid_item" />
+    <item type="id" name="home_code_card_view" />
+    <item type="id" name="home_code_recycler_view" />
+    <item type="id" name="home_code_item" />
+    <item type="id" name="home_code_clear" />
 
     <!-- Poll -->
     <item type="id" name="poll_title" />
