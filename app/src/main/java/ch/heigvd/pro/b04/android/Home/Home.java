@@ -11,8 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.Observer;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,10 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.util.List;
-
 import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Poll.PollActivity;
+import ch.heigvd.pro.b04.android.R;
 
 import static ch.heigvd.pro.b04.android.R.id;
 import static ch.heigvd.pro.b04.android.R.layout;
@@ -43,7 +41,7 @@ public class Home extends AppCompatActivity {
         navigate = new ViewModelProvider(this).get(NavigateToPollViewModel.class);
 
         setupEmojiGrid();
-        setupEmojiCardView();
+        setupBottomIndicator();
         setupNavigation();
     }
 
@@ -63,21 +61,12 @@ public class Home extends AppCompatActivity {
         emojiGrid.setLayoutManager(manager);
     }
 
-    private void setupEmojiCardView() {
+    private void setupBottomIndicator() {
         // Views
         CardView emojiCardView = findViewById(id.home_code_card_view);
         Button scanningButton = findViewById(id.button);
-        state.getCodeColor().observe(this, emojiCardView::setCardBackgroundColor);
 
-        // RecyclerView
-        RecyclerView emojiCode = findViewById(id.home_code_recycler_view);
-        GridLayoutManager emojiCodeLayout = new GridLayoutManager(this, COLUMN_NBR);
-        EmojiCodeAdapter emojiCodeAdapter = new EmojiCodeAdapter(state, this);
-
-        emojiCode.setAdapter(emojiCodeAdapter);
-        emojiCode.setLayoutManager(emojiCodeLayout);
-
-        // Button visibility
+        // Toggle button visibility
         state.getCodeEmoji().observe(this, emojis -> {
             if (emojis.isEmpty()) {
                 emojiCardView.setVisibility(View.INVISIBLE);
@@ -88,14 +77,45 @@ public class Home extends AppCompatActivity {
             }
         });
 
-        // Clear button
+        // Setup CardView
+        RecyclerView emojiCode = findViewById(id.home_code_recycler_view);
+        GridLayoutManager emojiCodeLayout = new GridLayoutManager(this, COLUMN_NBR);
+        EmojiCodeAdapter emojiCodeAdapter = new EmojiCodeAdapter(state, this);
+
+        emojiCode.setAdapter(emojiCodeAdapter);
+        emojiCode.setLayoutManager(emojiCodeLayout);
+
+        // Clear and QR buttons
         ImageButton clearButton = findViewById(id.home_code_clear);
         clearButton.setOnClickListener(v -> state.clearOneEmoji());
         clearButton.setOnLongClickListener(v -> {
             state.reinitializeEmojiBuffer();
             return true;
         });
-        state.getClearButtonRes().observe(this, clearButton::setImageDrawable);
+        ImageButton qrButton = findViewById(id.home_code_scan);
+
+        // request state observer
+        state.getRequestState().observe(this, state -> {
+            int cardColor;
+            int clearButtonImage = R.drawable.ic_clear_emoji;
+            int qrButtonImage = R.drawable.ic_qr_scanner;
+            switch (state) {
+                case ERROR:
+                    cardColor = R.color.colorError;
+                    clearButtonImage = R.drawable.ic_clear_emoji_error;
+                    qrButtonImage = R.drawable.ic_qr_scanner_error;
+                    break;
+                case SENDING:
+                    cardColor = R.color.seaside_200;
+                    break;
+                default:
+                    cardColor = android.R.color.white;
+            }
+
+            emojiCardView.setCardBackgroundColor(ContextCompat.getColor(this, cardColor));
+            clearButton.setImageDrawable(ContextCompat.getDrawable(this, clearButtonImage));
+            qrButton.setImageDrawable(ContextCompat.getDrawable(this, qrButtonImage));
+        });
     }
 
     private void setupNavigation() {
