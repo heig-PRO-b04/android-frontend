@@ -149,7 +149,7 @@ public class QuestionViewModel extends ViewModel {
             question.getIdQuestion() == answer.getIdQuestion() &&
             (question.getAnswerMax() > counter ||
              question.getAnswerMax() == 0 ||
-             question.answered())) {
+             answer.isChecked())) {
 
             //Log.e("Clarisse", "toggle");
             answer.toggle();
