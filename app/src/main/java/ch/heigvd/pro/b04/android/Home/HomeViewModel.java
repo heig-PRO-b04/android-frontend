@@ -35,9 +35,9 @@ public final class HomeViewModel extends AndroidViewModel {
 
     private MutableLiveData<Integer> codeColor = new MutableLiveData<>();
     private MutableLiveData<Drawable> clearButtonRes = new MutableLiveData<>();
-    private MutableLiveData<Set<Emoji>> selectedEmoji = new MutableLiveData<>();
+    private MutableLiveData<Set<Emoji>> selectedEmoji = new MutableLiveData<>(new HashSet<>());
     private MutableLiveData<String> registrationCode = new MutableLiveData<>();
-    private MutableLiveData<List<Emoji>> registrationCodeEmoji = new MutableLiveData<>();
+    private MutableLiveData<List<Emoji>> registrationCodeEmoji = new MutableLiveData<>(new ArrayList<>());
     private AuthenticationTokenLiveData tokenData = new AuthenticationTokenLiveData(getApplication());
 
     /**
