@@ -73,11 +73,10 @@ public class Home extends AppCompatActivity {
 
         // Clear button
         ImageButton clearButton = findViewById(id.home_code_clear);
-        clearButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                state.clearOneEmoji();
-            }
+        clearButton.setOnClickListener(v -> state.clearOneEmoji());
+        clearButton.setOnLongClickListener(v -> {
+            state.reinitializeEmojiBuffer();
+            return true;
         });
     }
 

@@ -144,8 +144,8 @@ public final class HomeViewModel extends AndroidViewModel {
     /**
      * Helper method used to clean up the buffer state
      */
-    private void reinitializeEmojiBuffer() {
-        registrationCodeEmoji.getValue().clear();
+    public void reinitializeEmojiBuffer() {
+        registrationCodeEmoji.postValue(new ArrayList<>());
         setEmojiCodeColor(R.color.seaside_050);
         triedToGetToken = false;
     }
