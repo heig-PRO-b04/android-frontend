@@ -2,14 +2,11 @@ package ch.heigvd.pro.b04.android.Home;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import ch.heigvd.pro.b04.android.R;
 
@@ -19,18 +16,9 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static final int VIEW_TYPE_EMOJI = 1;
 
     private HomeViewModel state;
-    private Set<Integer> selected = new HashSet<>();
 
-    public EmojiGridAdapter(HomeViewModel state, LifecycleOwner lifecycleOwner) {
+    public EmojiGridAdapter(HomeViewModel state) {
         this.state = state;
-
-        state.getSelectedEmoji().observe(lifecycleOwner, emojis -> {
-            selected.clear();
-            for (Emoji emoji : emojis) {
-                selected.add(emoji.ordinal() + 1);
-            }
-            notifyDataSetChanged();
-        });
     }
 
     @NonNull
@@ -78,18 +66,20 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     private class EmojiViewHolder extends RecyclerView.ViewHolder {
-        private ImageButton emojiButton;
+        private ImageView emojiButton;
+        private CardView cardView;
 
         private EmojiViewHolder(@NonNull ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.home_grid_item, parent, false));
 
-            emojiButton = itemView.findViewById(R.id.home_grid_item);
+            cardView = itemView.findViewById(R.id.home_grid_item);
+            emojiButton = itemView.findViewById(R.id.home_grid_item_icon);
         }
 
         private void bindEmoji(Emoji emoji) {
             emojiButton.setImageResource(emoji.getEmoji());
-            emojiButton.setOnClickListener(v -> state.addNewEmoji(emoji));
+            cardView.setOnClickListener(v -> state.addNewEmoji(emoji));
         }
     }
 }
