@@ -2,6 +2,7 @@ package ch.heigvd.pro.b04.android.Home;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,7 @@ public final class HomeViewModel extends AndroidViewModel {
     private Boolean triedToGetToken = false;
 
     private MutableLiveData<Integer> codeColor = new MutableLiveData<>();
+    private MutableLiveData<Drawable> clearButtonRes = new MutableLiveData<>();
     private MutableLiveData<Set<Emoji>> selectedEmoji = new MutableLiveData<>();
     private MutableLiveData<String> registrationCode = new MutableLiveData<>();
     private MutableLiveData<List<Emoji>> registrationCodeEmoji = new MutableLiveData<>();
@@ -45,6 +47,14 @@ public final class HomeViewModel extends AndroidViewModel {
     private void setBadTokenErrorValues() {
         triedToGetToken = true;
         setEmojiCodeColor(R.color.colorError);
+        setClearButtonToggle();
+    }
+
+    private void setClearButtonToggle() {
+        Drawable resource = triedToGetToken
+                ? ContextCompat.getDrawable(context, R.drawable.clear_emoji_error)
+                : ContextCompat.getDrawable(context, R.drawable.clear_emoji);
+        clearButtonRes.setValue(resource);
     }
 
     /**
@@ -82,14 +92,14 @@ public final class HomeViewModel extends AndroidViewModel {
     }
 
     public void addNewEmoji(Emoji emoji) {
+        if (triedToGetToken) {
+            reinitializeEmojiBuffer();
+        }
+
         List<Emoji> emojisBuffer = registrationCodeEmoji.getValue();
 
         if (emojisBuffer == null) {
             emojisBuffer = new LinkedList<>();
-        }
-
-        if (triedToGetToken) {
-            reinitializeEmojiBuffer();
         }
 
         if(emojisBuffer.size() < 4) {
@@ -145,9 +155,10 @@ public final class HomeViewModel extends AndroidViewModel {
      * Helper method used to clean up the buffer state
      */
     public void reinitializeEmojiBuffer() {
-        registrationCodeEmoji.postValue(new ArrayList<>());
-        setEmojiCodeColor(R.color.seaside_050);
         triedToGetToken = false;
+        registrationCodeEmoji.setValue(new ArrayList<>());
+        setEmojiCodeColor(R.color.seaside_050);
+        setClearButtonToggle();
     }
 
     public LiveData<List<Emoji>> getCodeEmoji() {
@@ -168,5 +179,9 @@ public final class HomeViewModel extends AndroidViewModel {
             emojiList.remove(emojiList.size() - 1);
             registrationCodeEmoji.postValue(emojiList);
         }
+    }
+
+    public LiveData<Drawable> getClearButtonRes() {
+        return clearButtonRes;
     }
 }

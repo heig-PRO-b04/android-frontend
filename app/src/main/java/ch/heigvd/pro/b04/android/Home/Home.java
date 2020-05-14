@@ -78,6 +78,7 @@ public class Home extends AppCompatActivity {
             state.reinitializeEmojiBuffer();
             return true;
         });
+        state.getClearButtonRes().observe(this, clearButton::setImageDrawable);
     }
 
     private void setupNavigation() {
