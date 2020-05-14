@@ -2,16 +2,11 @@ package ch.heigvd.pro.b04.android.Home;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import ch.heigvd.pro.b04.android.R;
 
