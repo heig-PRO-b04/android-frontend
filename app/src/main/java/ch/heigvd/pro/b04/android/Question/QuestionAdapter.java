@@ -74,7 +74,12 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         private void bindAnswer(Answer answer) {
-            answerButton.setText(answer.getTitle());
+            String text = answer.getTitle();
+            if(!answer.getDescription().equals("")) {
+                text += " : " + answer.getDescription();
+            }
+
+            answerButton.setText(text);
             answerButton.setOnClickListener(v -> {
                 state.selectAnswer(answer);
                 if (answer.isChecked()) {
