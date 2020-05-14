@@ -65,21 +65,6 @@ public class Home extends AppCompatActivity {
         // Views
         CardView emojiCardView = findViewById(id.home_code_card_view);
         Button scanningButton = findViewById(id.button);
-        state.getRequestState().observe(this, state -> {
-            int color;
-            switch (state) {
-                case ERROR:
-                    color = R.color.colorError;
-                    break;
-                case SENDING:
-                    color = R.color.seaside_200;
-                    break;
-                default:
-                    color = android.R.color.white;
-            }
-
-            emojiCardView.setCardBackgroundColor(ContextCompat.getColor(this, color));
-        });
 
         // RecyclerView
         RecyclerView emojiCode = findViewById(id.home_code_recycler_view);
@@ -107,7 +92,29 @@ public class Home extends AppCompatActivity {
             state.reinitializeEmojiBuffer();
             return true;
         });
-        state.getClearButtonRes().observe(this, clearButton::setImageDrawable);
+
+        // request state observer
+        state.getRequestState().observe(this, state -> {
+            int cardColor;
+            int clearButtonImage;
+            switch (state) {
+                case ERROR:
+                    cardColor = R.color.colorError;
+                    clearButtonImage = R.drawable.clear_emoji_error;
+                    break;
+                case SENDING:
+                    cardColor = R.color.seaside_200;
+                    clearButtonImage = R.drawable.clear_emoji;
+                    break;
+                default:
+                    cardColor = android.R.color.white;
+                    clearButtonImage = R.drawable.clear_emoji;
+            }
+
+            emojiCardView.setCardBackgroundColor(ContextCompat.getColor(this, cardColor));
+            clearButton.setImageDrawable(ContextCompat.getDrawable(this, clearButtonImage));
+        });
+
     }
 
     private void setupNavigation() {
