@@ -73,7 +73,7 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         public HeaderViewHolder(@NonNull ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.home_title, parent, false));
+                    .inflate(R.layout.home_grid_title, parent, false));
         }
     }
 
@@ -82,9 +82,9 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         private EmojiViewHolder(@NonNull ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.home_grid_emoji, parent, false));
+                    .inflate(R.layout.home_grid_item, parent, false));
 
-            emojiButton = itemView.findViewById(R.id.home_grid_emoji_item);
+            emojiButton = itemView.findViewById(R.id.home_grid_item);
         }
 
         private void bindEmoji(Emoji emoji) {

@@ -37,7 +37,7 @@ public class Home extends AppCompatActivity {
         navigate = new ViewModelProvider(this).get(NavigateToPollViewModel.class);
 
         // List of possible emojis
-        RecyclerView emojiGrid = findViewById(id.home_emoji_grid);
+        RecyclerView emojiGrid = findViewById(id.home_grid);
         GridLayoutManager manager = new GridLayoutManager(this, COLUMN_NBR);
 
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -68,9 +68,9 @@ public class Home extends AppCompatActivity {
         });
 
         // Code of selected emojis
-        CardView emojiCardView = findViewById(id.home_emoji_code_card_view);
+        CardView emojiCardView = findViewById(id.home_code_card_view);
 
-        RecyclerView emojiCode = findViewById(id.home_emoji_code);
+        RecyclerView emojiCode = findViewById(id.home_code_recycler_view);
         GridLayoutManager emojiCodeLayout = new GridLayoutManager(this, COLUMN_NBR);
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override

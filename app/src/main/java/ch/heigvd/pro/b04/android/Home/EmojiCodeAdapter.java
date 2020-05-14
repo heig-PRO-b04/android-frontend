@@ -50,9 +50,9 @@ public class EmojiCodeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         private EmojiViewHolder(@NonNull ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.home_code_emoji, parent, false));
+                    .inflate(R.layout.home_code_item, parent, false));
 
-            emojiImage = itemView.findViewById(R.id.home_code_emoji_item);
+            emojiImage = itemView.findViewById(R.id.home_code_item);
         }
 
         private void bindEmoji(Emoji emoji) {
