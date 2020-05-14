@@ -157,7 +157,7 @@ public final class HomeViewModel extends AndroidViewModel {
     public void reinitializeEmojiBuffer() {
         triedToGetToken = false;
         registrationCodeEmoji.setValue(new ArrayList<>());
-        setEmojiCodeColor(R.color.seaside_050);
+        setEmojiCodeColor(android.R.color.white);
         setClearButtonToggle();
     }
 

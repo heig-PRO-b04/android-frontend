@@ -4,18 +4,23 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import java.util.List;
 
 import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Poll.PollActivity;
@@ -59,8 +64,9 @@ public class Home extends AppCompatActivity {
     }
 
     private void setupEmojiCardView() {
-        // CardView
+        // Views
         CardView emojiCardView = findViewById(id.home_code_card_view);
+        Button scanningButton = findViewById(id.button);
         state.getCodeColor().observe(this, emojiCardView::setCardBackgroundColor);
 
         // RecyclerView
@@ -70,6 +76,17 @@ public class Home extends AppCompatActivity {
 
         emojiCode.setAdapter(emojiCodeAdapter);
         emojiCode.setLayoutManager(emojiCodeLayout);
+
+        // Button visibility
+        state.getCodeEmoji().observe(this, emojis -> {
+            if (emojis.isEmpty()) {
+                emojiCardView.setVisibility(View.INVISIBLE);
+                scanningButton.setVisibility(View.VISIBLE);
+            } else {
+                emojiCardView.setVisibility(View.VISIBLE);
+                scanningButton.setVisibility(View.INVISIBLE);
+            }
+        });
 
         // Clear button
         ImageButton clearButton = findViewById(id.home_code_clear);
