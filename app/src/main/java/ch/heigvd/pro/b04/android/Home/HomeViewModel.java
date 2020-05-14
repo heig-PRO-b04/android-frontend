@@ -3,7 +3,6 @@ package ch.heigvd.pro.b04.android.Home;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
-import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -17,12 +16,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import ch.heigvd.pro.b04.android.Authentication.AuthenticationTokenLiveData;
-import ch.heigvd.pro.b04.android.Datamodel.Poll;
-import ch.heigvd.pro.b04.android.Datamodel.Session;
 import ch.heigvd.pro.b04.android.Datamodel.SessionCode;
 import ch.heigvd.pro.b04.android.Datamodel.Token;
 import ch.heigvd.pro.b04.android.Network.Rockin;
@@ -37,7 +33,6 @@ public final class HomeViewModel extends AndroidViewModel {
     private Boolean triedToGetToken = false;
 
     private MutableLiveData<Integer> codeColor = new MutableLiveData<>();
-    private MutableLiveData<List<Emoji>> queue = new MutableLiveData<>();
     private MutableLiveData<Set<Emoji>> selectedEmoji = new MutableLiveData<>();
     private MutableLiveData<String> registrationCode = new MutableLiveData<>();
     private MutableLiveData<List<Emoji>> registrationCodeEmoji = new MutableLiveData<>();
@@ -114,7 +109,6 @@ public final class HomeViewModel extends AndroidViewModel {
      * @param emojisBuffer The list of Emoji that we want to save
      */
     private void saveEmojiBufferState(@NonNull List<Emoji> emojisBuffer) {
-        queue.postValue(emojisBuffer);
         registrationCodeEmoji.postValue(emojisBuffer);
         selectedEmoji.postValue(new HashSet<>(emojisBuffer));
     }
@@ -166,5 +160,13 @@ public final class HomeViewModel extends AndroidViewModel {
 
     public LiveData<Integer> getCodeColor() {
         return codeColor;
+    }
+
+    public void clearOneEmoji() {
+        List<Emoji> emojiList = registrationCodeEmoji.getValue();
+        if (! emojiList.isEmpty()) {
+            emojiList.remove(emojiList.size() - 1);
+            registrationCodeEmoji.postValue(emojiList);
+        }
     }
 }
