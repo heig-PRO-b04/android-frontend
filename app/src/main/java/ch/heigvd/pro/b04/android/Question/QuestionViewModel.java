@@ -1,10 +1,11 @@
 package ch.heigvd.pro.b04.android.Question;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import ch.heigvd.pro.b04.android.Datamodel.Answer;
@@ -12,6 +13,7 @@ import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.Network.Rockin;
 import ch.heigvd.pro.b04.android.Utils.LocalDebug;
+import ch.heigvd.pro.b04.android.Utils.PollingLiveData;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,25 +24,31 @@ public class QuestionViewModel extends ViewModel {
     private String token;
     private MutableLiveData<Integer> nbrVotesForCurrentQuestion = new MutableLiveData<>();
     private MutableLiveData<Question> currentQuestion = new MutableLiveData<>();
-    private MutableLiveData<List<Answer>> currentAnswers = new MutableLiveData<>(new LinkedList<>());
+    private MediatorLiveData<List<Answer>> currentAnswers = new MediatorLiveData<>();
 
-    public QuestionViewModel() {}
+    public QuestionViewModel() {
+        LiveData<List<Answer>> transformQuestion = Transformations.switchMap(
+                currentQuestion,
+                question -> questionToAnswer(question, token)
+        );
 
-    private Callback<List<Answer>> callbackAnswers = new Callback<List<Answer>>() {
-        @Override
-        public void onResponse(Call<List<Answer>> call, Response<List<Answer>> response) {
-            if (response.isSuccessful()) {
-                saveAnswers(response.body());
-            } else {
-                LocalDebug.logUnsuccessfulRequest(call, response);
-            }
-        }
+        LiveData<List<Answer>> transformDelayed = Transformations.switchMap(
+                new PollingLiveData(1000),
+                unit -> questionToAnswer(currentQuestion.getValue(), token
+                )
+        );
 
-        @Override
-        public void onFailure(Call<List<Answer>> call, Throwable t) {
-            LocalDebug.logFailedRequest(call, t);
-        }
-    };
+        currentAnswers.addSource(transformQuestion, answers -> currentAnswers.postValue(answers));
+        currentAnswers.addSource(transformDelayed, answers -> currentAnswers.postValue(answers));
+    }
+
+    private static LiveData<List<Answer>> questionToAnswer(Question question, String token) {
+        return Rockin.api().getAnswers(
+                question.getIdModerator(),
+                question.getIdPoll(),
+                question.getIdQuestion(),
+                token);
+    }
 
     private Callback<ResponseBody> callbackVote = new Callback<ResponseBody>() {
         @Override
@@ -65,27 +73,16 @@ public class QuestionViewModel extends ViewModel {
         }
     };
 
+    /*
     private void saveAnswers(List<Answer> answers) {
         currentAnswers.postValue(answers);
         int counter = (int) answers.stream().filter(Answer::isChecked).count();
         nbrVotesForCurrentQuestion.postValue(counter);
     }
+    */
 
     public MutableLiveData<List<Answer>> getCurrentAnswers() {
         return currentAnswers;
-    }
-
-    public void setAnswers(String token, Question question) {
-        if (question == null)
-            return;
-
-        Rockin.api()
-                .getAnswersViaCall(
-                        question.getIdModerator(),
-                        question.getIdPoll(),
-                        question.getIdQuestion(),
-                        token)
-                .enqueue(callbackAnswers);
     }
 
     public void getAllQuestionsFromBackend(Poll poll, String token) {

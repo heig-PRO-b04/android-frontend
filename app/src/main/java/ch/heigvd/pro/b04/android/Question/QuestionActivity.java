@@ -42,8 +42,6 @@ public class QuestionActivity extends AppCompatActivity {
             }
         });
 
-        state.getCurrentQuestion().observe(this, q -> state.setAnswers(token, q));
-
         state.setCurrentQuestion(question);
         state.getAllQuestionsFromBackend(poll, token);
 
