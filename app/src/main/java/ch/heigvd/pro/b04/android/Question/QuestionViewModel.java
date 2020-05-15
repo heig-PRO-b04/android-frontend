@@ -85,7 +85,7 @@ public class QuestionViewModel extends ViewModel {
             return;
 
         Rockin.api()
-                .getAnswers(
+                .getAnswersViaCall(
                         question.getIdModerator(),
                         question.getIdPoll(),
                         question.getIdQuestion(),

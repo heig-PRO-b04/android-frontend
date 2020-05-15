@@ -62,7 +62,7 @@ public interface RockinAPI {
     );
 
     @GET("/mod/{idModerator}/poll/{idPoll}/question/{idQuestion}/answer")
-    Call<List<Answer>> getAnswers(
+    Call<List<Answer>> getAnswersViaCall(
             @Path("idModerator") long idModerator,
             @Path("idPoll") long idPoll,
             @Path("idQuestion") long idQuestion,
