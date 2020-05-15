@@ -6,7 +6,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ch.heigvd.pro.b04.android.Datamodel.Answer;
 import ch.heigvd.pro.b04.android.Datamodel.Poll;
@@ -20,6 +23,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class QuestionViewModel extends ViewModel {
+    private static int POLLING_DELAY = 1000;
+    private static int STABILIZATION_DELAY = 7500;
+
+    /**
+     * The idea is to store the time when we last sent a request to the server. We will not accept
+     * new information from the server until a certain delay (STABILIZATION_DELAY). This guarantees
+     * a smoother UI refreshing for the user as the server will never invalidate something the user
+     * just entered.
+     */
+    private Map<Answer, Long> lastRequest = new HashMap<>();
+
     private String token;
     private MutableLiveData<Integer> nbCheckedAnswer = new MutableLiveData<>(0);
     private MutableLiveData<Question> currentQuestion = new MutableLiveData<>();
@@ -32,9 +46,29 @@ public class QuestionViewModel extends ViewModel {
         );
 
         LiveData<List<Answer>> transformDelayed = Transformations.switchMap(
-                new PollingLiveData(1000),
-                unit -> questionToAnswer(currentQuestion.getValue(), token)
-        );
+                new PollingLiveData(POLLING_DELAY),
+                unit -> Transformations.map(
+                        questionToAnswer(currentQuestion.getValue(), token),
+                        input -> {
+                            List<Answer> transferred = new ArrayList<>();
+                            for (Answer received : input) {
+                                Long delta = System.currentTimeMillis() - lastRequest.getOrDefault(received, 0L);
+                                // If enough time has passed, update the answer
+                                if (delta > STABILIZATION_DELAY) {
+                                    transferred.add(received);
+                                    lastRequest.remove(received);
+                                } else {
+                                    // If not enough time has passed, use the last known state
+                                    currentAnswers.getValue().stream()
+                                            .filter(ans -> ans.equals(received))
+                                            .findFirst()
+                                            .ifPresent(transferred::add);
+                                }
+                            }
+
+                            return transferred;
+                        })
+                );
 
         currentAnswers.addSource(transformQuestion, answers -> currentAnswers.postValue(answers));
         currentAnswers.addSource(transformDelayed, answers -> currentAnswers.postValue(answers));
@@ -133,6 +167,8 @@ public class QuestionViewModel extends ViewModel {
             nbCheckedAnswer.setValue(counter);
 
             answer.toggle();
+            // Save at which time we sent the request
+            lastRequest.put(answer, System.currentTimeMillis());
             Rockin.api().voteForAnswer(answer, token).enqueue(callbackVote);
         }
     }
