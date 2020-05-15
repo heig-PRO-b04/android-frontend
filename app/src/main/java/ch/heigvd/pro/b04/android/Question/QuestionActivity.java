@@ -34,6 +34,7 @@ public class QuestionActivity extends AppCompatActivity {
 
         state = new ViewModelProvider(this).get(QuestionViewModel.class);
         TextView alert = findViewById(R.id.question_answers_alert);
+        /*
         state.getNbrVotesForCurrentQuestion().observe(this, nbrVotes -> {
             if (question.getAnswerMin() > nbrVotes ) {
                 alert.setText(R.string.answers_min_alerts);
@@ -41,6 +42,7 @@ public class QuestionActivity extends AppCompatActivity {
                 alert.setText("");
             }
         });
+         */
 
         state.setCurrentQuestion(question);
         state.getAllQuestionsFromBackend(poll, token);

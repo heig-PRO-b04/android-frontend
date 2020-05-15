@@ -20,9 +20,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class QuestionViewModel extends ViewModel {
-    private Answer checkedAnswer;
+    private Answer lastCheckedAnswer;
+    private int nbCheckedAnswer;
     private String token;
-    private MutableLiveData<Integer> nbrVotesForCurrentQuestion = new MutableLiveData<>();
     private MutableLiveData<Question> currentQuestion = new MutableLiveData<>();
     private MediatorLiveData<List<Answer>> currentAnswers = new MediatorLiveData<>();
 
@@ -55,31 +55,16 @@ public class QuestionViewModel extends ViewModel {
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             if (!response.isSuccessful()) {
                 LocalDebug.logUnsuccessfulRequest(call, response);
-                checkedAnswer.toggle();
-            } else {
-                int counter = nbrVotesForCurrentQuestion.getValue();
-                if (checkedAnswer.isChecked()) {
-                    nbrVotesForCurrentQuestion.postValue(counter + 1);
-                } else {
-                    nbrVotesForCurrentQuestion.postValue(counter - 1);
-                }
+                lastCheckedAnswer.toggle();
             }
         }
 
         @Override
         public void onFailure(Call<ResponseBody> call, Throwable t) {
             LocalDebug.logFailedRequest(call, t);
-            checkedAnswer.toggle();
+            lastCheckedAnswer.toggle();
         }
     };
-
-    /*
-    private void saveAnswers(List<Answer> answers) {
-        currentAnswers.postValue(answers);
-        int counter = (int) answers.stream().filter(Answer::isChecked).count();
-        nbrVotesForCurrentQuestion.postValue(counter);
-    }
-    */
 
     public MutableLiveData<List<Answer>> getCurrentAnswers() {
         return currentAnswers;
@@ -134,16 +119,20 @@ public class QuestionViewModel extends ViewModel {
 
     public void selectAnswer(Answer answer) {
         Question question = currentQuestion.getValue();
-        int counter = nbrVotesForCurrentQuestion.getValue();
 
-        if (question != null &&
-            question.getIdQuestion() == answer.getIdQuestion() &&
-            (question.getAnswerMax() > counter ||
-             question.getAnswerMax() == 0 ||
-             answer.isChecked())) {
+        if (question == null || question.getIdQuestion() != answer.getIdQuestion())
+            return;
+
+        if (  question.getAnswerMax() > nbCheckedAnswer
+           || question.getAnswerMax() == 0
+           || answer.isChecked()) {
+
+            nbCheckedAnswer = answer.isChecked()
+                    ? nbCheckedAnswer++
+                    : nbCheckedAnswer--;
 
             answer.toggle();
-            checkedAnswer = answer;
+            lastCheckedAnswer = answer;
             Rockin.api().voteForAnswer(
                     answer.getIdModerator(),
                     answer.getIdPoll(),
@@ -153,9 +142,5 @@ public class QuestionViewModel extends ViewModel {
                     answer
             ).enqueue(callbackVote);
         }
-    }
-
-    public MutableLiveData<Integer> getNbrVotesForCurrentQuestion() {
-        return nbrVotesForCurrentQuestion;
     }
 }

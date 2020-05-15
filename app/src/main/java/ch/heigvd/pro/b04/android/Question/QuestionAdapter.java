@@ -73,15 +73,6 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             answerButton = itemView.findViewById(R.id.question_answer_item);
         }
 
-        private void updateButtonColor(Answer answer) {
-            if (answer.isChecked()) {
-                answerButton.setBackgroundColor(
-                        context.getResources().getColor(R.color.colorSelected));
-            } else {
-                answerButton.setBackgroundColor(Color.WHITE);
-            }
-        }
-
         private void bindAnswer(Answer answer) {
             String text = answer.getTitle();
             if(!answer.getDescription().equals("")) {
@@ -95,6 +86,15 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 state.selectAnswer(answer);
                 updateButtonColor(answer);
             });
+        }
+
+        private void updateButtonColor(Answer answer) {
+            if (answer.isChecked()) {
+                answerButton.setBackgroundColor(
+                        context.getResources().getColor(R.color.colorSelected));
+            } else {
+                answerButton.setBackgroundColor(Color.WHITE);
+            }
         }
     }
 
