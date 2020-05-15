@@ -70,4 +70,9 @@ public class Answer {
                 Objects.equals(title, answer.title) &&
                 Objects.equals(description, answer.description);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idModerator, idPoll, idQuestion, idAnswer, title, description);
+    }
 }

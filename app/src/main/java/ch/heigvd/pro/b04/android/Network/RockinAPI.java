@@ -62,7 +62,15 @@ public interface RockinAPI {
     );
 
     @GET("/mod/{idModerator}/poll/{idPoll}/question/{idQuestion}/answer")
-    Call<List<Answer>> getAnswers(
+    LiveData<List<Answer>> getAnswers(
+            @Path("idModerator") long idModerator,
+            @Path("idPoll") long idPoll,
+            @Path("idQuestion") long idQuestion,
+            @Query("token") String token
+    );
+
+    @GET("/mod/{idModerator}/poll/{idPoll}/question/{idQuestion}/answer")
+    Call<List<Answer>> getAnswersViaCall(
             @Path("idModerator") long idModerator,
             @Path("idPoll") long idPoll,
             @Path("idQuestion") long idQuestion,
@@ -78,4 +86,14 @@ public interface RockinAPI {
             @Query("token") String token,
             @Body Answer answer
     );
+
+    default Call<ResponseBody> voteForAnswer(Answer answer, String token) {
+        return Rockin.api().voteForAnswer(
+                answer.getIdModerator(),
+                answer.getIdPoll(),
+                answer.getIdQuestion(),
+                answer.getIdAnswer(),
+                token,
+                answer);
+    }
 }
