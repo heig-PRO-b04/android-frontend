@@ -86,4 +86,14 @@ public interface RockinAPI {
             @Query("token") String token,
             @Body Answer answer
     );
+
+    default Call<ResponseBody> voteForAnswer(Answer answer, String token) {
+        return Rockin.api().voteForAnswer(
+                answer.getIdModerator(),
+                answer.getIdPoll(),
+                answer.getIdQuestion(),
+                answer.getIdAnswer(),
+                token,
+                answer);
+    }
 }

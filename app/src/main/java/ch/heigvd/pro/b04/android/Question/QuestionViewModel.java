@@ -20,8 +20,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class QuestionViewModel extends ViewModel {
-    private MutableLiveData<Integer> nbCheckedAnswer = new MutableLiveData<>(0);
     private String token;
+    private MutableLiveData<Integer> nbCheckedAnswer = new MutableLiveData<>(0);
     private MutableLiveData<Question> currentQuestion = new MutableLiveData<>();
     private MediatorLiveData<List<Answer>> currentAnswers = new MediatorLiveData<>();
 
@@ -133,7 +133,7 @@ public class QuestionViewModel extends ViewModel {
             nbCheckedAnswer.setValue(counter);
 
             answer.toggle();
-            Rockin.voteForAnswer(answer, token).enqueue(callbackVote);
+            Rockin.api().voteForAnswer(answer, token).enqueue(callbackVote);
         }
     }
 
