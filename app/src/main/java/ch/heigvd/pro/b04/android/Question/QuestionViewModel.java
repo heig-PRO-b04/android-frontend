@@ -24,18 +24,13 @@ public class QuestionViewModel extends ViewModel {
     private MutableLiveData<Question> currentQuestion = new MutableLiveData<>();
     private MutableLiveData<List<Answer>> currentAnswers = new MutableLiveData<>(new LinkedList<>());
 
+    public QuestionViewModel() {}
+
     private Callback<List<Answer>> callbackAnswers = new Callback<List<Answer>>() {
         @Override
         public void onResponse(Call<List<Answer>> call, Response<List<Answer>> response) {
             if (response.isSuccessful()) {
                 saveAnswers(response.body());
-                int counter = 0;
-                for (Answer a : response.body()) {
-                    if (a.isChecked()) {
-                        ++counter;
-                    }
-                }
-                nbrVotesForCurrentQuestion.postValue(counter);
             } else {
                 LocalDebug.logUnsuccessfulRequest(call, response);
             }
@@ -72,9 +67,9 @@ public class QuestionViewModel extends ViewModel {
 
     private void saveAnswers(List<Answer> answers) {
         currentAnswers.postValue(answers);
+        int counter = (int) answers.stream().filter(Answer::isChecked).count();
+        nbrVotesForCurrentQuestion.postValue(counter);
     }
-
-    public QuestionViewModel() {}
 
     public MutableLiveData<List<Answer>> getCurrentAnswers() {
         return currentAnswers;
