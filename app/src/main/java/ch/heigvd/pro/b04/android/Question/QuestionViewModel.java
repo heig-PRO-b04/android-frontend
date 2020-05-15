@@ -20,8 +20,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class QuestionViewModel extends ViewModel {
-    private Answer lastCheckedAnswer;
-    private int nbCheckedAnswer;
+    private MutableLiveData<Integer> nbCheckedAnswer = new MutableLiveData<>(0);
     private String token;
     private MutableLiveData<Question> currentQuestion = new MutableLiveData<>();
     private MediatorLiveData<List<Answer>> currentAnswers = new MediatorLiveData<>();
@@ -34,8 +33,7 @@ public class QuestionViewModel extends ViewModel {
 
         LiveData<List<Answer>> transformDelayed = Transformations.switchMap(
                 new PollingLiveData(1000),
-                unit -> questionToAnswer(currentQuestion.getValue(), token
-                )
+                unit -> questionToAnswer(currentQuestion.getValue(), token)
         );
 
         currentAnswers.addSource(transformQuestion, answers -> currentAnswers.postValue(answers));
@@ -55,14 +53,12 @@ public class QuestionViewModel extends ViewModel {
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             if (!response.isSuccessful()) {
                 LocalDebug.logUnsuccessfulRequest(call, response);
-                lastCheckedAnswer.toggle();
             }
         }
 
         @Override
         public void onFailure(Call<ResponseBody> call, Throwable t) {
             LocalDebug.logFailedRequest(call, t);
-            lastCheckedAnswer.toggle();
         }
     };
 
@@ -123,16 +119,20 @@ public class QuestionViewModel extends ViewModel {
         if (question == null || question.getIdQuestion() != answer.getIdQuestion())
             return;
 
-        if (  question.getAnswerMax() > nbCheckedAnswer
+        int counter = nbCheckedAnswer.getValue();
+
+        if (  question.getAnswerMax() > counter
            || question.getAnswerMax() == 0
            || answer.isChecked()) {
 
-            nbCheckedAnswer = answer.isChecked()
-                    ? nbCheckedAnswer++
-                    : nbCheckedAnswer--;
+            if (answer.isChecked()) {
+                counter++;
+            } else {
+                counter--;
+            }
+            nbCheckedAnswer.setValue(counter);
 
             answer.toggle();
-            lastCheckedAnswer = answer;
             Rockin.api().voteForAnswer(
                     answer.getIdModerator(),
                     answer.getIdPoll(),
@@ -143,4 +143,9 @@ public class QuestionViewModel extends ViewModel {
             ).enqueue(callbackVote);
         }
     }
+
+    public MutableLiveData<Integer> getNbCheckedAnswer() {
+        return nbCheckedAnswer;
+    }
+
 }
