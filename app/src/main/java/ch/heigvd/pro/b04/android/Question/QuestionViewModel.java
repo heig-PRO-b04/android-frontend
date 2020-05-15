@@ -133,14 +133,7 @@ public class QuestionViewModel extends ViewModel {
             nbCheckedAnswer.setValue(counter);
 
             answer.toggle();
-            Rockin.api().voteForAnswer(
-                    answer.getIdModerator(),
-                    answer.getIdPoll(),
-                    answer.getIdQuestion(),
-                    answer.getIdAnswer(),
-                    token,
-                    answer
-            ).enqueue(callbackVote);
+            Rockin.voteForAnswer(answer, token).enqueue(callbackVote);
         }
     }
 
