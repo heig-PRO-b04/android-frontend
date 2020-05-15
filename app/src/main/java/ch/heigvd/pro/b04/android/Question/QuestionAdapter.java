@@ -89,12 +89,10 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         private void updateButtonColor(Answer answer) {
-            if (answer.isChecked()) {
-                answerButton.setBackgroundColor(
-                        context.getResources().getColor(R.color.colorSelected));
-            } else {
-                answerButton.setBackgroundColor(Color.WHITE);
-            }
+            int color = answer.isChecked()
+                    ? context.getColor(R.color.colorSelected)
+                    : Color.WHITE;
+            answerButton.setBackgroundColor(color);
         }
     }
 
