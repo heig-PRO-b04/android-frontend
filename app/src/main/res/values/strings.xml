@@ -16,6 +16,7 @@
         There are not enough answers. Your current vote will not be sent.
     </string>
     <string name="code_clear_description">Clear</string>
+    <string name="poll_exit">Disconnect</string>
 
 
 </resources>
