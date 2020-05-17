@@ -13,7 +13,8 @@ import java.util.function.Supplier;
  * @param <T> The parameterized type of the response that is received.
  */
 public final class ApiResponse<T> {
-    private static final int UNDEFINED_CODE = -1;
+    private static final int DEFINED_CODE = -1;
+    private static final int PENDING_CODE = 0;
 
     private T response;
     private int errorCode;
@@ -22,8 +23,12 @@ public final class ApiResponse<T> {
         return new ApiResponse<>(value);
     }
 
+    public static <T> ApiResponse<T> pending() {
+        return new ApiResponse<>(PENDING_CODE);
+    }
+
     public static <T> ApiResponse<T> ofError(int code) {
-        if (code <= UNDEFINED_CODE) {
+        if (code <= PENDING_CODE) {
             throw new IllegalArgumentException("The response code must be greater than 0.");
         }
         return new ApiResponse<>(code);
@@ -36,15 +41,19 @@ public final class ApiResponse<T> {
 
     private ApiResponse(T value) {
         response = Objects.requireNonNull(value);
-        errorCode = UNDEFINED_CODE;
+        errorCode = DEFINED_CODE;
     }
 
     public boolean isSuccess() {
-        return errorCode != UNDEFINED_CODE;
+        return errorCode == DEFINED_CODE;
+    }
+
+    public boolean isPending() {
+        return errorCode == PENDING_CODE;
     }
 
     public boolean isFailure() {
-        return errorCode == UNDEFINED_CODE;
+        return errorCode != DEFINED_CODE && errorCode != PENDING_CODE;
     }
 
     public Optional<Integer> error() {
@@ -56,7 +65,7 @@ public final class ApiResponse<T> {
     }
 
     public Optional<T> response() {
-        if (isFailure()) {
+        if (isFailure() || isPending()) {
             return Optional.empty();
         } else {
             return Optional.of(response);
@@ -64,7 +73,7 @@ public final class ApiResponse<T> {
     }
 
     public <S> ApiResponse<S> map(Function<T, S> function) {
-        if (isFailure()) {
+        if (isFailure() || isPending()) {
             return new ApiResponse<>(errorCode);
         } else {
             return new ApiResponse<>(function.apply(response));
@@ -72,7 +81,7 @@ public final class ApiResponse<T> {
     }
 
     public <S> ApiResponse<S> flatMap(Function<T, ApiResponse<S>> function) {
-        if (isFailure()) {
+        if (isFailure() || isPending()) {
             return new ApiResponse<>(errorCode);
         } else {
             return function.apply(response);
@@ -80,7 +89,7 @@ public final class ApiResponse<T> {
     }
 
     public T orElseGet(Supplier<? extends T> supplier) {
-        if (isFailure()) {
+        if (isFailure() || isPending()) {
             return supplier.get();
         } else {
             return response;
@@ -88,7 +97,7 @@ public final class ApiResponse<T> {
     }
 
     public <X extends Throwable> T orElseThrow(Supplier<? extends X> supplier) throws X {
-        if (isFailure()) {
+        if (isFailure() || isPending()) {
             throw supplier.get();
         } else {
             return response;
