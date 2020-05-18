@@ -3,22 +3,28 @@ package ch.heigvd.pro.b04.android.Home;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ch.heigvd.pro.b04.android.Poll.PollViewModel;
 import ch.heigvd.pro.b04.android.R;
 
 public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_EMOJI = 1;
+    private static final int VIEW_TYPE_INSTRUCTION = 2;
 
     private HomeViewModel state;
+    private LifecycleOwner lifecycleOwner;
 
-    public EmojiGridAdapter(HomeViewModel state) {
+    public EmojiGridAdapter(HomeViewModel state, LifecycleOwner lifecycleOwner) {
         this.state = state;
+        this.lifecycleOwner = lifecycleOwner;
     }
 
     @NonNull
@@ -29,6 +35,8 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 return new HeaderViewHolder(parent);
             case VIEW_TYPE_EMOJI:
                 return new EmojiViewHolder(parent);
+            case VIEW_TYPE_INSTRUCTION:
+                return new InstructionViewHolder(parent, state, lifecycleOwner);
             default:
                 throw new IllegalStateException("Unknown view type.");
         }
@@ -39,22 +47,26 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         switch (position) {
             case 0:
                 break;
+            case 1:
+                break;
             default:
-                ((EmojiViewHolder) holder).bindEmoji(Emoji.values()[position - 1]);
+                ((EmojiViewHolder) holder).bindEmoji(Emoji.values()[position - 2]);
                 break;
         }
     }
 
     @Override
     public int getItemCount() {
-        return Emoji.values().length + 1;
+        return Emoji.values().length + 2;
     }
 
     @Override
     public int getItemViewType(int position) {
         return position == 0
                 ? VIEW_TYPE_HEADER
-                : VIEW_TYPE_EMOJI;
+                : (position == 1
+                    ? VIEW_TYPE_INSTRUCTION
+                    :VIEW_TYPE_EMOJI);
     }
 
     private static class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -80,6 +92,19 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         private void bindEmoji(Emoji emoji) {
             emojiButton.setImageResource(emoji.getEmoji());
             cardView.setOnClickListener(v -> state.addNewEmoji(emoji));
+        }
+    }
+
+    private static class InstructionViewHolder extends RecyclerView.ViewHolder {
+        private TextView title;
+        public InstructionViewHolder(@NonNull ViewGroup parent, HomeViewModel state, LifecycleOwner lifecycleOwner) {
+            super(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.activity_instructions, parent, false));
+            title = itemView.findViewById(R.id.instructions);
+
+            state.getCodeEmoji().observe(lifecycleOwner, response -> {
+                title.setText("In order to connect to a poll, please enter it's emoji code or scan the given QR code.");
+            });
         }
     }
 }

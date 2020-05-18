@@ -26,4 +26,5 @@
 
     <!-- Other -->
     <item type="id" name="button" />
+    <item type="id" name="instructions" />
 </resources>

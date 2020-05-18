@@ -49,11 +49,11 @@ public class Home extends AppCompatActivity {
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return position == 0 ? COLUMN_NBR : 1;
+                return position == 0 || position == 1 ? COLUMN_NBR : 1;
             }
         });
 
-        EmojiGridAdapter emojiAdapter = new EmojiGridAdapter(state);
+        EmojiGridAdapter emojiAdapter = new EmojiGridAdapter(state, this);
         emojiGrid.setAdapter(emojiAdapter);
         emojiGrid.setLayoutManager(manager);
     }

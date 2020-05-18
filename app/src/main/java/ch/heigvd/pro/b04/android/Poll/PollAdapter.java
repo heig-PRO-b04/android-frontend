@@ -20,7 +20,9 @@ import ch.heigvd.pro.b04.android.R;
 public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_QUESTION = 1;
+    private static final int VIEW_TYPE_INSTRUCTION = 2;
     private static final long HEADER_ID = -1;
+    private static final long INSTRUCTION_ID = -2;
 
     private PollViewModel state;
     private LifecycleOwner lifecycleOwner;
@@ -44,8 +46,10 @@ public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
     public long getItemId(int position) {
         if (position == 0)
             return HEADER_ID;
+        if (position == 1)
+            return INSTRUCTION_ID;
 
-        return questions.get(position - 1).getIdQuestion();
+        return questions.get(position - 2).getIdQuestion();
     }
 
     private static class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -57,6 +61,19 @@ public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
 
             state.getPoll().observe(lifecycleOwner, poll -> {
                 title.setText(poll.getTitle());
+            });
+        }
+    }
+
+    private static class InstructionViewHolder extends RecyclerView.ViewHolder {
+        private TextView title;
+        public InstructionViewHolder(@NonNull ViewGroup parent, PollViewModel state, LifecycleOwner lifecycleOwner) {
+            super(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.activity_instructions, parent, false));
+            title = itemView.findViewById(R.id.instructions);
+
+            state.getPoll().observe(lifecycleOwner, poll -> {
+                title.setText("In order to answer a question, please select it.");
             });
         }
     }
@@ -91,6 +108,8 @@ public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
                 return new HeaderViewHolder(parent, state, lifecycleOwner);
             case VIEW_TYPE_QUESTION:
                 return new QuestionViewHolder(parent);
+            case VIEW_TYPE_INSTRUCTION:
+                return new InstructionViewHolder(parent, state, lifecycleOwner);
             default:
                 throw new IllegalStateException("Unknown view type.");
         }
@@ -98,22 +117,24 @@ public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if(position != 0) {
-            Question q = questions.get(position-1);
+        if(position != 0 && position != 1) {
+            Question q = questions.get(position-2);
             ((QuestionViewHolder) holder).bindQuestion(q, q.answered() );
         }
     }
 
     @Override
     public int getItemCount() {
-        return questions.size() + 1;
+        return questions.size() + 2;
     }
 
     @Override
     public int getItemViewType(int position) {
         return position == 0
                 ? VIEW_TYPE_HEADER
-                : VIEW_TYPE_QUESTION;
+                : (position == 1
+                    ? VIEW_TYPE_INSTRUCTION
+                    : VIEW_TYPE_QUESTION);
     }
 
 }
