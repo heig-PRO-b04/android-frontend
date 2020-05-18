@@ -12,6 +12,9 @@ import java.lang.reflect.Type;
 import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
 
+/**
+ * See https://gist.github.com/AkshayChordiya/15cfe7ca1842d6b959e77c04a073a98f for reference.
+ */
 public class LiveDataCallAdapterFactory extends CallAdapter.Factory {
 
     @Nullable
@@ -27,7 +30,16 @@ public class LiveDataCallAdapterFactory extends CallAdapter.Factory {
         }
 
         Type type = CallAdapter.Factory.getParameterUpperBound(0, (ParameterizedType) returnType);
+        Class<?> rawObservableType = getRawType(type);
 
-        return new LiveDataCallAdapter<>(type);
+        if (rawObservableType != ApiResponse.class) {
+            throw new IllegalArgumentException("Type must be an ApiResponse.");
+        }
+
+        if (!(type instanceof ParameterizedType)) {
+            throw new IllegalArgumentException("Response must be parameterized.");
+        }
+
+        return new LiveDataCallAdapter<>(getParameterUpperBound(0, (ParameterizedType) type));
     }
 }

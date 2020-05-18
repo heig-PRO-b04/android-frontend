@@ -14,6 +14,7 @@ import java.util.Map;
 import ch.heigvd.pro.b04.android.Datamodel.Answer;
 import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
+import ch.heigvd.pro.b04.android.Network.LiveDataUtils;
 import ch.heigvd.pro.b04.android.Network.Rockin;
 import ch.heigvd.pro.b04.android.Utils.LocalDebug;
 import ch.heigvd.pro.b04.android.Utils.PollingLiveData;
@@ -68,18 +69,18 @@ public class QuestionViewModel extends ViewModel {
 
                             return transferred;
                         })
-                );
+        );
 
         currentAnswers.addSource(transformQuestion, answers -> currentAnswers.postValue(answers));
         currentAnswers.addSource(transformDelayed, answers -> currentAnswers.postValue(answers));
     }
 
     private static LiveData<List<Answer>> questionToAnswer(Question question, String token) {
-        return Rockin.api().getAnswers(
+        return LiveDataUtils.ignorePendingAndErrors(Rockin.api().getAnswers(
                 question.getIdModerator(),
                 question.getIdPoll(),
                 question.getIdQuestion(),
-                token);
+                token));
     }
 
     private Callback<ResponseBody> callbackVote = new Callback<ResponseBody>() {
@@ -138,9 +139,9 @@ public class QuestionViewModel extends ViewModel {
         for (Question q : QuestionUtils.getQuestions().getValue()) {
             double newIndex = q.getIndexInPoll();
             if (newIndex > currentIndex && newIndex < candidateIndex) {
-                    candidateIndex = newIndex;
-                    candidate = q;
-                }
+                candidateIndex = newIndex;
+                candidate = q;
+            }
         }
 
         if (candidate != null)
@@ -155,9 +156,9 @@ public class QuestionViewModel extends ViewModel {
 
         int counter = nbCheckedAnswer.getValue();
 
-        if (  question.getAnswerMax() > counter
-           || question.getAnswerMax() == 0
-           || answer.isChecked()) {
+        if (question.getAnswerMax() > counter
+                || question.getAnswerMax() == 0
+                || answer.isChecked()) {
 
             if (answer.isChecked()) {
                 counter++;

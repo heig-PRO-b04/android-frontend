@@ -28,12 +28,12 @@ public interface RockinAPI {
     );
 
     @GET("/session")
-    LiveData<Session> getSession(
+    LiveData<ApiResponse<Session>> getSession(
             @Query("token") String userToken
     );
 
     @GET("/mod/{idModerator}/poll/{idPoll}")
-    LiveData<Poll> getPoll(
+    LiveData<ApiResponse<Poll>> getPoll(
             @Path("idModerator") long idModerator,
             @Path("idPoll") long idPoll,
             @Query("token") String userToken
@@ -62,7 +62,7 @@ public interface RockinAPI {
     );
 
     @GET("/mod/{idModerator}/poll/{idPoll}/question/{idQuestion}/answer")
-    LiveData<List<Answer>> getAnswers(
+    LiveData<ApiResponse<List<Answer>>> getAnswers(
             @Path("idModerator") long idModerator,
             @Path("idPoll") long idPoll,
             @Path("idQuestion") long idQuestion,
