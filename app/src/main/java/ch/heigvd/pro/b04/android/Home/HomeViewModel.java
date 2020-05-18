@@ -1,12 +1,9 @@
 package ch.heigvd.pro.b04.android.Home;
 
 import android.app.Application;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -23,39 +20,44 @@ import ch.heigvd.pro.b04.android.Authentication.AuthenticationTokenLiveData;
 import ch.heigvd.pro.b04.android.Datamodel.SessionCode;
 import ch.heigvd.pro.b04.android.Datamodel.Token;
 import ch.heigvd.pro.b04.android.Network.Rockin;
-import ch.heigvd.pro.b04.android.R;
 import ch.heigvd.pro.b04.android.Utils.LocalDebug;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public final class HomeViewModel extends AndroidViewModel {
-    private Context context;
-    private Boolean triedToGetToken = false;
+import static ch.heigvd.pro.b04.android.Home.State.ERROR;
+import static ch.heigvd.pro.b04.android.Home.State.NORMAL;
+import static ch.heigvd.pro.b04.android.Home.State.SENDING;
 
-    private MutableLiveData<Integer> codeColor = new MutableLiveData<>();
-    private MutableLiveData<Drawable> clearButtonRes = new MutableLiveData<>();
+public final class HomeViewModel extends AndroidViewModel {
+    private MutableLiveData<State> requestState = new MutableLiveData<>(NORMAL);
     private MutableLiveData<Set<Emoji>> selectedEmoji = new MutableLiveData<>(new HashSet<>());
     private MutableLiveData<String> registrationCode = new MutableLiveData<>();
     private MutableLiveData<List<Emoji>> registrationCodeEmoji = new MutableLiveData<>(new ArrayList<>());
     private AuthenticationTokenLiveData tokenData = new AuthenticationTokenLiveData(getApplication());
 
-    /**
-     * Helper method that sets the current state correctly in case of error while retrieving the
-     * token
-     */
-    private void setBadTokenErrorValues() {
-        triedToGetToken = true;
-        setEmojiCodeColor(R.color.colorError);
-        setClearButtonToggle();
+    public HomeViewModel(@NonNull Application application) {
+        super(application);
     }
 
-    private void setClearButtonToggle() {
-        Drawable resource = triedToGetToken
-                ? ContextCompat.getDrawable(context, R.drawable.clear_emoji_error)
-                : ContextCompat.getDrawable(context, R.drawable.clear_emoji);
-        clearButtonRes.setValue(resource);
-    }
+    private Callback<Token> callbackToken = new Callback<Token>() {
+        @Override
+        public void onResponse(Call<Token> call, Response<Token> response) {
+            if (response.isSuccessful()) {
+                onSuccessfulToken(response.body().getToken());
+            } else {
+                requestState.postValue(ERROR);
+                LocalDebug.logUnsuccessfulRequest(call, response);
+                Log.w("localDebug", "Registration code was : " + registrationCode.getValue());
+            }
+        }
+
+        @Override
+        public void onFailure(Call<Token> call, Throwable t) {
+            requestState.postValue(ERROR);
+            LocalDebug.logFailedRequest(call, t);
+        }
+    };
 
     /**
      * Helper method to setup the current state when we successfully retrieve a token
@@ -68,31 +70,8 @@ public final class HomeViewModel extends AndroidViewModel {
         tokenData.login(token);
     }
 
-    private Callback<Token> callbackToken = new Callback<Token>() {
-        @Override
-        public void onResponse(Call<Token> call, Response<Token> response) {
-            if (response.isSuccessful()) {
-                onSuccessfulToken(response.body().getToken());
-            } else {
-                setBadTokenErrorValues();
-                LocalDebug.logUnsuccessfulRequest(call, response);
-                Log.w("localDebug", "Registration code was : " + registrationCode.getValue());
-            }
-        }
-
-        @Override
-        public void onFailure(Call<Token> call, Throwable t) {
-            LocalDebug.logFailedRequest(call, t);
-        }
-    };
-
-    public HomeViewModel(@NonNull Application application) {
-        super(application);
-        this.context = getApplication().getApplicationContext();
-    }
-
     public void addNewEmoji(Emoji emoji) {
-        if (triedToGetToken) {
+        if (requestState.getValue().equals(ERROR)) {
             reinitializeEmojiBuffer();
         }
 
@@ -115,14 +94,17 @@ public final class HomeViewModel extends AndroidViewModel {
     }
 
     /**
-     * Helper method to save the state of the emoji buffer
-     * @param emojisBuffer The list of Emoji that we want to save
+     * Helper method used to clean up the buffer state
      */
-    private void saveEmojiBufferState(@NonNull List<Emoji> emojisBuffer) {
-        registrationCodeEmoji.postValue(emojisBuffer);
-        selectedEmoji.postValue(new HashSet<>(emojisBuffer));
+    public void reinitializeEmojiBuffer() {
+        requestState.setValue(NORMAL);
+        registrationCodeEmoji.setValue(new ArrayList<>());
     }
 
+    /**
+     * Helper method that build the code as required by the API based on the emojis entered
+     * @return A correctly formatted code
+     */
     private String buildCodeFromEmojis() {
         Iterator<Emoji> emojis = registrationCodeEmoji.getValue().iterator();
         StringBuilder code = new StringBuilder().append("0x");
@@ -137,40 +119,22 @@ public final class HomeViewModel extends AndroidViewModel {
      * Helper method used to send a connection request to the server
      */
     public void sendConnectRequest(String code) {
-        setEmojiCodeColor(R.color.seaside_200);
-
+        requestState.postValue(SENDING);
         registrationCode.postValue(code);
         Rockin.api().postConnect(new SessionCode(code)).enqueue(callbackToken);
     }
 
     /**
-     * Helper method to change the color of the emoji code
-     * @param color Represents the color, should be a resource like R.color.xxx or Color.xxx
+     * Helper method to save the state of the emoji buffer
+     * @param emojisBuffer The list of Emoji that we want to save
      */
-    private void setEmojiCodeColor(int color) {
-        codeColor.postValue(ContextCompat.getColor(context, color));
-    }
-
-    /**
-     * Helper method used to clean up the buffer state
-     */
-    public void reinitializeEmojiBuffer() {
-        triedToGetToken = false;
-        registrationCodeEmoji.setValue(new ArrayList<>());
-        setEmojiCodeColor(R.color.seaside_050);
-        setClearButtonToggle();
+    private void saveEmojiBufferState(@NonNull List<Emoji> emojisBuffer) {
+        registrationCodeEmoji.postValue(emojisBuffer);
+        selectedEmoji.postValue(new HashSet<>(emojisBuffer));
     }
 
     public LiveData<List<Emoji>> getCodeEmoji() {
         return this.registrationCodeEmoji;
-    }
-
-    public LiveData<Set<Emoji>> getSelectedEmoji() {
-        return this.selectedEmoji;
-    }
-
-    public LiveData<Integer> getCodeColor() {
-        return codeColor;
     }
 
     public void clearOneEmoji() {
@@ -178,10 +142,11 @@ public final class HomeViewModel extends AndroidViewModel {
         if (! emojiList.isEmpty()) {
             emojiList.remove(emojiList.size() - 1);
             registrationCodeEmoji.postValue(emojiList);
+            requestState.postValue(NORMAL);
         }
     }
 
-    public LiveData<Drawable> getClearButtonRes() {
-        return clearButtonRes;
+    public LiveData<State> getRequestState() {
+        return this.requestState;
     }
 }

@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Session;
+import ch.heigvd.pro.b04.android.Network.LiveDataUtils;
 import ch.heigvd.pro.b04.android.Network.Rockin;
 
 /**
@@ -20,11 +21,11 @@ public class SessionToTokenWithPoll implements Function<Pair<String, Session>, L
     public LiveData<Pair<String, Poll>> apply(Pair<String, Session> input) {
         String token = input.first;
         Session session = input.second;
-        LiveData<Poll> polls = Rockin.api().getPoll(
+        LiveData<Poll> polls = LiveDataUtils.ignorePendingAndErrors(Rockin.api().getPoll(
                 Integer.parseInt(session.getIdModerator()),
                 Integer.parseInt(session.getIdPoll()),
                 token
-        );
+        ));
         return Transformations.map(polls, p -> Pair.create(token, p));
     }
 }

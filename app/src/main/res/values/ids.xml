@@ -8,12 +8,14 @@
     <item type="id" name="home_code_recycler_view" />
     <item type="id" name="home_code_item" />
     <item type="id" name="home_code_clear" />
+    <item type="id" name="home_code_scan" />
 
     <!-- Poll -->
     <item type="id" name="poll_title" />
     <item type="id" name="poll_questions_view" />
     <item type="id" name="poll_question_item" />
     <item type="id" name="poll_answers_view" />
+    <item type="id" name="poll_exit_button" />
 
     <!-- Question -->
     <item type="id" name="question" />

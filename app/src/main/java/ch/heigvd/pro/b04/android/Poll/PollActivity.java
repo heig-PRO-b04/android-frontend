@@ -2,6 +2,7 @@ package ch.heigvd.pro.b04.android.Poll;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -56,6 +57,17 @@ public class PollActivity extends AppCompatActivity {
 
             startActivity(questionIntent);
         });
+
+        Button exitButton = findViewById(R.id.poll_exit_button);
+        exitButton.setOnClickListener(view -> disconnectFromPoll());
+    }
+
+    /**
+     * Helper method that disconnects us from the current Poll
+     */
+    private void disconnectFromPoll() {
+        tokenLiveData.logout();
+        finish();
     }
 
     @Override
