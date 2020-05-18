@@ -34,15 +34,13 @@ public class QuestionActivity extends AppCompatActivity {
 
         state = new ViewModelProvider(this).get(QuestionViewModel.class);
         TextView alert = findViewById(R.id.question_answers_alert);
-        state.getNbrVotesForCurrentQuestion().observe(this, nbrVotes -> {
-            if (question.getAnswerMin() > nbrVotes ) {
+        state.getNbCheckedAnswer().observe(this, nbrVotes -> {
+            if (question.getAnswerMin() < nbrVotes ) {
                 alert.setText(R.string.answers_min_alerts);
             } else {
                 alert.setText("");
             }
         });
-
-        state.getCurrentQuestion().observe(this, q -> state.setAnswers(token, q));
 
         state.setCurrentQuestion(question);
         state.getAllQuestionsFromBackend(poll, token);

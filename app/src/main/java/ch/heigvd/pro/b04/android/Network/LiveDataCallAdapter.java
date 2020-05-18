@@ -11,7 +11,7 @@ import retrofit2.CallAdapter;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LiveDataCallAdapter<T> implements CallAdapter<T, LiveData<T>> {
+public class LiveDataCallAdapter<T> implements CallAdapter<T, LiveData<ApiResponse<T>>> {
 
     private final Type type;
 
@@ -21,8 +21,8 @@ public class LiveDataCallAdapter<T> implements CallAdapter<T, LiveData<T>> {
 
     @NotNull
     @Override
-    public LiveData<T> adapt(@NotNull Call<T> call) {
-        return new LiveData<T>() {
+    public LiveData<ApiResponse<T>> adapt(@NotNull Call<T> call) {
+        return new LiveData<ApiResponse<T>>(ApiResponse.pending()) {
 
             private boolean success;
 
@@ -42,14 +42,18 @@ public class LiveDataCallAdapter<T> implements CallAdapter<T, LiveData<T>> {
                 call.enqueue(new Callback<T>() {
                     @Override
                     public void onResponse(Call<T> call, Response<T> response) {
-                        postValue(response.body());
+                        if (response.isSuccessful()) {
+                            postValue(ApiResponse.of(response.body()));
+                        } else {
+                            postValue(ApiResponse.ofError(response.code()));
+                        }
                         success = true;
                     }
 
                     @Override
                     public void onFailure(Call<T> call, Throwable t) {
+                        postValue(ApiResponse.ofError(500));
                         success = false;
-                        // TODO : Handle this case.
                     }
                 });
             }
