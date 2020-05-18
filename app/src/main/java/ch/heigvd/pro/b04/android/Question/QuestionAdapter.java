@@ -2,6 +2,8 @@ package ch.heigvd.pro.b04.android.Question;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -69,7 +71,6 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private AnswerViewHolder(@NonNull ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.question_answers, parent, false));
-
             answerButton = itemView.findViewById(R.id.question_answer_item);
         }
 
@@ -83,12 +84,27 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         private void bindAnswer(Answer answer) {
-            String text = answer.getTitle();
+            String textA = answer.getTitle();
             if(!answer.getDescription().equals("")) {
-                text += " : " + answer.getDescription();
+                textA += "\n" + answer.getDescription();
             }
+            SpannableString text = new SpannableString(textA);
+            // make answer black
+            text.setSpan(new ForegroundColorSpan(Color.BLACK),
+                        0,
+                        answer.getTitle().length(),
+                        0);
+            // make description grey
+            text.setSpan(new ForegroundColorSpan(
+                            context.getResources().getColor(R.color.colorDescription)
+                        ),
+                        answer.getTitle().length() + 1,
+                        textA.length(),
+                        0);
 
-            answerButton.setText(text);
+            // shove our styled text into the Button
+            answerButton.setText(text, TextView.BufferType.SPANNABLE);
+
             updateButtonColor(answer);
           
             answerButton.setOnClickListener(v -> {

@@ -17,6 +17,7 @@
 
     <!-- Question -->
     <item type="id" name="question" />
+    <item type="id" name="description" />
     <item type="id" name="question_answers_view" />
     <item type="id" name="question_answer_item" />
     <item type="id" name="question_answers_alert" />
