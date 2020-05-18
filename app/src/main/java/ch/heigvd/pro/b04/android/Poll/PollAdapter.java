@@ -73,7 +73,7 @@ public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
             title = itemView.findViewById(R.id.instructions);
 
             state.getPoll().observe(lifecycleOwner, poll -> {
-                title.setText("In order to answer a question, please select it.");
+                title.setText("In order to answer a question, please click on it.");
             });
         }
     }

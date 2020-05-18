@@ -103,7 +103,7 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             title = itemView.findViewById(R.id.instructions);
 
             state.getCodeEmoji().observe(lifecycleOwner, response -> {
-                title.setText("In order to connect to a poll, please enter it's emoji code or scan the given QR code.");
+                title.setText("In order to connect to a poll, please enter its emoji code or scan the given QR code.");
             });
         }
     }
