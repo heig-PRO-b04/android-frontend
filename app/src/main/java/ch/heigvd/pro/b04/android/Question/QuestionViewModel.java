@@ -15,7 +15,6 @@ import ch.heigvd.pro.b04.android.Datamodel.Answer;
 import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.Network.ApiResponse;
-import ch.heigvd.pro.b04.android.Network.LiveDataUtils;
 import ch.heigvd.pro.b04.android.Network.Rockin;
 import ch.heigvd.pro.b04.android.Utils.LocalDebug;
 import ch.heigvd.pro.b04.android.Utils.PollingLiveData;
@@ -39,7 +38,7 @@ public class QuestionViewModel extends ViewModel {
     private String token;
     private MutableLiveData<Integer> nbCheckedAnswer = new MutableLiveData<>(0);
     private MutableLiveData<Question> currentQuestion = new MutableLiveData<>();
-    private MediatorLiveData<List<Answer>> currentAnswers = new MediatorLiveData<>();
+    private LiveData<List<Answer>> currentAnswers = new MutableLiveData<>();
     private MediatorLiveData<ApiResponse<List<Answer>>> answerResponse = new MediatorLiveData<>();
 
     public QuestionViewModel() {
@@ -50,31 +49,35 @@ public class QuestionViewModel extends ViewModel {
 
         LiveData<ApiResponse<List<Answer>>> transformDelayed = Transformations.switchMap(
                 new PollingLiveData(POLLING_DELAY),
-                unit -> Transformations.map(
-                        Rockin.api().getAnswers(currentQuestion.getValue(), token),
-                        input -> {
-                            List<Answer> transferred = new ArrayList<>();
-                            for (Answer received : input) {
-                                Long delta = System.currentTimeMillis() - lastRequest.getOrDefault(received, 0L);
-                                // If enough time has passed, update the answer
-                                if (delta > STABILIZATION_DELAY) {
-                                    transferred.add(received);
-                                    lastRequest.remove(received);
-                                } else {
-                                    // If not enough time has passed, use the last known state
-                                    currentAnswers.getValue().stream()
-                                            .filter(ans -> ans.equals(received))
-                                            .findFirst()
-                                            .ifPresent(transferred::add);
-                                }
-                            }
-
-                            return transferred;
-                        })
+                unit -> Rockin.api().getAnswers(currentQuestion.getValue(), token)
         );
 
         answerResponse.addSource(transformQuestion, response -> answerResponse.postValue(response));
         answerResponse.addSource(transformDelayed, response -> answerResponse.postValue(response));
+
+        currentAnswers = Transformations.switchMap(answerResponse, response -> {
+            if (! response.response().isPresent()) {
+                return new MutableLiveData<>();
+            }
+
+            List<Answer> transferred = new ArrayList<>();
+            for (Answer received : response.response().get()) {
+                Long delta = System.currentTimeMillis() - lastRequest.getOrDefault(received, 0L);
+                // If enough time has passed, update the answer
+                if (delta > STABILIZATION_DELAY) {
+                    transferred.add(received);
+                    lastRequest.remove(received);
+                } else {
+                    // If not enough time has passed, use the last known state
+                    currentAnswers.getValue().stream()
+                            .filter(ans -> ans.equals(received))
+                            .findFirst()
+                            .ifPresent(transferred::add);
+                }
+            }
+
+            return new MutableLiveData<>(transferred);
+        });
     }
 
     private Callback<ResponseBody> callbackVote = new Callback<ResponseBody>() {
@@ -91,7 +94,7 @@ public class QuestionViewModel extends ViewModel {
         }
     };
 
-    public MutableLiveData<List<Answer>> getCurrentAnswers() {
+    public LiveData<List<Answer>> getCurrentAnswers() {
         return currentAnswers;
     }
 
