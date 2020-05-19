@@ -80,7 +80,9 @@ public class QuestionViewModel extends ViewModel {
             return new MutableLiveData<>(transferred);
         });
 
-        responseError = Transformations.map(answerResponse, response -> response.isFailure());
+        responseError = Transformations.distinctUntilChanged(Transformations.map(
+                answerResponse, response -> response.isFailure()
+        ));
     }
 
     private Callback<ResponseBody> callbackVote = new Callback<ResponseBody>() {
