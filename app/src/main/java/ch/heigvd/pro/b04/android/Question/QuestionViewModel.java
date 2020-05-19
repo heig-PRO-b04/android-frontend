@@ -39,6 +39,7 @@ public class QuestionViewModel extends ViewModel {
     private MutableLiveData<Integer> nbCheckedAnswer = new MutableLiveData<>(0);
     private MutableLiveData<Question> currentQuestion = new MutableLiveData<>();
     private LiveData<List<Answer>> currentAnswers = new MutableLiveData<>();
+    private LiveData<Boolean> responseError = new MutableLiveData<>(false);
     private MediatorLiveData<ApiResponse<List<Answer>>> answerResponse = new MediatorLiveData<>();
 
     public QuestionViewModel() {
@@ -78,6 +79,8 @@ public class QuestionViewModel extends ViewModel {
 
             return new MutableLiveData<>(transferred);
         });
+
+        responseError = Transformations.map(answerResponse, response -> response.isFailure());
     }
 
     private Callback<ResponseBody> callbackVote = new Callback<ResponseBody>() {
@@ -173,6 +176,10 @@ public class QuestionViewModel extends ViewModel {
 
     public MutableLiveData<Integer> getNbCheckedAnswer() {
         return nbCheckedAnswer;
+    }
+
+    public LiveData<Boolean> getResponseError() {
+        return responseError;
     }
 
 }
