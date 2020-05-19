@@ -14,6 +14,7 @@ import java.util.Map;
 import ch.heigvd.pro.b04.android.Datamodel.Answer;
 import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
+import ch.heigvd.pro.b04.android.Network.ApiResponse;
 import ch.heigvd.pro.b04.android.Network.LiveDataUtils;
 import ch.heigvd.pro.b04.android.Network.Rockin;
 import ch.heigvd.pro.b04.android.Utils.LocalDebug;
@@ -39,17 +40,18 @@ public class QuestionViewModel extends ViewModel {
     private MutableLiveData<Integer> nbCheckedAnswer = new MutableLiveData<>(0);
     private MutableLiveData<Question> currentQuestion = new MutableLiveData<>();
     private MediatorLiveData<List<Answer>> currentAnswers = new MediatorLiveData<>();
+    private MediatorLiveData<ApiResponse<List<Answer>>> answerResponse = new MediatorLiveData<>();
 
     public QuestionViewModel() {
-        LiveData<List<Answer>> transformQuestion = Transformations.switchMap(
+        LiveData<ApiResponse<List<Answer>>> transformQuestion = Transformations.switchMap(
                 currentQuestion,
-                question -> questionToAnswer(question, token)
+                question -> Rockin.api().getAnswers(question, token)
         );
 
-        LiveData<List<Answer>> transformDelayed = Transformations.switchMap(
+        LiveData<ApiResponse<List<Answer>>> transformDelayed = Transformations.switchMap(
                 new PollingLiveData(POLLING_DELAY),
                 unit -> Transformations.map(
-                        questionToAnswer(currentQuestion.getValue(), token),
+                        Rockin.api().getAnswers(currentQuestion.getValue(), token),
                         input -> {
                             List<Answer> transferred = new ArrayList<>();
                             for (Answer received : input) {
@@ -71,16 +73,8 @@ public class QuestionViewModel extends ViewModel {
                         })
         );
 
-        currentAnswers.addSource(transformQuestion, answers -> currentAnswers.postValue(answers));
-        currentAnswers.addSource(transformDelayed, answers -> currentAnswers.postValue(answers));
-    }
-
-    private static LiveData<List<Answer>> questionToAnswer(Question question, String token) {
-        return LiveDataUtils.ignorePendingAndErrors(Rockin.api().getAnswers(
-                question.getIdModerator(),
-                question.getIdPoll(),
-                question.getIdQuestion(),
-                token));
+        answerResponse.addSource(transformQuestion, response -> answerResponse.postValue(response));
+        answerResponse.addSource(transformDelayed, response -> answerResponse.postValue(response));
     }
 
     private Callback<ResponseBody> callbackVote = new Callback<ResponseBody>() {
