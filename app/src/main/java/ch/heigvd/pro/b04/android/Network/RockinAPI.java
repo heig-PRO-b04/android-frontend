@@ -69,6 +69,15 @@ public interface RockinAPI {
             @Query("token") String token
     );
 
+    default LiveData<ApiResponse<List<Answer>>> getAnswers(Question question, String token) {
+        return Rockin.api().getAnswers(
+                question.getIdModerator(),
+                question.getIdPoll(),
+                question.getIdQuestion(),
+                token
+        );
+    }
+
     @GET("/mod/{idModerator}/poll/{idPoll}/question/{idQuestion}/answer")
     Call<List<Answer>> getAnswersViaCall(
             @Path("idModerator") long idModerator,
