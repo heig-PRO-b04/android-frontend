@@ -22,12 +22,12 @@ public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
     private static final int VIEW_TYPE_QUESTION = 1;
     private static final long HEADER_ID = -1;
 
-    private SharedViewModel state;
+    private PollViewModel state;
     private LifecycleOwner lifecycleOwner;
 
     private List<Question> questions = new LinkedList<>();
 
-    public PollAdapter(SharedViewModel state, LifecycleOwner lifecycleOwner) {
+    public PollAdapter(PollViewModel state, LifecycleOwner lifecycleOwner) {
         this.state = state;
         this.lifecycleOwner = lifecycleOwner;
         setHasStableIds(true);

@@ -24,7 +24,6 @@ public abstract class SharedViewModel extends AndroidViewModel {
     private LiveData<List<Question>> questions;
 
     private MediatorLiveData<Boolean> responseError = new MediatorLiveData<>();
-    private MutableLiveData<Question> questionToView = new MutableLiveData<>();
 
     public SharedViewModel(@NonNull Application application, String token, int idModerator, int idPoll) {
         super(application);
@@ -84,14 +83,6 @@ public abstract class SharedViewModel extends AndroidViewModel {
 
     public LiveData<Boolean> getErrors() {
         return responseError;
-    }
-
-    public void goToQuestion(Question question) {
-        questionToView.postValue(question);
-    }
-
-    public LiveData<Question> getQuestionToView() {
-        return questionToView;
     }
 
     public LiveData<List<Question>> getQuestions() {
