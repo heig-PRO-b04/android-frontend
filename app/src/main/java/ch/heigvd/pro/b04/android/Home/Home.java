@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -158,9 +157,7 @@ public class Home extends AppCompatActivity {
         }
 
         String code = intentResult.getContents();
-        if (code == null) {
-            Toast.makeText(this, "QR code failed", Toast.LENGTH_LONG).show();
-        } else {
+        if (code != null) {
             state.sendConnectRequest(code);
         }
     }

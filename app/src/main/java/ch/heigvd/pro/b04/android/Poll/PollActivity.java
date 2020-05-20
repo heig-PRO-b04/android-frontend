@@ -60,6 +60,12 @@ public class PollActivity extends AppCompatActivity {
 
         Button exitButton = findViewById(R.id.poll_exit_button);
         exitButton.setOnClickListener(view -> disconnectFromPoll());
+
+        tokenLiveData.observe(this, s -> {
+            if (! s.isPresent()) {
+                disconnectFromPoll();
+            }
+        });
     }
 
     /**
