@@ -117,7 +117,7 @@ public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if(position != 0 && position != 1) {
+        if(position > 1) {
             Question q = questions.get(position-2);
             ((QuestionViewHolder) holder).bindQuestion(q, q.answered() );
         }
