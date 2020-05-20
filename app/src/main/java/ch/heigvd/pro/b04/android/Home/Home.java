@@ -52,7 +52,7 @@ public class Home extends AppCompatActivity {
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return position == 0 || position == 1 ? COLUMN_NBR : 1;
+                return position <= 1 ? COLUMN_NBR : 1;
             }
         });
 
