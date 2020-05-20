@@ -19,6 +19,8 @@ public class PollActivity extends AppCompatActivity {
     public static final String EXTRA_ID_MODERATOR = "idModerator";
     public static final String EXTRA_ID_POLL = "idPoll";
     public static final String EXTRA_TOKEN = "token";
+    public static final String EXTRA_QUESTION = "question";
+    public static final String EXTRA_POLL = "poll";
 
     private PollViewModel state;
     private AuthenticationTokenLiveData tokenLiveData;
@@ -38,8 +40,6 @@ public class PollActivity extends AppCompatActivity {
                 intent.getIntExtra(EXTRA_ID_POLL, 0)
         )).get(PollViewModel.class);
 
-        state.getPollFromBackend();
-
         RecyclerView questionList = findViewById(R.id.poll_questions_view);
         questionList.setItemAnimator(new DefaultItemAnimator());
         LinearLayoutManager manager = new LinearLayoutManager(this);
@@ -51,15 +51,21 @@ public class PollActivity extends AppCompatActivity {
 
         state.getQuestionToView().observe(this, question -> {
             Intent questionIntent = new Intent(this, QuestionActivity.class)
-                    .putExtra(QuestionActivity.EXTRA_TOKEN, intent.getStringExtra(EXTRA_TOKEN))
-                    .putExtra("question", question)
-                    .putExtra("poll", state.getPoll().getValue());
+                    .putExtra(EXTRA_TOKEN, intent.getStringExtra(EXTRA_TOKEN))
+                    .putExtra(EXTRA_QUESTION, question)
+                    .putExtra(EXTRA_POLL, state.getPoll().getValue());
 
             startActivity(questionIntent);
         });
 
         Button exitButton = findViewById(R.id.poll_exit_button);
         exitButton.setOnClickListener(view -> disconnectFromPoll());
+
+        state.getErrors().observe(this, isError -> {
+            if (isError) {
+                disconnectFromPoll();
+            }
+        });
 
         tokenLiveData.observe(this, s -> {
             if (! s.isPresent()) {
