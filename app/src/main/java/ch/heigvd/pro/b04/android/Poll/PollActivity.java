@@ -40,8 +40,6 @@ public class PollActivity extends AppCompatActivity {
                 intent.getIntExtra(EXTRA_ID_POLL, 0)
         )).get(PollViewModel.class);
 
-        state.getPollFromBackend();
-
         RecyclerView questionList = findViewById(R.id.poll_questions_view);
         questionList.setItemAnimator(new DefaultItemAnimator());
         LinearLayoutManager manager = new LinearLayoutManager(this);
@@ -62,6 +60,12 @@ public class PollActivity extends AppCompatActivity {
 
         Button exitButton = findViewById(R.id.poll_exit_button);
         exitButton.setOnClickListener(view -> disconnectFromPoll());
+
+        state.getErrors().observe(this, isError -> {
+            if (isError) {
+                disconnectFromPoll();
+            }
+        });
 
         tokenLiveData.observe(this, s -> {
             if (! s.isPresent()) {
