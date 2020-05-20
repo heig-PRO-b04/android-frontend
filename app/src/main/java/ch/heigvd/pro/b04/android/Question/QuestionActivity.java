@@ -16,9 +16,11 @@ import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.R;
 
-public class QuestionActivity extends AppCompatActivity {
+import static ch.heigvd.pro.b04.android.Poll.PollActivity.EXTRA_POLL;
+import static ch.heigvd.pro.b04.android.Poll.PollActivity.EXTRA_QUESTION;
+import static ch.heigvd.pro.b04.android.Poll.PollActivity.EXTRA_TOKEN;
 
-    public static final String EXTRA_TOKEN = "token";
+public class QuestionActivity extends AppCompatActivity {
 
     private QuestionViewModel state;
 
@@ -27,10 +29,9 @@ public class QuestionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
 
-        Intent intent = getIntent();
-        Question question = (Question) intent.getSerializableExtra("question");
-        Poll poll = (Poll) intent.getSerializableExtra("poll");
-
+        final Intent intent = getIntent();
+        final Question question = (Question) intent.getSerializableExtra(EXTRA_QUESTION);
+        final Poll poll = (Poll) intent.getSerializableExtra(EXTRA_POLL);
         final String token = getIntent().getStringExtra(EXTRA_TOKEN);
 
         state = new ViewModelProvider(this).get(QuestionViewModel.class);

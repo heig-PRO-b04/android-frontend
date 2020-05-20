@@ -43,7 +43,7 @@ public class QuestionUtils {
         handler.postDelayed(new Runnable(){
             public void run(){
                 Rockin.api()
-                        .getQuestions(poll.getIdModerator(), poll.getIdPoll(), token)
+                        .getQuestionsViaCall(poll.getIdModerator(), poll.getIdPoll(), token)
                         .enqueue(callbackQuestions);
                 handler.postDelayed(this, DELAY_IN_MILLIS);
             }

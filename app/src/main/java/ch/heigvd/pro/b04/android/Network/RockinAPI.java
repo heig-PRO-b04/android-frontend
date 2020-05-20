@@ -5,12 +5,11 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 
 import ch.heigvd.pro.b04.android.Datamodel.Answer;
-import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.Datamodel.Poll;
+import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.Datamodel.Session;
 import ch.heigvd.pro.b04.android.Datamodel.SessionCode;
 import ch.heigvd.pro.b04.android.Datamodel.Token;
-
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -39,15 +38,23 @@ public interface RockinAPI {
             @Query("token") String userToken
     );
 
-    @GET("/mod/{idModerator}/poll/{idPoll}")
-    Call<Poll> getPollViaCall(
+    @GET("/mod/{idModerator}/poll/{idPoll}/question")
+    LiveData<ApiResponse<List<Question>>> getQuestions(
             @Path("idModerator") long idModerator,
             @Path("idPoll") long idPoll,
             @Query("token") String userToken
     );
 
+    default LiveData<ApiResponse<List<Question>>> getQuestions(Poll poll, String userToken) {
+        return Rockin.api().getQuestions(
+                poll.getIdModerator(),
+                poll.getIdPoll(),
+                userToken
+        );
+    }
+
     @GET("/mod/{idModerator}/poll/{idPoll}/question")
-    Call<List<Question>> getQuestions(
+    Call<List<Question>> getQuestionsViaCall(
             @Path("idModerator") long idModerator,
             @Path("idPoll") long idPoll,
             @Query("token") String userToken
