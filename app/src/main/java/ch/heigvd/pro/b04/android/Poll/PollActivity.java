@@ -19,6 +19,8 @@ public class PollActivity extends AppCompatActivity {
     public static final String EXTRA_ID_MODERATOR = "idModerator";
     public static final String EXTRA_ID_POLL = "idPoll";
     public static final String EXTRA_TOKEN = "token";
+    public static final String EXTRA_QUESTION = "question";
+    public static final String EXTRA_POLL = "poll";
 
     private PollViewModel state;
     private AuthenticationTokenLiveData tokenLiveData;
@@ -51,9 +53,9 @@ public class PollActivity extends AppCompatActivity {
 
         state.getQuestionToView().observe(this, question -> {
             Intent questionIntent = new Intent(this, QuestionActivity.class)
-                    .putExtra(QuestionActivity.EXTRA_TOKEN, intent.getStringExtra(EXTRA_TOKEN))
-                    .putExtra("question", question)
-                    .putExtra("poll", state.getPoll().getValue());
+                    .putExtra(EXTRA_TOKEN, intent.getStringExtra(EXTRA_TOKEN))
+                    .putExtra(EXTRA_QUESTION, question)
+                    .putExtra(EXTRA_POLL, state.getPoll().getValue());
 
             startActivity(questionIntent);
         });

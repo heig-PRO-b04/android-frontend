@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
@@ -76,11 +77,11 @@ public class PollViewModel extends AndroidViewModel {
         questionToView.postValue(question);
     }
 
-    public MutableLiveData<List<Question>> getQuestions() {
+    public LiveData<List<Question>> getQuestions() {
         return QuestionUtils.getQuestions();
     }
 
-    public MutableLiveData<Question> getQuestionToView() {
+    public LiveData<Question> getQuestionToView() {
         return questionToView;
     }
 
