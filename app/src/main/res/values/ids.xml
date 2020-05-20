@@ -19,13 +19,13 @@
 
     <!-- Question -->
     <item type="id" name="question" />
-    <item type="id" name="description" />
     <item type="id" name="question_answers_view" />
     <item type="id" name="question_answer_item" />
     <item type="id" name="question_answers_alert" />
     <item type="id" name="back_button" />
     <item type="id" name="before_button" />
     <item type="id" name="next_button" />
+    <item type="id" name="answer_description" />
 
     <!-- Other -->
     <item type="id" name="button" />

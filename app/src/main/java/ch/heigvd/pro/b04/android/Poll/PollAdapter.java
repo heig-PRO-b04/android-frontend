@@ -67,14 +67,12 @@ public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
 
     private static class InstructionViewHolder extends RecyclerView.ViewHolder {
         private TextView title;
-        public InstructionViewHolder(@NonNull ViewGroup parent, PollViewModel state, LifecycleOwner lifecycleOwner) {
+        public InstructionViewHolder(@NonNull ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.activity_instructions, parent, false));
             title = itemView.findViewById(R.id.instructions);
 
-            state.getPoll().observe(lifecycleOwner, poll -> {
-                title.setText("In order to answer a question, please click on it.");
-            });
+            title.setText("In order to answer a question, please click on it.");
         }
     }
 
@@ -109,7 +107,7 @@ public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
             case VIEW_TYPE_QUESTION:
                 return new QuestionViewHolder(parent);
             case VIEW_TYPE_INSTRUCTION:
-                return new InstructionViewHolder(parent, state, lifecycleOwner);
+                return new InstructionViewHolder(parent);
             default:
                 throw new IllegalStateException("Unknown view type.");
         }

@@ -5,7 +5,7 @@
 
     <!-- Home -->
     <string name="home_welcome">What\'s your poll identifier ?</string>
-    <string name="welcome_instructions">To enter a poll, please enter it\'s emoji code or use the QR code.</string>
+    <string name="welcome_instructions">To enter a poll, please enter its emoji code or use the QR code.</string>
     <string name="home_qr_code">Or Scan a QR Code</string>
     <string name="home_emoji_code_clear">Clear</string>
 

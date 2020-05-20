@@ -75,23 +75,28 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         private void bindAnswer(Answer answer) {
-            String textA = answer.getTitle();
+            StringBuilder sb = new StringBuilder();
+            sb.append(answer.getTitle());
+
             if(!answer.getDescription().equals("")) {
-                textA += "\n" + answer.getDescription();
+                sb.append("\n" + answer.getDescription());
             }
-            SpannableString text = new SpannableString(textA);
+
+            SpannableString text = new SpannableString(sb.toString());
             // make answer black
             text.setSpan(new ForegroundColorSpan(Color.BLACK),
                         0,
                         answer.getTitle().length(),
                         0);
             // make description grey
-            text.setSpan(new ForegroundColorSpan(
-                            context.getResources().getColor(R.color.colorDescription)
-                        ),
-                        answer.getTitle().length() + 1,
-                        textA.length(),
-                        0);
+            if(!answer.getDescription().equals("")) {
+                text.setSpan(new ForegroundColorSpan(
+                                context.getResources().getColor(R.color.colorDescription)
+                            ),
+                            answer.getTitle().length() + 1,
+                            sb.length(),
+                            0);
+            }
 
             // shove our styled text into the Button
             answerButton.setText(text, TextView.BufferType.SPANNABLE);
