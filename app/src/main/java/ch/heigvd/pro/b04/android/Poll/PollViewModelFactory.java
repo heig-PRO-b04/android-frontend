@@ -6,11 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import ch.heigvd.pro.b04.android.Poll.PollViewModel;
-
 /**
  * An implementation of a {@link ViewModelProvider.Factory} that supports the creation of some
- * {@link PollViewModel}s with specific authentication tokens, and dedicated poll identifiers as
+ * {@link SharedViewModel}s with specific authentication tokens, and dedicated poll identifiers as
  * well.
  */
 public class PollViewModelFactory implements ViewModelProvider.Factory {

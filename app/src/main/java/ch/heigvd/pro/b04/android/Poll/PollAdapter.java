@@ -22,12 +22,12 @@ public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
     private static final int VIEW_TYPE_QUESTION = 1;
     private static final long HEADER_ID = -1;
 
-    private PollViewModel state;
+    private SharedViewModel state;
     private LifecycleOwner lifecycleOwner;
 
     private List<Question> questions = new LinkedList<>();
 
-    public PollAdapter(PollViewModel state, LifecycleOwner lifecycleOwner) {
+    public PollAdapter(SharedViewModel state, LifecycleOwner lifecycleOwner) {
         this.state = state;
         this.lifecycleOwner = lifecycleOwner;
         setHasStableIds(true);
@@ -50,7 +50,7 @@ public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
 
     private static class HeaderViewHolder extends RecyclerView.ViewHolder {
         private TextView title;
-        public HeaderViewHolder(@NonNull ViewGroup parent, PollViewModel state, LifecycleOwner lifecycleOwner) {
+        public HeaderViewHolder(@NonNull ViewGroup parent, SharedViewModel state, LifecycleOwner lifecycleOwner) {
             super(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.poll_title, parent, false));
             title = itemView.findViewById(R.id.poll_title);
