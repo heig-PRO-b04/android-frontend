@@ -62,11 +62,11 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemViewType(int position) {
-        return position == 0
-                ? VIEW_TYPE_HEADER
-                : (position == 1
-                    ? VIEW_TYPE_INSTRUCTION
-                    :VIEW_TYPE_EMOJI);
+        switch (position) {
+            case 0 : return VIEW_TYPE_HEADER;
+            case 1 : return VIEW_TYPE_INSTRUCTION;
+            default: return VIEW_TYPE_EMOJI;
+        }
     }
 
     private static class HeaderViewHolder extends RecyclerView.ViewHolder {
