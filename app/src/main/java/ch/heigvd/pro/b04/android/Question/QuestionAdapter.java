@@ -3,6 +3,7 @@ package ch.heigvd.pro.b04.android.Question;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -78,7 +79,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             StringBuilder sb = new StringBuilder();
             sb.append(answer.getTitle());
 
-            if(!answer.getDescription().equals("")) {
+            if(!TextUtils.isEmpty(answer.getDescription())) {
                 sb.append("\n" + answer.getDescription());
             }
 
@@ -89,7 +90,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         answer.getTitle().length(),
                         0);
             // make description grey
-            if(!answer.getDescription().equals("")) {
+            if(!TextUtils.isEmpty(answer.getDescription())) {
                 text.setSpan(new ForegroundColorSpan(
                                 context.getResources().getColor(R.color.colorDescription)
                             ),

@@ -55,7 +55,7 @@ public class Home extends AppCompatActivity {
             }
         });
 
-        EmojiGridAdapter emojiAdapter = new EmojiGridAdapter(state, this);
+        EmojiGridAdapter emojiAdapter = new EmojiGridAdapter(state);
         emojiGrid.setAdapter(emojiAdapter);
         emojiGrid.setLayoutManager(manager);
     }

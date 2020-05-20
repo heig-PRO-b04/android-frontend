@@ -44,12 +44,14 @@ public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
 
     @Override
     public long getItemId(int position) {
-        if (position == 0)
-            return HEADER_ID;
-        if (position == 1)
-            return INSTRUCTION_ID;
-
-        return questions.get(position - 2).getIdQuestion();
+        switch (position) {
+            case 0:
+                return HEADER_ID;
+            case 1:
+                return INSTRUCTION_ID;
+            default:
+                return questions.get(position - 2).getIdQuestion();
+        }
     }
 
     private static class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -72,7 +74,7 @@ public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
                     .inflate(R.layout.activity_instructions, parent, false));
             title = itemView.findViewById(R.id.instructions);
 
-            title.setText("In order to answer a question, please click on it.");
+            title.setText(R.string.poll_instructions);
         }
     }
 
@@ -128,11 +130,11 @@ public class PollAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
 
     @Override
     public int getItemViewType(int position) {
-        return position == 0
-                ? VIEW_TYPE_HEADER
-                : (position == 1
-                    ? VIEW_TYPE_INSTRUCTION
-                    : VIEW_TYPE_QUESTION);
+        switch (position) {
+            case 0 : return VIEW_TYPE_HEADER;
+            case 1 : return VIEW_TYPE_INSTRUCTION;
+            default: return VIEW_TYPE_QUESTION;
+        }
     }
 
 }

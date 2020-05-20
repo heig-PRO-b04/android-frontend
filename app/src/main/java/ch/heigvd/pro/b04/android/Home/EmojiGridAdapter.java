@@ -21,7 +21,7 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private HomeViewModel state;
 
-    public EmojiGridAdapter(HomeViewModel state, LifecycleOwner lifecycleOwner) {
+    public EmojiGridAdapter(HomeViewModel state) {
         this.state = state;
     }
 
@@ -100,7 +100,7 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     .inflate(R.layout.activity_instructions, parent, false));
             title = itemView.findViewById(R.id.instructions);
 
-            title.setText("In order to connect to a poll, please enter its emoji code or scan the given QR code.");
+            title.setText(R.string.connection_instruction);
         }
     }
 }
