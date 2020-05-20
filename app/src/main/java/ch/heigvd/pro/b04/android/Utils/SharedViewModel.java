@@ -1,4 +1,4 @@
-package ch.heigvd.pro.b04.android.Poll;
+package ch.heigvd.pro.b04.android.Utils;
 
 import android.app.Application;
 
@@ -15,7 +15,6 @@ import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.Network.ApiResponse;
 import ch.heigvd.pro.b04.android.Network.Rockin;
-import ch.heigvd.pro.b04.android.Utils.PollingLiveData;
 
 public abstract class SharedViewModel extends AndroidViewModel {
     private static int POLLING_DELAY = 1000;
