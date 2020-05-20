@@ -37,7 +37,7 @@ public class PollViewModel extends AndroidViewModel {
                 response -> {
                     MutableLiveData<Poll> liveData = new MutableLiveData<>();
                     if (response.response().isPresent()) {
-                        liveData.postValue(response.response().get());
+                        liveData.setValue(response.response().get());
                     }
 
                     return liveData;
@@ -57,7 +57,7 @@ public class PollViewModel extends AndroidViewModel {
                 response -> {
                     MutableLiveData<List<Question>> liveData = new MutableLiveData<>();
                     if (response.response().isPresent()) {
-                        liveData.postValue(response.response().get());
+                        liveData.setValue(response.response().get());
                     }
                     return liveData;
                 })
