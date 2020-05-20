@@ -1,4 +1,4 @@
-package ch.heigvd.pro.b04.android.Poll;
+package ch.heigvd.pro.b04.android.Utils;
 
 import android.app.Application;
 
@@ -6,14 +6,15 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import ch.heigvd.pro.b04.android.Utils.SharedViewModel;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * An implementation of a {@link ViewModelProvider.Factory} that supports the creation of some
  * {@link SharedViewModel}s with specific authentication tokens, and dedicated poll identifiers as
  * well.
  */
-public class PollViewModelFactory implements ViewModelProvider.Factory {
+public class SharedViewModelFactory implements ViewModelProvider.Factory {
 
     private Application application;
 
@@ -21,21 +22,26 @@ public class PollViewModelFactory implements ViewModelProvider.Factory {
     private int idModerator;
     private int idPoll;
 
-    public PollViewModelFactory(
+    public SharedViewModelFactory(
             @NonNull Application application,
-            String token,
             int idModerator,
-            int idPoll
+            int idPoll,
+            String token
     ) {
         this.application = application;
-        this.token = token;
         this.idModerator = idModerator;
         this.idPoll = idPoll;
+        this.token = token;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new PollViewModel(application, token, idModerator, idPoll);
+        Constructor[] constructors = modelClass.getDeclaredConstructors();
+        try {
+            return (T) constructors[0].newInstance(application, idModerator, idPoll, token);
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

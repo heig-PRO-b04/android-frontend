@@ -1,10 +1,12 @@
 package ch.heigvd.pro.b04.android.Question;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
-import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,12 +20,13 @@ import ch.heigvd.pro.b04.android.Network.ApiResponse;
 import ch.heigvd.pro.b04.android.Network.Rockin;
 import ch.heigvd.pro.b04.android.Utils.LocalDebug;
 import ch.heigvd.pro.b04.android.Utils.PollingLiveData;
+import ch.heigvd.pro.b04.android.Utils.SharedViewModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class QuestionViewModel extends ViewModel {
+public class QuestionViewModel extends SharedViewModel {
     private static int POLLING_DELAY = 1000;
     private static int STABILIZATION_DELAY = 7500;
 
@@ -42,7 +45,10 @@ public class QuestionViewModel extends ViewModel {
     private LiveData<Boolean> responseError;
     private MediatorLiveData<ApiResponse<List<Answer>>> answerResponse = new MediatorLiveData<>();
 
-    public QuestionViewModel() {
+
+    public QuestionViewModel(@NonNull Application application, int idModerator, int idPoll, String token) {
+        super(application, idModerator, idPoll, token);
+
         LiveData<ApiResponse<List<Answer>>> transformQuestion = Transformations.switchMap(
                 currentQuestion,
                 question -> Rockin.api().getAnswers(question, token)

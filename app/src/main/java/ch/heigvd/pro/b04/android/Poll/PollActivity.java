@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import ch.heigvd.pro.b04.android.Authentication.AuthenticationTokenLiveData;
 import ch.heigvd.pro.b04.android.Question.QuestionActivity;
 import ch.heigvd.pro.b04.android.R;
+import ch.heigvd.pro.b04.android.Utils.SharedViewModelFactory;
 
 public class PollActivity extends AppCompatActivity {
 
@@ -33,11 +34,11 @@ public class PollActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         tokenLiveData = new AuthenticationTokenLiveData(this);
-        state = new ViewModelProvider(this, new PollViewModelFactory(
+        state = new ViewModelProvider(this, new SharedViewModelFactory(
                 getApplication(),
-                intent.getStringExtra(EXTRA_TOKEN),
                 intent.getIntExtra(EXTRA_ID_MODERATOR, 0),
-                intent.getIntExtra(EXTRA_ID_POLL, 0)
+                intent.getIntExtra(EXTRA_ID_POLL, 0),
+                intent.getStringExtra(EXTRA_TOKEN)
         )).get(PollViewModel.class);
 
         RecyclerView questionList = findViewById(R.id.poll_questions_view);

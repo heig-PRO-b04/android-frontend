@@ -24,7 +24,7 @@ public abstract class SharedViewModel extends AndroidViewModel {
 
     private MediatorLiveData<Boolean> responseError = new MediatorLiveData<>();
 
-    public SharedViewModel(@NonNull Application application, String token, int idModerator, int idPoll) {
+    public SharedViewModel(@NonNull Application application, int idModerator, int idPoll, String token) {
         super(application);
 
         // Poll

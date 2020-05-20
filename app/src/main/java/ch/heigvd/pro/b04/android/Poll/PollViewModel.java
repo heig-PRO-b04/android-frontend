@@ -12,8 +12,8 @@ import ch.heigvd.pro.b04.android.Utils.SharedViewModel;
 public class PollViewModel extends SharedViewModel {
     private MutableLiveData<Question> questionToView = new MutableLiveData<>();
 
-    public PollViewModel(@NonNull Application application, String token, int idModerator, int idPoll) {
-        super(application, token, idModerator, idPoll);
+    public PollViewModel(@NonNull Application application, int idModerator, int idPoll, String token) {
+        super(application, idModerator, idPoll, token);
     }
 
     public void goToQuestion(Question question) {

@@ -15,6 +15,7 @@ import ch.heigvd.pro.b04.android.Authentication.AuthenticationTokenLiveData;
 import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.R;
+import ch.heigvd.pro.b04.android.Utils.SharedViewModelFactory;
 
 import static ch.heigvd.pro.b04.android.Poll.PollActivity.EXTRA_POLL;
 import static ch.heigvd.pro.b04.android.Poll.PollActivity.EXTRA_QUESTION;
@@ -34,7 +35,13 @@ public class QuestionActivity extends AppCompatActivity {
         final Poll poll = (Poll) intent.getSerializableExtra(EXTRA_POLL);
         final String token = getIntent().getStringExtra(EXTRA_TOKEN);
 
-        state = new ViewModelProvider(this).get(QuestionViewModel.class);
+        state = new ViewModelProvider(this, new SharedViewModelFactory(
+                getApplication(),
+                poll.getIdModerator(),
+                poll.getIdPoll(),
+                token
+        )).get(QuestionViewModel.class);
+
         state.setCurrentQuestion(question);
         state.getAllQuestionsFromBackend(poll, token);
 
