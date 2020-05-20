@@ -20,10 +20,6 @@ import ch.heigvd.pro.b04.android.Utils.PollingLiveData;
 public class PollViewModel extends AndroidViewModel {
     private static int POLLING_DELAY = 1000;
 
-    private int idPoll;
-    private int idModerator;
-    private String token;
-
     private LiveData<Poll> poll;
     private LiveData<List<Question>> questions;
 
@@ -32,9 +28,6 @@ public class PollViewModel extends AndroidViewModel {
 
     public PollViewModel(@NonNull Application application, String token, int idModerator, int idPoll) {
         super(application);
-        this.token = token;
-        this.idModerator = idModerator;
-        this.idPoll = idPoll;
 
         // Poll
         LiveData<ApiResponse<Poll>> pollRequest = Rockin.api().getPoll(idModerator, idPoll, token);

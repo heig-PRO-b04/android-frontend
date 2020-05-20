@@ -39,7 +39,7 @@ public class QuestionViewModel extends ViewModel {
     private MutableLiveData<Integer> nbCheckedAnswer = new MutableLiveData<>(0);
     private MutableLiveData<Question> currentQuestion = new MutableLiveData<>();
     private LiveData<List<Answer>> currentAnswers = new MutableLiveData<>();
-    private LiveData<Boolean> responseError = new MutableLiveData<>(false);
+    private LiveData<Boolean> responseError;
     private MediatorLiveData<ApiResponse<List<Answer>>> answerResponse = new MediatorLiveData<>();
 
     public QuestionViewModel() {
