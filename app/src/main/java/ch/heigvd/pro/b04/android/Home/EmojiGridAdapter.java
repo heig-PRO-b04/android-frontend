@@ -20,11 +20,9 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static final int VIEW_TYPE_INSTRUCTION = 2;
 
     private HomeViewModel state;
-    private LifecycleOwner lifecycleOwner;
 
     public EmojiGridAdapter(HomeViewModel state, LifecycleOwner lifecycleOwner) {
         this.state = state;
-        this.lifecycleOwner = lifecycleOwner;
     }
 
     @NonNull
@@ -36,7 +34,7 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             case VIEW_TYPE_EMOJI:
                 return new EmojiViewHolder(parent);
             case VIEW_TYPE_INSTRUCTION:
-                return new InstructionViewHolder(parent, state, lifecycleOwner);
+                return new InstructionViewHolder(parent);
             default:
                 throw new IllegalStateException("Unknown view type.");
         }
@@ -97,7 +95,7 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private static class InstructionViewHolder extends RecyclerView.ViewHolder {
         private TextView title;
-        public InstructionViewHolder(@NonNull ViewGroup parent, HomeViewModel state, LifecycleOwner lifecycleOwner) {
+        public InstructionViewHolder(@NonNull ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.activity_instructions, parent, false));
             title = itemView.findViewById(R.id.instructions);
