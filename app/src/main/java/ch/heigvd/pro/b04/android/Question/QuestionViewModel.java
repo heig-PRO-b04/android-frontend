@@ -42,27 +42,20 @@ public class QuestionViewModel extends SharedViewModel {
     private MutableLiveData<Integer> nbCheckedAnswer = new MutableLiveData<>(0);
     private MutableLiveData<Question> currentQuestion = new MutableLiveData<>();
     private LiveData<List<Answer>> currentAnswers = new MutableLiveData<>();
-    private LiveData<Boolean> responseError;
-    private MediatorLiveData<ApiResponse<List<Answer>>> answerResponse = new MediatorLiveData<>();
-
+    private MediatorLiveData<Boolean> responseError = new MediatorLiveData<>();
 
     public QuestionViewModel(@NonNull Application application, int idModerator, int idPoll, String token) {
         super(application, idModerator, idPoll, token);
 
         LiveData<ApiResponse<List<Answer>>> transformQuestion = Transformations.switchMap(
                 currentQuestion,
-                question -> Rockin.api().getAnswers(question, token)
+                question -> Transformations.switchMap(
+                        new PollingLiveData(POLLING_DELAY),
+                        unit -> Rockin.api().getAnswers(question, token)
+                )
         );
 
-        LiveData<ApiResponse<List<Answer>>> transformDelayed = Transformations.switchMap(
-                new PollingLiveData(POLLING_DELAY),
-                unit -> Rockin.api().getAnswers(currentQuestion.getValue(), token)
-        );
-
-        answerResponse.addSource(transformQuestion, response -> answerResponse.postValue(response));
-        answerResponse.addSource(transformDelayed, response -> answerResponse.postValue(response));
-
-        currentAnswers = Transformations.switchMap(answerResponse, response -> {
+        currentAnswers = Transformations.switchMap(transformQuestion, response -> {
             if (! response.response().isPresent()) {
                 return new MutableLiveData<>();
             }
@@ -86,9 +79,13 @@ public class QuestionViewModel extends SharedViewModel {
             return new MutableLiveData<>(transferred);
         });
 
-        responseError = Transformations.distinctUntilChanged(Transformations.map(
-                answerResponse, response -> response.isFailure()
+        LiveData<Boolean> answerError = Transformations.distinctUntilChanged(Transformations.map(
+                transformQuestion,
+                response -> response.isFailure()
         ));
+
+        responseError.addSource(getErrors(), response -> responseError.postValue(response));
+        responseError.addSource(answerError, response -> responseError.postValue(response));
     }
 
     private Callback<ResponseBody> callbackVote = new Callback<ResponseBody>() {
@@ -127,7 +124,7 @@ public class QuestionViewModel extends SharedViewModel {
         double candidateIndex = Double.MIN_VALUE;
         Question candidate = null;
 
-        for (Question q : QuestionUtils.getQuestions().getValue()) {
+        for (Question q : getQuestions().getValue()) {
             double newIndex = q.getIndexInPoll();
             if (newIndex < currentIndex && newIndex > candidateIndex) {
                 candidateIndex = newIndex;
