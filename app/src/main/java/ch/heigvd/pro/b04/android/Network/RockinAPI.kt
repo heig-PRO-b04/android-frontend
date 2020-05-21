@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import ch.heigvd.pro.b04.android.Datamodel.*
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface RockinAPI {
@@ -24,12 +25,26 @@ interface RockinAPI {
             @Query("token") userToken: String?
     ): LiveData<ApiResponse<Poll?>?>
 
+    @GET("/mod/{idModerator}/poll/{idPoll}")
+    suspend fun getPollSuspending(
+            @Path("idModerator") idModerator: Long,
+            @Path("idPoll") idPoll: Long,
+            @Query("token") userToken: String?
+    ): Response<Poll>
+
     @GET("/mod/{idModerator}/poll/{idPoll}/question")
     fun getQuestions(
             @Path("idModerator") idModerator: Long,
             @Path("idPoll") idPoll: Long,
             @Query("token") userToken: String?
     ): LiveData<ApiResponse<List<Question?>?>?>
+
+    @GET("/mod/{idModerator}/poll/{idPoll}/question")
+    suspend fun getQuestionsSuspending(
+            @Path("idModerator") idModerator: Long,
+            @Path("idPoll") idPoll: Long,
+            @Query("token") userToken: String?
+    ): Response<List<Question>>
 
     @GET("/mod/{idModerator}/poll/{idPoll}/question")
     fun getQuestionsViaCall(
@@ -75,6 +90,15 @@ interface RockinAPI {
     companion object {
         fun getQuestions(poll: Poll, userToken: String?): LiveData<ApiResponse<List<Question?>?>?> {
             return Rockin.api().getQuestions(
+                    poll.idModerator.toLong(),
+                    poll.idPoll.toLong(),
+                    userToken
+            )
+        }
+
+        suspend fun getQuestionsSuspending(poll: Poll, userToken: String) : Response<List<Question>>
+        {
+            return Rockin.api().getQuestionsSuspending(
                     poll.idModerator.toLong(),
                     poll.idPoll.toLong(),
                     userToken
