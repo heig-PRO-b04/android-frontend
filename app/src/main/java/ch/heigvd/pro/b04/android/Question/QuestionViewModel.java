@@ -17,7 +17,7 @@ import ch.heigvd.pro.b04.android.Datamodel.Answer;
 import ch.heigvd.pro.b04.android.Datamodel.Poll;
 import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.Network.ApiResponse;
-import ch.heigvd.pro.b04.android.Network.Rockin;
+import ch.heigvd.pro.b04.android.Network.RockinAPI;
 import ch.heigvd.pro.b04.android.Utils.LocalDebug;
 import ch.heigvd.pro.b04.android.Utils.PollingLiveData;
 import ch.heigvd.pro.b04.android.Utils.SharedViewModel;
@@ -51,7 +51,7 @@ public class QuestionViewModel extends SharedViewModel {
                 currentQuestion,
                 question -> Transformations.switchMap(
                         new PollingLiveData(POLLING_DELAY),
-                        unit -> Rockin.api().getAnswers(question, token)
+                        unit -> RockinAPI.Companion.getAnswers(question, token)
                 )
         );
 
@@ -175,7 +175,7 @@ public class QuestionViewModel extends SharedViewModel {
             answer.toggle();
             // Save at which time we sent the request
             lastRequest.put(answer, System.currentTimeMillis());
-            Rockin.api().voteForAnswer(answer, token).enqueue(callbackVote);
+            RockinAPI.Companion.voteForAnswer(answer, token).enqueue(callbackVote);
         }
     }
 
