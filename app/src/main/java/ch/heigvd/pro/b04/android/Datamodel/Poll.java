@@ -14,6 +14,11 @@ public class Poll implements Serializable {
     @SerializedName("title")
     private String title;
 
+    public Poll(int idModerator, int idPoll) {
+        this.idModerator = idModerator;
+        this.idPoll = idPoll;
+        this.title = "";
+    }
 
     public int getIdModerator() {
         return idModerator;

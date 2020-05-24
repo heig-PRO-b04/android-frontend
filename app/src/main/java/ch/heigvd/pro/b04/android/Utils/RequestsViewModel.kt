@@ -35,7 +35,7 @@ fun <T:Any> Flow<Response<T>>.keepBody() : Flow<T> =
                 .map { it.body() }
                 .filterNotNull()
 
-class PollViewModel(application: Application, idModerator : Int, idPoll : Int, token : String)
+open class RequestsViewModel(application: Application, idModerator : Int, idPoll : Int, token : String)
     : AndroidViewModel(application) {
 
     val poll : Flow<Poll>

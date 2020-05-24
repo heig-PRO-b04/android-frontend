@@ -17,7 +17,8 @@ import ch.heigvd.pro.b04.android.Datamodel.Question;
 import ch.heigvd.pro.b04.android.R;
 import ch.heigvd.pro.b04.android.Utils.SharedViewModelFactory;
 
-import static ch.heigvd.pro.b04.android.Poll.PollActivity.EXTRA_POLL;
+import static ch.heigvd.pro.b04.android.Poll.PollActivity.EXTRA_ID_MODERATOR;
+import static ch.heigvd.pro.b04.android.Poll.PollActivity.EXTRA_ID_POLL;
 import static ch.heigvd.pro.b04.android.Poll.PollActivity.EXTRA_QUESTION;
 import static ch.heigvd.pro.b04.android.Poll.PollActivity.EXTRA_TOKEN;
 
@@ -32,18 +33,19 @@ public class QuestionActivity extends AppCompatActivity {
 
         final Intent intent = getIntent();
         final Question question = (Question) intent.getSerializableExtra(EXTRA_QUESTION);
-        final Poll poll = (Poll) intent.getSerializableExtra(EXTRA_POLL);
+        final int idModerator = intent.getIntExtra(EXTRA_ID_MODERATOR, 0);
+        final int idPoll = intent.getIntExtra(EXTRA_ID_POLL, 0);
         final String token = getIntent().getStringExtra(EXTRA_TOKEN);
 
         state = new ViewModelProvider(this, new SharedViewModelFactory(
                 getApplication(),
-                poll.getIdModerator(),
-                poll.getIdPoll(),
+                idModerator,
+                idPoll,
                 token
         )).get(QuestionViewModel.class);
 
         state.setCurrentQuestion(question);
-        state.getAllQuestionsFromBackend(poll, token);
+        state.getAllQuestionsFromBackend(new Poll(idModerator, idPoll), token);
 
         setupAnswerMinAlert(question);
         setupAnswerList();
