@@ -44,7 +44,6 @@ class PollAdapter(private val state: PollViewModel,
         private val questionButton: Button = itemView.findViewById(R.id.poll_question_item)
 
         fun bindQuestion(question: Question, answered: Boolean) {
-            // How to set a value in a flow ? Is flow the correct datastructure ?
             questionButton.text = question.title
             questionButton.setOnClickListener { state.goToQuestion(question) }
             if (answered) {

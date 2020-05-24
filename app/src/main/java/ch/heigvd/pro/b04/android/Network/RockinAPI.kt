@@ -70,6 +70,14 @@ interface RockinAPI {
     ): LiveData<ApiResponse<List<Answer?>?>?>
 
     @GET("/mod/{idModerator}/poll/{idPoll}/question/{idQuestion}/answer")
+    suspend fun getAnswersSuspending(
+            @Path("idModerator") idModerator: Long,
+            @Path("idPoll") idPoll: Long,
+            @Path("idQuestion") idQuestion: Long,
+            @Query("token") token: String?
+    ): Response<List<Answer>>
+
+    @GET("/mod/{idModerator}/poll/{idPoll}/question/{idQuestion}/answer")
     fun getAnswersViaCall(
             @Path("idModerator") idModerator: Long,
             @Path("idPoll") idPoll: Long,
@@ -86,6 +94,16 @@ interface RockinAPI {
             @Query("token") token: String?,
             @Body answer: Answer?
     ): Call<ResponseBody?>
+
+    @PUT("/mod/{idModerator}/poll/{idPoll}/question/{idQuestion}/answer/{idAnswer}/vote")
+    suspend fun voteForAnswerSuspending(
+        @Path("idModerator") idModerator: Long,
+        @Path("idPoll") idPoll: Long,
+        @Path("idQuestion") idQuestion: Long,
+        @Path("idAnswer") idAnswer: Long,
+        @Query("token") token: String?,
+        @Body answer: Answer?
+    ): ResponseBody
 
     companion object {
         fun getQuestions(poll: Poll, userToken: String?): LiveData<ApiResponse<List<Question?>?>?> {
@@ -114,6 +132,15 @@ interface RockinAPI {
             )
         }
 
+        suspend fun getAnswersSuspending(question: Question, token: String): Response<List<Answer>> {
+            return Rockin.api().getAnswersSuspending(
+                    question.idModerator,
+                    question.idPoll,
+                    question.idQuestion,
+                    token
+            )
+        }
+
         fun voteForAnswer(answer: Answer, token: String?): Call<ResponseBody?> {
             return Rockin.api().voteForAnswer(
                     answer.idModerator,
@@ -122,6 +149,16 @@ interface RockinAPI {
                     answer.idAnswer,
                     token,
                     answer)
+        }
+
+        suspend fun voteForAnswerSuspending(answer: Answer, token: String?): ResponseBody {
+            return Rockin.api().voteForAnswerSuspending(
+                answer.idModerator,
+                answer.idPoll,
+                answer.idQuestion,
+                answer.idAnswer,
+                token,
+                answer)
         }
     }
 }

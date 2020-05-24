@@ -1,5 +1,8 @@
+import kotlin.RequiresOptIn
+
 apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
+apply plugin: "kotlin-android-extensions"
 
 Properties properties = new Properties()
 
@@ -49,6 +52,7 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
+        RequiresOptIn
     }
 }
 

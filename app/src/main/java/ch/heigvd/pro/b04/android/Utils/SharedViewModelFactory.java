@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 public class SharedViewModelFactory implements ViewModelProvider.Factory {
 
     private Application application;
-
     private String token;
     private int idModerator;
     private int idPoll;

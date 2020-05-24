@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ch.heigvd.pro.b04.android.Authentication.AuthenticationTokenLiveData
+import ch.heigvd.pro.b04.android.Network.NetworkError
 import ch.heigvd.pro.b04.android.Question.QuestionActivity
 import ch.heigvd.pro.b04.android.R
-import ch.heigvd.pro.b04.android.Utils.ResponseError
 import ch.heigvd.pro.b04.android.Utils.SharedViewModelFactory
 import kotlinx.coroutines.flow.collect
 import java.util.*
@@ -47,8 +47,8 @@ class PollActivity : AppCompatActivity() {
         questionList.layoutManager = manager
 
         lifecycleScope.launchWhenStarted {
-            state.responseError.collect {
-                if (it == ResponseError.TokenNotValid)
+            state.requestsVMErrors.collect {
+                if (it == NetworkError.TokenNotValid)
                     disconnectFromPoll()
             }
         }
@@ -57,8 +57,6 @@ class PollActivity : AppCompatActivity() {
             val questionIntent = Intent(this, QuestionActivity::class.java)
                     .putExtra(EXTRA_TOKEN, intent.getStringExtra(EXTRA_TOKEN))
                     .putExtra(EXTRA_QUESTION, it)
-                    .putExtra(EXTRA_ID_MODERATOR, idModerator)
-                    .putExtra(EXTRA_ID_POLL, idPoll)
 
             startActivity(questionIntent)
         })
@@ -91,6 +89,5 @@ class PollActivity : AppCompatActivity() {
         const val EXTRA_ID_POLL = "idPoll"
         const val EXTRA_TOKEN = "token"
         const val EXTRA_QUESTION = "question"
-        const val EXTRA_POLL = "poll"
     }
 }

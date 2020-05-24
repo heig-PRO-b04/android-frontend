@@ -5,42 +5,20 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import ch.heigvd.pro.b04.android.Datamodel.Poll
 import ch.heigvd.pro.b04.android.Datamodel.Question
-import ch.heigvd.pro.b04.android.Network.Rockin
-import ch.heigvd.pro.b04.android.Network.RockinAPI
+import ch.heigvd.pro.b04.android.Network.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import retrofit2.Response
 
-enum class ResponseError {
-    TokenNotValid,
-    NotFound
-}
-
-private const val DELAY : Long = 1000
-
-private fun <T> errorFrom(response: Response<T>): ResponseError? {
-    return when (response.code()) {
-        404 -> ResponseError.NotFound
-        else -> null
-    }
-}
-
-fun <T> Flow<Response<T>>.keepError() : Flow<ResponseError> =
-        filter { it.isSuccessful.not() }
-                .map { errorFrom(it) }
-                .filterNotNull()
-
-fun <T:Any> Flow<Response<T>>.keepBody() : Flow<T> =
-        filter { it.isSuccessful }
-                .map { it.body() }
-                .filterNotNull()
-
+@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 open class RequestsViewModel(application: Application, idModerator : Int, idPoll : Int, token : String)
     : AndroidViewModel(application) {
 
     val poll : Flow<Poll>
     val questions : Flow<List<Question>>
-    val responseError : Flow<ResponseError>
+    val requestsVMErrors : Flow<NetworkError>
 
     init {
         val polls : Flow<Response<Poll>> = flow {
@@ -62,9 +40,9 @@ open class RequestsViewModel(application: Application, idModerator : Int, idPoll
 
         questions = requestQuestion.keepBody()
 
-        val pollError : Flow<ResponseError> = polls.keepError()
-        val questionError : Flow<ResponseError> = requestQuestion.keepError()
+        val pollError : Flow<NetworkError> = polls.keepError()
+        val questionError : Flow<NetworkError> = requestQuestion.keepError()
 
-        responseError = flowOf(questionError, pollError).flattenMerge()
+        requestsVMErrors = flowOf(questionError, pollError).flattenMerge()
     }
 }
