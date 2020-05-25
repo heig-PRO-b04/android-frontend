@@ -6,17 +6,22 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ch.heigvd.pro.b04.android.Authentication.AuthenticationTokenLiveData
 import ch.heigvd.pro.b04.android.Datamodel.Question
+import ch.heigvd.pro.b04.android.Network.NetworkError
 import ch.heigvd.pro.b04.android.Poll.PollActivity
 import ch.heigvd.pro.b04.android.R
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 
 class QuestionActivity : AppCompatActivity() {
     private lateinit var state: QuestionViewModel
 
+    @OptIn(InternalCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question)
@@ -33,13 +38,12 @@ class QuestionActivity : AppCompatActivity() {
         setupAnswerMinAlert(question)
         setupAnswerList()
 
-        /*
-        state.getResponseError().observe(this, Observer { gotError: Boolean ->
-            if (gotError) {
-                disconnect()
+        lifecycleScope.launchWhenStarted {
+            state.getErrors().collect {
+                if (it == NetworkError.TokenNotValid)
+                    disconnect()
             }
-        })
-         */
+        }
     }
 
     private fun setupAnswerList() {
