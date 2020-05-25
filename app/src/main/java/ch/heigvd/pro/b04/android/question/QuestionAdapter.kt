@@ -8,8 +8,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
-import ch.heigvd.pro.b04.android.datamodel.Answer
 import ch.heigvd.pro.b04.android.R
+import ch.heigvd.pro.b04.android.datamodel.Answer
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
@@ -28,8 +28,8 @@ class QuestionAdapter(private val state: QuestionViewModel,
     private class HeaderViewHolder(parent: ViewGroup,
                                    state: QuestionViewModel
     ) : RecyclerView.ViewHolder(LayoutInflater.from(parent.context)
-
         .inflate(R.layout.question_title, parent, false)) {
+
         private val title: TextView = itemView.findViewById(R.id.question)
 
         init {
