@@ -40,7 +40,7 @@ class PollActivity : AppCompatActivity() {
         val questionList = findViewById<RecyclerView>(R.id.poll_questions_view)
         questionList.itemAnimator = DefaultItemAnimator()
         val manager = LinearLayoutManager(this)
-        val pollAdapter = PollAdapter(state, this)
+        val pollAdapter = PollAdapter(state)
         questionList.adapter = pollAdapter
         questionList.layoutManager = manager
 
