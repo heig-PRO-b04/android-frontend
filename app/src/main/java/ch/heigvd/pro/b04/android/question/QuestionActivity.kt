@@ -10,11 +10,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ch.heigvd.pro.b04.android.R
 import ch.heigvd.pro.b04.android.authentication.AuthenticationTokenLiveData
 import ch.heigvd.pro.b04.android.datamodel.Question
 import ch.heigvd.pro.b04.android.network.NetworkError
 import ch.heigvd.pro.b04.android.poll.PollActivity
-import ch.heigvd.pro.b04.android.R
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 
@@ -39,7 +39,7 @@ class QuestionActivity : AppCompatActivity() {
         setupAnswerList()
 
         lifecycleScope.launchWhenStarted {
-            state.requestsVMErrors.collect {
+            state.networkErrors().collect {
                 if (it == NetworkError.TokenNotValid)
                     disconnect()
             }

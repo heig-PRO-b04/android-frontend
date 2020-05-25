@@ -10,10 +10,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ch.heigvd.pro.b04.android.R
 import ch.heigvd.pro.b04.android.authentication.AuthenticationTokenLiveData
 import ch.heigvd.pro.b04.android.network.NetworkError
 import ch.heigvd.pro.b04.android.question.QuestionActivity
-import ch.heigvd.pro.b04.android.R
 import kotlinx.coroutines.flow.collect
 import java.util.*
 
@@ -46,7 +46,7 @@ class PollActivity : AppCompatActivity() {
         questionList.layoutManager = manager
 
         lifecycleScope.launchWhenStarted {
-            state.requestsVMErrors.collect {
+            state.networkErrors().collect {
                 if (it == NetworkError.TokenNotValid)
                     disconnectFromPoll()
             }

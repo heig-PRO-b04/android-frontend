@@ -22,9 +22,9 @@ class QuestionViewModel(application: Application, question : Question, private v
     private val previousQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
     private val nextQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
     private val nbCheckedAnswer : MutableLiveData<Int> = MutableLiveData(0)
+    private val networkErrors : Flow<NetworkError>
 
     val currentQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
-    val questionVMErrors : Flow<NetworkError>
     val answers: Flow<List<Answer>>
 
     init {
@@ -58,7 +58,7 @@ class QuestionViewModel(application: Application, question : Question, private v
 
         val answerErrors = requestAnswers.keepError()
 
-        questionVMErrors = flowOf(answerErrors, requestsVMErrors).flattenMerge()
+        networkErrors = flowOf(answerErrors, super.networkErrors()).flattenMerge()
 
         val questionRelative : Flow<Pair<Question, List<Question>>> = currentQuestion
             .filterNotNull()
@@ -138,5 +138,9 @@ class QuestionViewModel(application: Application, question : Question, private v
 
     fun getNbCheckedAnswer() : LiveData<Int> {
         return nbCheckedAnswer
+    }
+
+    override fun networkErrors(): Flow<NetworkError> {
+        return networkErrors
     }
 }

@@ -17,7 +17,8 @@ open class RequestsViewModel(application: Application, idModerator : Int, idPoll
 
     val poll : Flow<Poll>
     val questions : Flow<List<Question>>
-    val requestsVMErrors : Flow<NetworkError>
+
+    private val networkErrors : Flow<NetworkError>
 
     init {
         val polls : Flow<Response<Poll>> = flow {
@@ -42,6 +43,10 @@ open class RequestsViewModel(application: Application, idModerator : Int, idPoll
         val pollError : Flow<NetworkError> = polls.keepError()
         val questionError : Flow<NetworkError> = requestQuestion.keepError()
 
-        requestsVMErrors = flowOf(questionError, pollError).flattenMerge()
+        networkErrors = flowOf(questionError, pollError).flattenMerge()
+    }
+
+    open fun networkErrors(): Flow<NetworkError> {
+        return networkErrors
     }
 }
