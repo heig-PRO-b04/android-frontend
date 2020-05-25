@@ -33,11 +33,8 @@ class QuestionViewModel(application: Application, question : Question, private v
         val answersDelayed : Flow<Response<List<Answer>>> = flow {
             while(true) {
                 try {
-                    currentQuestion
-                        .filterNotNull()
-                        .collectLatest {
-                        emit(RockinAPI.getAnswersSuspending(question, token))
-                    }
+                    if (currentQuestion.value != null)
+                        emit(RockinAPI.getAnswersSuspending(currentQuestion.value!!, token))
                 } catch (any : Exception) {}
                 delay(DELAY)
             }
