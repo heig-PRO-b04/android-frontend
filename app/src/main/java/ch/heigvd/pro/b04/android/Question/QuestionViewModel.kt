@@ -3,13 +3,11 @@ package ch.heigvd.pro.b04.android.Question
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import ch.heigvd.pro.b04.android.Datamodel.Answer
 import ch.heigvd.pro.b04.android.Datamodel.Question
 import ch.heigvd.pro.b04.android.Network.*
 import ch.heigvd.pro.b04.android.Network.RockinAPI.Companion.voteForAnswerSuspending
-import ch.heigvd.pro.b04.android.Network.RequestsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -21,20 +19,24 @@ import retrofit2.Response
 class QuestionViewModel(application: Application, question : Question, private val token : String)
         : RequestsViewModel(application, question.idModerator.toInt(), question.idPoll.toInt(), token) {
 
-    private val previousQuestion : Flow<Question?>
-    private val nextQuestion : Flow<Question?>
+    private val previousQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
+    private val nextQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
     private val nbCheckedAnswer : MutableLiveData<Int> = MutableLiveData(0)
 
-    val currentQuestion : MutableLiveData<Question> = MutableLiveData(question)
+    val currentQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
 
     val answers: Flow<List<Answer>>
     private val questionVMErrors : Flow<NetworkError>
 
     init {
+        currentQuestion.value = question
+
         val answersDelayed : Flow<Response<List<Answer>>> = flow {
             while(true) {
                 try {
-                    currentQuestion.asFlow().collectLatest {
+                    currentQuestion
+                        .filterNotNull()
+                        .collectLatest {
                         emit(RockinAPI.getAnswersSuspending(question, token))
                     }
                 } catch (any : Exception) {}
@@ -43,7 +45,7 @@ class QuestionViewModel(application: Application, question : Question, private v
         }.broadcastIn(viewModelScope).asFlow()
 
         val answersUpdate : Flow<Response<List<Answer>>> = currentQuestion
-            .asFlow()
+            .filterNotNull()
             .map { RockinAPI.getAnswersSuspending(it, token) }
             .catch {}
             .filterNotNull()
@@ -60,37 +62,45 @@ class QuestionViewModel(application: Application, question : Question, private v
         questionVMErrors = flowOf(answerErrors, requestsVMErrors).flattenMerge<NetworkError>()
 
         val questionRelative : Flow<Pair<Question, List<Question>>> = currentQuestion
-            .asFlow()
+            .filterNotNull()
             .zip(questions) { x, y -> x to y }
 
-        previousQuestion = questionRelative.map {(current, all) ->
-            var candidate : Question? = null
-            var candidateIndex = Double.MIN_VALUE
+        viewModelScope.launch {
+            questionRelative.map { (current, all) ->
+                var candidate: Question? = null
+                var candidateIndex = Double.MIN_VALUE
 
-            all.forEach {
-                val newIndex = it.indexInPoll
-                if (newIndex < current.indexInPoll && newIndex > candidateIndex) {
-                    candidate = it
-                    candidateIndex = newIndex
+                all.forEach {
+                    val newIndex = it.indexInPoll
+                    if (newIndex < current.indexInPoll && newIndex > candidateIndex) {
+                        candidate = it
+                        candidateIndex = newIndex
+                    }
                 }
-            }
 
-            return@map candidate
+                return@map candidate
+            }.collect {
+                previousQuestion.value = it
+            }
         }
 
-        nextQuestion = questionRelative.map {(current, all) ->
-            var candidate : Question? = null
-            var candidateIndex = Double.MAX_VALUE
+        viewModelScope.launch {
+            questionRelative.map { (current, all) ->
+                var candidate: Question? = null
+                var candidateIndex = Double.MAX_VALUE
 
-            all.forEach {
-                val newIndex = it.indexInPoll
-                if (newIndex > current.indexInPoll && newIndex < candidateIndex) {
-                    candidate = it
-                    candidateIndex = newIndex
+                all.forEach {
+                    val newIndex = it.indexInPoll
+                    if (newIndex > current.indexInPoll && newIndex < candidateIndex) {
+                        candidate = it
+                        candidateIndex = newIndex
+                    }
                 }
-            }
 
-            return@map candidate
+                return@map candidate
+            }.collect {
+                nextQuestion.value = it
+            }
         }
     }
 
@@ -120,21 +130,11 @@ class QuestionViewModel(application: Application, question : Question, private v
     }
 
     fun changeToPreviousQuestion() : Unit {
-        viewModelScope.launch {
-            previousQuestion.collectLatest {
-                if (it != null)
-                    currentQuestion.value = it
-            }
-        }
+        currentQuestion.value = previousQuestion.value!!
     }
 
     fun changeToNextQuestion() : Unit {
-        viewModelScope.launch {
-            nextQuestion.collectLatest {
-                if (it != null)
-                    currentQuestion.value = it
-            }
-        }
+        currentQuestion.value = nextQuestion.value!!
     }
 
     fun getNbCheckedAnswer() : LiveData<Int> {

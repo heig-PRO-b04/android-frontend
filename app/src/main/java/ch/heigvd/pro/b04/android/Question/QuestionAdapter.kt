@@ -7,13 +7,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import ch.heigvd.pro.b04.android.Datamodel.Answer
-import ch.heigvd.pro.b04.android.Datamodel.Question
 import ch.heigvd.pro.b04.android.R
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.launch
 import java.util.*
 
 class QuestionAdapter(private val state: QuestionViewModel,
@@ -36,9 +37,13 @@ class QuestionAdapter(private val state: QuestionViewModel,
         private val title: TextView = itemView.findViewById(R.id.question)
 
         init {
-            state.currentQuestion.observe(lifecycleOwner, Observer {
-                selectedQuestion: Question -> title.text = selectedQuestion.title
-            })
+            state.viewModelScope.launch {
+                state.currentQuestion
+                    .filterNotNull()
+                    .collect {
+                    title.text = it.title
+                }
+            }
         }
     }
 
