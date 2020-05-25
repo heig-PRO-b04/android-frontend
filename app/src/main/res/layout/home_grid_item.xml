@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ch.heigvd.pro.b04.android.Utils.SquareCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<ch.heigvd.pro.b04.android.utils.SquareCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@id/home_grid_item"
@@ -24,4 +24,4 @@
         android:scaleType="fitCenter"
         tools:src="@drawable/emoji_0" />
 
-</ch.heigvd.pro.b04.android.Utils.SquareCardView>
+</ch.heigvd.pro.b04.android.utils.SquareCardView>
