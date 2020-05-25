@@ -9,7 +9,7 @@ import ch.heigvd.pro.b04.android.Datamodel.Answer
 import ch.heigvd.pro.b04.android.Datamodel.Question
 import ch.heigvd.pro.b04.android.Network.*
 import ch.heigvd.pro.b04.android.Network.RockinAPI.Companion.voteForAnswerSuspending
-import ch.heigvd.pro.b04.android.Utils.RequestsViewModel
+import ch.heigvd.pro.b04.android.Network.RequestsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay

@@ -1,4 +1,4 @@
-package ch.heigvd.pro.b04.android.Utils
+package ch.heigvd.pro.b04.android.Network
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
