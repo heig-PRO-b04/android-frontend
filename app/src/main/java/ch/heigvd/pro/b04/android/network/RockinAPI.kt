@@ -114,8 +114,7 @@ interface RockinAPI {
             )
         }
 
-        suspend fun getQuestionsSuspending(poll: Poll, userToken: String) : Response<List<Question>>
-        {
+        suspend fun getQuestionsSuspending(poll: Poll, userToken: String) : Response<List<Question>> {
             return Rockin.api().getQuestionsSuspending(
                     poll.idModerator.toLong(),
                     poll.idPoll.toLong(),
