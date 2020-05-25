@@ -45,7 +45,7 @@ class QuestionActivity : AppCompatActivity() {
     private fun setupAnswerList() {
         val answerList = findViewById<RecyclerView>(R.id.question_answers_view)
         val manager = LinearLayoutManager(this)
-        val questionAdapter = QuestionAdapter(state, this, applicationContext)
+        val questionAdapter = QuestionAdapter(state, this)
 
         answerList.itemAnimator = DefaultItemAnimator()
         answerList.adapter = questionAdapter

@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import ch.heigvd.pro.b04.android.Datamodel.Answer
@@ -18,7 +16,6 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class QuestionAdapter(private val state: QuestionViewModel,
-                      private val lifecycleOwner: LifecycleOwner,
                       private val context: Context
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -29,8 +26,7 @@ class QuestionAdapter(private val state: QuestionViewModel,
     }
 
     private class HeaderViewHolder(parent: ViewGroup,
-                                   state: QuestionViewModel,
-                                   lifecycleOwner: LifecycleOwner
+                                   state: QuestionViewModel
     ) : RecyclerView.ViewHolder(LayoutInflater.from(parent.context)
 
         .inflate(R.layout.question_title, parent, false)) {
@@ -76,7 +72,7 @@ class QuestionAdapter(private val state: QuestionViewModel,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            VIEW_TYPE_HEADER -> HeaderViewHolder(parent, state, lifecycleOwner)
+            VIEW_TYPE_HEADER -> HeaderViewHolder(parent, state)
             VIEW_TYPE_ANSWER -> AnswerViewHolder(parent)
             else -> throw IllegalStateException("Unknown view type.")
         }
@@ -105,7 +101,7 @@ class QuestionAdapter(private val state: QuestionViewModel,
 
     init {
         setHasStableIds(true)
-        lifecycleOwner.lifecycleScope.launchWhenStarted {
+        state.viewModelScope.launch {
             state.answers.collect {
                 this@QuestionAdapter.answers = it
                 notifyDataSetChanged()
