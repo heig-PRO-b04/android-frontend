@@ -5,18 +5,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
-import ch.heigvd.pro.b04.android.datamodel.Question
 import ch.heigvd.pro.b04.android.R
+import ch.heigvd.pro.b04.android.datamodel.Question
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import java.util.*
 
-class PollAdapter(private val state: PollViewModel,
-                  private val lifecycleOwner: LifecycleOwner
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PollAdapter(private val state: PollViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var questions: List<Question> = LinkedList()
     override fun getItemId(position: Int): Long {
@@ -24,15 +22,14 @@ class PollAdapter(private val state: PollViewModel,
     }
 
     private class HeaderViewHolder(parent: ViewGroup,
-                                   state: PollViewModel,
-                                   lifecycleOwner: LifecycleOwner
+                                   state: PollViewModel
     ) : RecyclerView.ViewHolder(LayoutInflater.from(parent.context)
             .inflate(R.layout.poll_title, parent, false)) {
 
         private val title: TextView = itemView.findViewById(R.id.poll_title)
 
         init {
-            lifecycleOwner.lifecycleScope.launchWhenStarted {
+            state.viewModelScope.launch {
                 state.poll.collect { poll -> title.text = poll.title }
             }
         }
@@ -57,7 +54,7 @@ class PollAdapter(private val state: PollViewModel,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            VIEW_TYPE_HEADER -> HeaderViewHolder(parent, state, lifecycleOwner)
+            VIEW_TYPE_HEADER -> HeaderViewHolder(parent, state)
             VIEW_TYPE_QUESTION -> QuestionViewHolder(parent)
             else -> throw IllegalStateException("Unknown view type.")
         }
@@ -86,13 +83,13 @@ class PollAdapter(private val state: PollViewModel,
 
     init {
         setHasStableIds(true)
-        lifecycleOwner.lifecycleScope.launchWhenStarted {
+        state.viewModelScope.launch {
             state.questions
-                    .map { it.sortedBy { question -> question.indexInPoll } }
-                    .collect {
-                        questions = it
-                        notifyDataSetChanged()
-                    }
+                .map { it.sortedBy { question -> question.indexInPoll } }
+                .collect {
+                    questions = it
+                    notifyDataSetChanged()
+                }
         }
     }
 }
