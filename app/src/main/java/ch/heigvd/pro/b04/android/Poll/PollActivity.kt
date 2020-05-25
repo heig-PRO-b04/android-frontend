@@ -14,7 +14,6 @@ import ch.heigvd.pro.b04.android.Authentication.AuthenticationTokenLiveData
 import ch.heigvd.pro.b04.android.Network.NetworkError
 import ch.heigvd.pro.b04.android.Question.QuestionActivity
 import ch.heigvd.pro.b04.android.R
-import ch.heigvd.pro.b04.android.Utils.SharedViewModelFactory
 import kotlinx.coroutines.flow.collect
 import java.util.*
 
@@ -32,7 +31,7 @@ class PollActivity : AppCompatActivity() {
 
         tokenLiveData = AuthenticationTokenLiveData(this)
 
-        state = ViewModelProvider(this, SharedViewModelFactory(
+        state = ViewModelProvider(this, PollViewModelFactory(
                 application,
                 idModerator,
                 idPoll,

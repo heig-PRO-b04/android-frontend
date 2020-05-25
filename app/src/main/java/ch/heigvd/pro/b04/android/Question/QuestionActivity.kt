@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +24,11 @@ class QuestionActivity : AppCompatActivity() {
         val question = intent.getSerializableExtra(PollActivity.EXTRA_QUESTION) as Question
         val token = getIntent().getStringExtra(PollActivity.EXTRA_TOKEN)
 
-        state = QuestionViewModel(application, question, token)
+        state = ViewModelProvider(this, QuestionViewModelFactory(
+            application,
+            question,
+            token
+        )).get(QuestionViewModel::class.java)
 
         setupAnswerMinAlert(question)
         setupAnswerList()
