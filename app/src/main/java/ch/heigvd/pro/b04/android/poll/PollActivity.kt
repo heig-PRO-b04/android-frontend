@@ -25,7 +25,6 @@ class PollActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_poll)
 
-        val intent = intent
         val idModerator = intent.getIntExtra(EXTRA_ID_MODERATOR, 0)
         val idPoll = intent.getIntExtra(EXTRA_ID_POLL, 0)
 
