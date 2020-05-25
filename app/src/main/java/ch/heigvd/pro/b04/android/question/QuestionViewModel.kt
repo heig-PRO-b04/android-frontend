@@ -24,24 +24,28 @@ class QuestionViewModel(application: Application, question : Question, private v
     private val nbCheckedAnswer : MutableLiveData<Int> = MutableLiveData(0)
     private val networkErrors : Flow<NetworkError>
 
+    private var lastVoteAtTime : Long = System.currentTimeMillis()
+
     val currentQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
     val answers: Flow<List<Answer>>
 
     init {
         currentQuestion.value = question
 
-        val answersDelayed : Flow<Response<List<Answer>>> = flow {
+        val pollingTimeToAnswers : Flow<Pair<Long, Response<List<Answer>>>> = flow {
             while(true) {
                 try {
-                    currentQuestion
-                        .filterNotNull()
-                        .collectLatest {
-                        emit(RockinAPI.getAnswersSuspending(question, token))
+                    currentQuestion.value?.let {
+                        emit(System.currentTimeMillis() to RockinAPI.getAnswersSuspending(it, token))
                     }
                 } catch (any : Exception) {}
                 delay(DELAY)
             }
         }.broadcastIn(viewModelScope).asFlow()
+
+        val pollingAnswerDelayed = pollingTimeToAnswers
+            .filter { it.first > lastVoteAtTime + REFRESH_DELAY }
+            .map { it.second }
 
         val answersUpdate : Flow<Response<List<Answer>>> = currentQuestion
             .filterNotNull()
@@ -49,23 +53,17 @@ class QuestionViewModel(application: Application, question : Question, private v
             .catch {}
             .filterNotNull()
 
-        val requestAnswers = flowOf(
-            answersDelayed.onEach { delay(7500) },
-            answersUpdate
-        ).flattenMerge()
-        
+        val requestAnswers = merge(pollingAnswerDelayed, answersUpdate)
+
         answers = requestAnswers.keepBody()
+        networkErrors = merge(requestAnswers.keepError(), super.networkErrors())
 
-        val answerErrors = requestAnswers.keepError()
-
-        networkErrors = flowOf(answerErrors, super.networkErrors()).flattenMerge()
-
-        val questionRelative : Flow<Pair<Question, List<Question>>> = currentQuestion
+        val currentToAllQuestions : Flow<Pair<Question, List<Question>>> = currentQuestion
             .filterNotNull()
             .zip(questions) { x, y -> x to y }
 
         viewModelScope.launch {
-            questionRelative.map { (current, all) ->
+            currentToAllQuestions.map { (current, all) ->
                 var candidate: Question? = null
                 var candidateIndex = Double.MIN_VALUE
 
@@ -84,7 +82,7 @@ class QuestionViewModel(application: Application, question : Question, private v
         }
 
         viewModelScope.launch {
-            questionRelative.map { (current, all) ->
+            currentToAllQuestions.map { (current, all) ->
                 var candidate: Question? = null
                 var candidateIndex = Double.MAX_VALUE
 
@@ -119,6 +117,7 @@ class QuestionViewModel(application: Application, question : Question, private v
                 counter--
             }
             nbCheckedAnswer.value = counter
+            lastVoteAtTime = System.currentTimeMillis()
 
             answer.toggle()
             // Note that for now, we do not take the result into account
@@ -142,5 +141,9 @@ class QuestionViewModel(application: Application, question : Question, private v
 
     override fun networkErrors(): Flow<NetworkError> {
         return networkErrors
+    }
+
+    companion object {
+        private const val REFRESH_DELAY :Long = 5000
     }
 }
