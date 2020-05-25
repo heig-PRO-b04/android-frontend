@@ -32,7 +32,7 @@ class QuestionViewModel(application: Application, question : Question, private v
     init {
         currentQuestion.value = question
 
-        val pollingAnswers : Flow<Pair<Long, Response<List<Answer>>>> = flow {
+        val pollingTimeToAnswers : Flow<Pair<Long, Response<List<Answer>>>> = flow {
             while(true) {
                 try {
                     currentQuestion.value?.let {
@@ -43,7 +43,7 @@ class QuestionViewModel(application: Application, question : Question, private v
             }
         }.broadcastIn(viewModelScope).asFlow()
 
-        val pollingAnswerDelayed = pollingAnswers
+        val pollingAnswerDelayed = pollingTimeToAnswers
             .filter { it.first > lastVoteAtTime + REFRESH_DELAY }
             .map { it.second }
 
@@ -58,12 +58,12 @@ class QuestionViewModel(application: Application, question : Question, private v
         answers = requestAnswers.keepBody()
         networkErrors = merge(requestAnswers.keepError(), super.networkErrors())
 
-        val currentAndAllQuestions : Flow<Pair<Question, List<Question>>> = currentQuestion
+        val currentToAllQuestions : Flow<Pair<Question, List<Question>>> = currentQuestion
             .filterNotNull()
             .zip(questions) { x, y -> x to y }
 
         viewModelScope.launch {
-            currentAndAllQuestions.map { (current, all) ->
+            currentToAllQuestions.map { (current, all) ->
                 var candidate: Question? = null
                 var candidateIndex = Double.MIN_VALUE
 
@@ -82,7 +82,7 @@ class QuestionViewModel(application: Application, question : Question, private v
         }
 
         viewModelScope.launch {
-            currentAndAllQuestions.map { (current, all) ->
+            currentToAllQuestions.map { (current, all) ->
                 var candidate: Question? = null
                 var candidateIndex = Double.MAX_VALUE
 
