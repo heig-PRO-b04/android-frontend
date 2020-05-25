@@ -73,12 +73,12 @@ class PollActivity : AppCompatActivity() {
      * Helper method that disconnects us from the current Poll
      */
     private fun disconnectFromPoll() {
-        tokenLiveData!!.logout()
+        tokenLiveData?.logout()
         finish()
     }
 
     override fun onBackPressed() {
-        tokenLiveData!!.logout()
+        tokenLiveData?.logout()
         super.onBackPressed()
     }
 
