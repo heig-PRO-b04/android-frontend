@@ -58,12 +58,12 @@ class QuestionViewModel(application: Application, question : Question, private v
         answers = requestAnswers.keepBody()
         networkErrors = merge(requestAnswers.keepError(), super.networkErrors())
 
-        val questionRelative : Flow<Pair<Question, List<Question>>> = currentQuestion
+        val currentAndAllQuestions : Flow<Pair<Question, List<Question>>> = currentQuestion
             .filterNotNull()
             .zip(questions) { x, y -> x to y }
 
         viewModelScope.launch {
-            questionRelative.map { (current, all) ->
+            currentAndAllQuestions.map { (current, all) ->
                 var candidate: Question? = null
                 var candidateIndex = Double.MIN_VALUE
 
@@ -82,7 +82,7 @@ class QuestionViewModel(application: Application, question : Question, private v
         }
 
         viewModelScope.launch {
-            questionRelative.map { (current, all) ->
+            currentAndAllQuestions.map { (current, all) ->
                 var candidate: Question? = null
                 var candidateIndex = Double.MAX_VALUE
 
