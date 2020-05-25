@@ -1,4 +1,4 @@
-package ch.heigvd.pro.b04.android.`1uestion`
+package ch.heigvd.pro.b04.android.question
 
 import android.content.Context
 import android.graphics.Color

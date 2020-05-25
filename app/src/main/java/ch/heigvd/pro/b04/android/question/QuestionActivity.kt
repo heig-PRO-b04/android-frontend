@@ -1,4 +1,4 @@
-package ch.heigvd.pro.b04.android.`1uestion`
+package ch.heigvd.pro.b04.android.question
 
 import android.os.Bundle
 import android.view.View
@@ -39,7 +39,7 @@ class QuestionActivity : AppCompatActivity() {
         setupAnswerList()
 
         lifecycleScope.launchWhenStarted {
-            state.getErrors().collect {
+            state.requestsVMErrors.collect {
                 if (it == NetworkError.TokenNotValid)
                     disconnect()
             }

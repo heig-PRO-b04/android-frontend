@@ -1,4 +1,4 @@
-package ch.heigvd.pro.b04.android.`1uestion`
+package ch.heigvd.pro.b04.android.question
 
 import android.app.Application
 import androidx.lifecycle.LiveData
@@ -22,10 +22,9 @@ class QuestionViewModel(application: Application, question : Question, private v
     private val previousQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
     private val nextQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
     private val nbCheckedAnswer : MutableLiveData<Int> = MutableLiveData(0)
-    private val questionVMErrors : Flow<NetworkError>
 
     val currentQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
-
+    val questionVMErrors : Flow<NetworkError>
     val answers: Flow<List<Answer>>
 
     init {
@@ -139,9 +138,5 @@ class QuestionViewModel(application: Application, question : Question, private v
 
     fun getNbCheckedAnswer() : LiveData<Int> {
         return nbCheckedAnswer
-    }
-
-    fun getErrors() : Flow<NetworkError> {
-        return questionVMErrors.filterNotNull()
     }
 }

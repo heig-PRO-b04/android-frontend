@@ -1,4 +1,4 @@
-package ch.heigvd.pro.b04.android.`1uestion`
+package ch.heigvd.pro.b04.android.question
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
