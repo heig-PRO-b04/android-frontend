@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -78,20 +79,15 @@ class QuestionActivity : AppCompatActivity() {
             }
         }
 
-        /*
         lifecycleScope.launchWhenStarted {
-            state.notifyMaxAnswers().collect {
-                if (it != 0) {
-                    Toast.makeText(
+            state.tooManyAnswers.collect {
+                Toast.makeText(
                         applicationContext,
                         resources.getQuantityString(R.plurals.answers_max_toast, it, it),
                         Toast.LENGTH_SHORT
-                    ).show()
-                }
+                ).show()
             }
         }
-
-         */
     }
 
     private fun setupAnswerList() {

@@ -8,10 +8,10 @@ import ch.heigvd.pro.b04.android.datamodel.Question
 import ch.heigvd.pro.b04.android.network.RequestsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 class QuestionViewModel(
@@ -46,32 +46,6 @@ class QuestionViewModel(
 
     fun selectAnswer(answer: Answer) {
         votes.value = System.currentTimeMillis() to answer
-        /*
-        val question: Question? = currentQuestion.value
-
-        if (question == null || question.idQuestion != answer.idQuestion)
-            return
-
-        val max = if (question.answerMax < question.answerMin) 0 else question.answerMax
-
-        if (answer.isChecked || max > nbCheckedAnswer.value || max == 0) {
-            lastVoteAtTime = System.currentTimeMillis()
-
-            if (answer.isChecked) nbCheckedAnswer.value-- else nbCheckedAnswer.value++
-
-            answer.toggle()
-            // Note that for now, we do not take the result into account
-            viewModelScope.launch {
-                voteForAnswerSuspending(answer, token)
-            }
-        } else if (max != 0 && max == nbCheckedAnswer.value) {
-            notifyMaxAnswer.value = question.answerMax
-
-            // Not useless: if we do not set the value back to 0, the activity will not be
-            // notified if the user clicks multiple times on an answer
-            notifyMaxAnswer.value = 0
-        }
-        */
     }
 
     fun changeToPreviousQuestion() {
@@ -92,9 +66,6 @@ class QuestionViewModel(
     val previousButtonVisible : Flow<Boolean>
         get() = pollState.previousButtonVisible
 
-    /*
-    fun notifyMaxAnswers() : flow<Int> {
-        return notifyMaxAnswer
-    }
-     */
+    val tooManyAnswers : Flow<Int>
+        get() = pollState.tooManyAnswers
 }

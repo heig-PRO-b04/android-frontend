@@ -36,7 +36,8 @@ data class Model(
         val poll: Poll,
         var current: Question,
         val token: String,
-        var map: MutableMap<Question, List<FetchedAnswer>>
+        var map: MutableMap<Question, List<FetchedAnswer>>,
+        var rejected: Sequenced<Unit?>
 )
 
 /**
@@ -71,6 +72,7 @@ sealed class Event {
     // Refresh events.
     object RefreshQuestions : Event()
     object RefreshCurrentAnswers : Event()
+    object RejectVote : Event()
 }
 
 /**
@@ -120,7 +122,8 @@ class PollState(
             poll,
             question,
             token,
-            mutableMapOf<Question, List<FetchedAnswer>>()
+            mutableMapOf<Question, List<FetchedAnswer>>(),
+            Pair(null, 0)
     ), 0))
 
     /**
@@ -153,6 +156,16 @@ class PollState(
                             return@map required
                         }
                     }
+
+    /**
+     * A [Flow] that triggers messages whenever a vote is rejected.
+     */
+    val tooManyAnswers: Flow<Int> =
+            innerState.map { it.first }
+                    .map { it.current.answerMax to it.rejected }
+                    .filter { it.second.first != null }
+                    .distinctUntilChanged()
+                    .map { it.first }
 
     /**
      * A [Flow] with a boolean value indicating if the previous button should be displayed.
@@ -192,6 +205,11 @@ class PollState(
 private suspend fun transform(data: Model, event: Event): Pair<Model, Flow<Event>> {
     return when (event) {
         is Event.NoOp -> data to emptyFlow()
+        // Increment the sequence number of rejected votes (needed for consecutive events)
+        is Event.RejectVote -> {
+            val nextRejection = data.rejected.copy(first = Unit, second = data.rejected.second + 1)
+            data.copy(rejected = nextRejection) to emptyFlow()
+        }
         // Get the current question, and move to the next one (based on index)
         is Event.MoveToNext -> {
             val nextCurrent = data.map.keys
@@ -212,15 +230,23 @@ private suspend fun transform(data: Model, event: Event): Pair<Model, Flow<Event
         // grace period
         is Event.SetVote -> {
             val fetched = data.map[data.current]?.first { it.answer.idAnswer == event.answer.idAnswer }
-            fetched?.answer?.toggle()
-            fetched?.timestamp = System.currentTimeMillis()
-            val effect = flow {
-                emit(fetched?.answer?.let {
-                    RockinAPI.voteForAnswerSuspending(it, data.token)
-                })
-            }.map { Event.NoOp }.catch { emit(Event.NoOp) }
+            val positive = data.map[data.current]?.count { it.answer.isChecked } ?: 0
+            val votingFalse = (fetched?.answer?.isChecked ?: false)
+            // We can perform the change if the answers max is not set, we're toggling off an answer
+            // or we have enough margin for the next positive vote
+            if (data.current.answerMax == 0 || votingFalse || positive + 1 <= data.current.answerMax) {
+                fetched?.answer?.toggle()
+                fetched?.timestamp = System.currentTimeMillis()
+                val effect = flow {
+                    emit(fetched?.answer?.let {
+                        RockinAPI.voteForAnswerSuspending(it, data.token)
+                    })
+                }.map { Event.NoOp }.catch { emit(Event.NoOp) }
 
-            data to effect
+                data to effect
+            } else {
+                data to flow { emit(Event.RejectVote) }
+            }
         }
         // Update the list of displayed questions
         is Event.GotQuestions -> {
