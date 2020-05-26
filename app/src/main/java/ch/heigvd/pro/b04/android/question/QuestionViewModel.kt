@@ -1,8 +1,6 @@
 package ch.heigvd.pro.b04.android.question
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import ch.heigvd.pro.b04.android.datamodel.Answer
 import ch.heigvd.pro.b04.android.datamodel.Question
@@ -21,7 +19,7 @@ class QuestionViewModel(application: Application, question : Question, private v
 
     private val previousQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
     private val nextQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
-    private val nbCheckedAnswer : MutableLiveData<Int> = MutableLiveData(0)
+    private val nbCheckedAnswer : MutableStateFlow<Int> = MutableStateFlow(0)
     private val networkErrors : Flow<NetworkError>
 
     private var lastVoteAtTime : Long = System.currentTimeMillis()
@@ -63,6 +61,17 @@ class QuestionViewModel(application: Application, question : Question, private v
         val currentToAllQuestions : Flow<Pair<Question, List<Question>>> = currentQuestion
             .filterNotNull()
             .zip(questions) { x, y -> x to y }
+
+        viewModelScope.launch {
+            answersUpdate.keepBody()
+                .map {
+                    it.fold(
+                        0,
+                        { acc, ans -> if (ans.isChecked) acc + 1 else acc }
+                    )
+                }
+                .collect { nbCheckedAnswer.value = it }
+        }
 
         viewModelScope.launch {
             currentToAllQuestions.map { (current, all) ->
@@ -109,17 +118,14 @@ class QuestionViewModel(application: Application, question : Question, private v
         if (question == null || question.idQuestion != answer.idQuestion)
             return
 
-        var counter: Int = nbCheckedAnswer.value!!
-
-        if (question.answerMax > counter || question.answerMax == 0 || answer.isChecked) {
+        if (question.answerMax > nbCheckedAnswer.value || question.answerMax == 0 || answer.isChecked) {
+            lastVoteAtTime = System.currentTimeMillis()
 
             if (answer.isChecked) {
-                counter++
+                nbCheckedAnswer.value++
             } else {
-                counter--
+                nbCheckedAnswer.value--
             }
-            nbCheckedAnswer.value = counter
-            lastVoteAtTime = System.currentTimeMillis()
 
             answer.toggle()
             // Note that for now, we do not take the result into account
@@ -137,7 +143,7 @@ class QuestionViewModel(application: Application, question : Question, private v
         currentQuestion.value = nextQuestion.value
     }
 
-    fun getNbCheckedAnswer() : LiveData<Int> {
+    fun getNbCheckedAnswer() : MutableStateFlow<Int> {
         return nbCheckedAnswer
     }
 
