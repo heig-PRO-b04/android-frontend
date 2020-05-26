@@ -36,7 +36,8 @@ data class Model(
         var current: Question,
         val token: String,
         var map: MutableMap<Question, List<FetchedAnswer>>,
-        var rejected: Sequenced<Unit?>
+        var rejected: Sequenced<Unit?>,
+        var invalidToken: Boolean
 )
 
 /**
@@ -65,6 +66,7 @@ sealed class Event {
     class SetVote(val answer: Answer) : Event()
 
     // Data events.
+    object GotInvalidToken : Event()
     class GotQuestions(val questions: List<Question>) : Event()
     class GotAnswers(val question: Question, val answers: List<FetchedAnswer>) : Event()
 
@@ -122,7 +124,8 @@ class PollState(
             question,
             token,
             mutableMapOf<Question, List<FetchedAnswer>>(),
-            Pair(null, 0)
+            Pair(null, 0),
+            false
     ), 0))
 
     /**
@@ -204,6 +207,10 @@ class PollState(
 private suspend fun transform(data: Model, event: Event): Pair<Model, Flow<Event>> {
     return when (event) {
         is Event.NoOp -> data to emptyFlow()
+        // We got an invalid token. This means we have been disconnected from the poll.
+        is Event.GotInvalidToken -> {
+            data.copy(invalidToken = true) to emptyFlow()
+        }
         // Increment the sequence number of rejected votes (needed for consecutive events)
         is Event.RejectVote -> {
             val nextRejection = data.rejected.copy(first = Unit, second = data.rejected.second + 1)
@@ -293,17 +300,34 @@ private suspend fun transform(data: Model, event: Event): Pair<Model, Flow<Event
         is Event.RefreshQuestions -> {
             val events =
                     flow { emit(RockinAPI.getQuestionsSuspending(data.poll, data.token)) }
-                            .keepBody()
-                            .map { Event.GotQuestions(it) }
+                            .map {
+                                val response = it.body()
+                                when {
+                                    response != null -> Event.GotQuestions(response)
+                                    it.code() == 403 -> Event.GotInvalidToken
+                                    else -> Event.GotQuestions(emptyList())
+                                }
+                            }
+                            .catch { /* Ignore. */ }
+
             data to events
         }
         // Ask the runtime to refresh the list of the answers for the current question
         is Event.RefreshCurrentAnswers -> {
             val now = System.currentTimeMillis()
-            val events = flow { emit(RockinAPI.getAnswersSuspending(data.current, data.token)) }
-                    .keepBody()
-                    .map { answers -> data.current to answers.map { answer -> FetchedAnswer(now, answer) } }
-                    .map { (q, a) -> Event.GotAnswers(q, a) }
+            val events = flow {
+                emit(RockinAPI.getAnswersSuspending(data.current, data.token))
+            }.map {
+                val response = it.body()
+                when {
+                    response != null -> Event.GotAnswers(
+                            data.current,
+                            response.map { answer -> FetchedAnswer(now, answer) })
+                    it.code() == 403 -> Event.GotInvalidToken
+                    else -> Event.GotQuestions(emptyList())
+                }
+            }.catch { /* Ignore */ }
+
             data to events
         }
     }
