@@ -55,7 +55,9 @@ class QuestionViewModel(application: Application, question : Question, private v
 
         val requestAnswers = merge(pollingAnswerDelayed, answersUpdate)
 
-        answers = requestAnswers.keepBody()
+        answers = requestAnswers
+            .keepBody()
+            .onEach { it.sortedBy { q -> q.idAnswer } }
         networkErrors = merge(requestAnswers.keepError(), super.networkErrors())
 
         val currentToAllQuestions : Flow<Pair<Question, List<Question>>> = currentQuestion
