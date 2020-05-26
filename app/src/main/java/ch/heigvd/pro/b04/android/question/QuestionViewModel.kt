@@ -63,14 +63,9 @@ class QuestionViewModel(application: Application, question : Question, private v
             .zip(questions) { x, y -> x to y }
 
         viewModelScope.launch {
-            answersUpdate.keepBody()
-                .map {
-                    it.fold(
-                        0,
-                        { acc, ans -> if (ans.isChecked) acc + 1 else acc }
-                    )
-                }
-                .collect { nbCheckedAnswer.value = it }
+            answers.map {
+                it.filter { it.isChecked }.size
+            }.collect { nbCheckedAnswer.value = it }
         }
 
         viewModelScope.launch {
@@ -121,11 +116,7 @@ class QuestionViewModel(application: Application, question : Question, private v
         if (question.answerMax > nbCheckedAnswer.value || question.answerMax == 0 || answer.isChecked) {
             lastVoteAtTime = System.currentTimeMillis()
 
-            if (answer.isChecked) {
-                nbCheckedAnswer.value++
-            } else {
-                nbCheckedAnswer.value--
-            }
+            if (answer.isChecked) nbCheckedAnswer.value-- else nbCheckedAnswer.value++
 
             answer.toggle()
             // Note that for now, we do not take the result into account
