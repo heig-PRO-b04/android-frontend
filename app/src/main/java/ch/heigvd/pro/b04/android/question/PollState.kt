@@ -198,7 +198,8 @@ private suspend fun transform(data: Model, event: Event): Pair<Model, Flow<Event
                 emit(fetched?.answer?.let {
                     RockinAPI.voteForAnswerSuspending(it, data.token)
                 })
-            }.map { Event.NoOp }
+            }.map { Event.NoOp }.catch { emit(Event.NoOp) }
+
             data to effect
         }
         // Update the list of displayed questions
@@ -221,10 +222,14 @@ private suspend fun transform(data: Model, event: Event): Pair<Model, Flow<Event
         is Event.GotAnswers -> {
             val answers = data.map[event.question] ?: emptyList()
             val updated = mutableListOf<FetchedAnswer>()
-            for (answer in answers) {
-                val update = event.answers.firstOrNull { it.answer.idAnswer == answer.answer.idAnswer }
-                if (update != null && update.timestamp + GRACE_DELAY_IN_MILLIS >= answer.timestamp) {
-                    updated.add(update)
+            for (local in answers) {
+                val remote = event.answers.firstOrNull { it.answer.idAnswer == local.answer.idAnswer }
+                if (remote != null && remote.timestamp - GRACE_DELAY_IN_MILLIS >= local.timestamp) {
+                    updated.add(remote)
+                } else if (remote != null) {
+                    // If the question exits and the grace period is not expired, use the local
+                    // question.
+                    updated.add(local)
                 }
             }
             for (update in event.answers) {
