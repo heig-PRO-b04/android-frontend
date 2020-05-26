@@ -3,20 +3,21 @@
     <string name="app_name">HEIG-VD PRO</string>
     <string name="poll_welcome">Here are the questions</string>
 
-    <!-- Home -->
+    <!-- HomeActivity -->
     <string name="home_welcome">What\'s your poll identifier ?</string>
     <string name="home_qr_code">Or Scan a QR Code</string>
-    <string name="home_emoji_code_clear">Clear</string>
+    <string name="code_clear_description">Clear</string>
 
-    <!-- Question -->
+    <!-- PollActivity -->
+    <string name="poll_exit">Disconnect</string>
+
+    <!-- QuestionActivity -->
     <string name="question_bask_button">Back</string>
-
-    <!-- Alerts -->
     <string name="answers_min_alerts">
         %1$d votes are needed for your answers to be registered
     </string>
-    <string name="code_clear_description">Clear</string>
-    <string name="poll_exit">Disconnect</string>
-
-
+    <plurals name="answers_max_toast">
+        <item quantity="one">Maximum of %1$d vote</item>
+        <item quantity="other">Maximum of %1$d votes</item>
+    </plurals>
 </resources>
