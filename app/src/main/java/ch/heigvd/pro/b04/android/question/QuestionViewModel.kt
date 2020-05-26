@@ -25,7 +25,7 @@ class QuestionViewModel(application: Application, question : Question, private v
 
     private var lastVoteAtTime : Long = System.currentTimeMillis()
 
-    val currentQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
+    val currentQuestion : MutableStateFlow<Question> = MutableStateFlow(question)
     val answers: Flow<List<Answer>>
 
     init {
@@ -34,9 +34,7 @@ class QuestionViewModel(application: Application, question : Question, private v
         val pollingTimeToAnswers : Flow<Pair<Long, Response<List<Answer>>>> = flow {
             while(true) {
                 try {
-                    currentQuestion.value?.let {
-                        emit(System.currentTimeMillis() to RockinAPI.getAnswersSuspending(it, token))
-                    }
+                    emit(System.currentTimeMillis() to RockinAPI.getAnswersSuspending(currentQuestion.value, token))
                 } catch (any : Exception) {}
                 delay(DELAY)
             }
@@ -116,7 +114,7 @@ class QuestionViewModel(application: Application, question : Question, private v
 
         val max = if (question.answerMax < question.answerMin) 0 else question.answerMax
 
-        if (question.answerMax > nbCheckedAnswer.value || max == 0 || answer.isChecked) {
+        if (answer.isChecked || max > nbCheckedAnswer.value || max == 0) {
             lastVoteAtTime = System.currentTimeMillis()
 
             if (answer.isChecked) nbCheckedAnswer.value-- else nbCheckedAnswer.value++
@@ -136,11 +134,13 @@ class QuestionViewModel(application: Application, question : Question, private v
     }
 
     fun changeToPreviousQuestion() : Unit {
-        currentQuestion.value = previousQuestion.value
+        if (previousQuestion.value != null)
+            currentQuestion.value = previousQuestion.value!!
     }
 
     fun changeToNextQuestion() : Unit {
-        currentQuestion.value = nextQuestion.value
+        if (nextQuestion.value != null)
+            currentQuestion.value = nextQuestion.value!!
     }
 
     fun getNbCheckedAnswer() : StateFlow<Int> {
