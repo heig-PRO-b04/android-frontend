@@ -3,7 +3,6 @@ package ch.heigvd.pro.b04.android.question
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -46,8 +45,9 @@ class QuestionActivity : AppCompatActivity() {
             }
         }
 
+        /*
         lifecycleScope.launchWhenStarted {
-            state.getNbCheckedAnswer().collect {nbVotes ->
+            state.getNbCheckedAnswer().collect { nbVotes ->
                 state.currentQuestion.value?.let {question ->
                     if (nbVotes > 0 && question.answerMin > nbVotes) {
                         alert.text = resources.getString(R.string.answers_min_alerts, question.answerMin)
@@ -70,6 +70,8 @@ class QuestionActivity : AppCompatActivity() {
                 }
             }
         }
+
+         */
     }
 
     private fun setupAnswerList() {

@@ -3,110 +3,50 @@ package ch.heigvd.pro.b04.android.question
 import android.app.Application
 import androidx.lifecycle.viewModelScope
 import ch.heigvd.pro.b04.android.datamodel.Answer
+import ch.heigvd.pro.b04.android.datamodel.Poll
 import ch.heigvd.pro.b04.android.datamodel.Question
-import ch.heigvd.pro.b04.android.network.*
-import ch.heigvd.pro.b04.android.network.RockinAPI.Companion.voteForAnswerSuspending
+import ch.heigvd.pro.b04.android.network.RequestsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import retrofit2.Response
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.map
 
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 class QuestionViewModel(application: Application, question : Question, private val token : String)
         : RequestsViewModel(application, question.idModerator.toInt(), question.idPoll.toInt(), token) {
 
-    private val previousQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
-    private val nextQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
-    private val nbCheckedAnswer : MutableStateFlow<Int> = MutableStateFlow(0)
-    private val notifyMaxAnswer : MutableStateFlow<Int> = MutableStateFlow(0)
-    private val networkErrors : Flow<NetworkError>
+    private val previousQuestion : MutableStateFlow<Long> = MutableStateFlow(System.currentTimeMillis())
+    private val nextQuestion : MutableStateFlow<Long> = MutableStateFlow(System.currentTimeMillis())
 
     private var lastVoteAtTime : Long = System.currentTimeMillis()
 
-    val currentQuestion : MutableStateFlow<Question> = MutableStateFlow(question)
-    val answers: Flow<List<Answer>>
+    private val pollState: PollState = PollState(
+        viewModelScope,
+        Poll(question.idModerator.toInt(), question.idPoll.toInt()),
+        question,
+        token,
+        nextQuestion.map{},
+        previousQuestion.map{},
+        emptyFlow()
+    )
+
+    val currentQuestion : Flow<Question> = pollState.data.map { it.current }
+    val answers: Flow<List<Answer>> = pollState.data.map { it.map[it.current]?.map { it.answer } ?: emptyList()}
 
     init {
-        currentQuestion.value = question
-
-        val pollingTimeToAnswers : Flow<Pair<Long, Response<List<Answer>>>> = flow {
-            while(true) {
-                try {
-                    emit(System.currentTimeMillis() to RockinAPI.getAnswersSuspending(currentQuestion.value, token))
-                } catch (any : Exception) {}
-                delay(DELAY)
-            }
-        }.broadcastIn(viewModelScope).asFlow()
-
-        val pollingAnswerDelayed = pollingTimeToAnswers
-            .filter { it.first > lastVoteAtTime + REFRESH_DELAY }
-            .map { it.second }
-
-        val answersUpdate : Flow<Response<List<Answer>>> = currentQuestion
-            .filterNotNull()
-            .map { RockinAPI.getAnswersSuspending(it, token) }
-            .catch {}
-            .filterNotNull()
-
-        val requestAnswers = merge(pollingAnswerDelayed, answersUpdate)
-
-        answers = requestAnswers
-            .keepBody()
-            .onEach { it.sortedBy { q -> q.idAnswer } }
-        networkErrors = merge(requestAnswers.keepError(), super.networkErrors())
-
-        val currentToAllQuestions : Flow<Pair<Question, List<Question>>> = currentQuestion
-            .filterNotNull()
-            .zip(questions) { x, y -> x to y }
-
+        /*
         viewModelScope.launch {
             answers.map {
                 it.filter { it.isChecked }.size
             }.collect { nbCheckedAnswer.value = it }
         }
-
-        viewModelScope.launch {
-            currentToAllQuestions.map { (current, all) ->
-                var candidate: Question? = null
-                var candidateIndex = Double.MIN_VALUE
-
-                all.forEach {
-                    val newIndex = it.indexInPoll
-                    if (newIndex < current.indexInPoll && newIndex > candidateIndex) {
-                        candidate = it
-                        candidateIndex = newIndex
-                    }
-                }
-
-                return@map candidate
-            }.collect {
-                previousQuestion.value = it
-            }
-        }
-
-        viewModelScope.launch {
-            currentToAllQuestions.map { (current, all) ->
-                var candidate: Question? = null
-                var candidateIndex = Double.MAX_VALUE
-
-                all.forEach {
-                    val newIndex = it.indexInPoll
-                    if (newIndex > current.indexInPoll && newIndex < candidateIndex) {
-                        candidate = it
-                        candidateIndex = newIndex
-                    }
-                }
-
-                return@map candidate
-            }.collect {
-                nextQuestion.value = it
-            }
-        }
+         */
     }
 
     fun selectAnswer(answer: Answer) {
+        /*
         val question: Question? = currentQuestion.value
 
         if (question == null || question.idQuestion != answer.idQuestion)
@@ -131,31 +71,24 @@ class QuestionViewModel(application: Application, question : Question, private v
             // notified if the user clicks multiple times on an answer
             notifyMaxAnswer.value = 0
         }
+        */
     }
 
     fun changeToPreviousQuestion() : Unit {
-        if (previousQuestion.value != null)
-            currentQuestion.value = previousQuestion.value!!
+        previousQuestion.value = System.currentTimeMillis()
     }
 
     fun changeToNextQuestion() : Unit {
-        if (nextQuestion.value != null)
-            currentQuestion.value = nextQuestion.value!!
+        nextQuestion.value = System.currentTimeMillis()
     }
 
-    fun getNbCheckedAnswer() : StateFlow<Int> {
-        return nbCheckedAnswer
+    fun getNbCheckedAnswer() : Flow<Int> {
+        return pollState.nbCheckedAnswer
     }
 
-    fun notifyMaxAnswers() : StateFlow<Int> {
+    /*
+    fun notifyMaxAnswers() : flow<Int> {
         return notifyMaxAnswer
     }
-
-    override fun networkErrors(): Flow<NetworkError> {
-        return networkErrors
-    }
-
-    companion object {
-        private const val REFRESH_DELAY :Long = 5000
-    }
+     */
 }

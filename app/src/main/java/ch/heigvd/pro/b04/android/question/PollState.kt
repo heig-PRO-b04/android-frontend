@@ -61,9 +61,8 @@ class PollState(
         moveToNext: Flow<Unit>,
         moveToPrevious: Flow<Unit>,
         votes: Flow<Answer>
-
 ) {
-    private val buffer = BroadcastChannel<Event>(Channel.Factory.UNLIMITED)
+    private val buffer = BroadcastChannel<Event>(Channel.Factory.BUFFERED)
 
     private val events = merge(
             buffer.asFlow(),
@@ -89,12 +88,11 @@ class PollState(
         }
     }
 
-    //val question: Flow<Question> = data
-    //        .map { (_, question, _) -> question }
+    val nbCheckedAnswer : Flow<Int> = data.map {
+        it.map[it.current]?.map { it.answer }?.filter { it.isChecked }?.count() ?: 0
+    }
 
-    //val answers: Flow<List<Answer>> = data
-    //        .map { (_, question, _, answers) -> answers[question] ?: emptyList() }
-    //        .map { list -> list.map { (_, answer) -> answer } }
+    val notifyMaxAnswer : Flow<Int> = flowOf(0)
 }
 
 suspend fun transform(data: Model, event: Event): Pair<Model, Flow<Event>> {
@@ -105,14 +103,14 @@ suspend fun transform(data: Model, event: Event): Pair<Model, Flow<Event>> {
                     .filter { it.indexInPoll > data.current.indexInPoll }
                     .minBy { it.indexInPoll }
                     ?: data.current
-            data.copy(current = nextCurrent) to emptyFlow()
+            data.copy(current = nextCurrent) to flowOf(Event.RefreshCurrentAnswers)
         }
         is Event.MoveToPrevious -> {
             val nextCurrent = data.map.keys
                     .filter { it.indexInPoll < data.current.indexInPoll }
                     .maxBy { it.indexInPoll }
                     ?: data.current
-            data.copy(current = nextCurrent) to emptyFlow()
+            data.copy(current = nextCurrent) to flowOf(Event.RefreshCurrentAnswers)
         }
         is Event.SetVote -> {
             val fetched = data.map[data.current]?.first { it.answer.idAnswer == event.answer.idAnswer }
