@@ -24,7 +24,7 @@ open class RequestsViewModel(application: Application, idModerator : Int, idPoll
         val polls : Flow<Response<Poll>> = flow {
             while(true) {
                 try {
-                    emit(Rockin.api().getPollSuspending(idModerator.toLong(), idPoll.toLong(), token))
+                    emit(Rockin.api.getPollSuspending(idModerator.toLong(), idPoll.toLong(), token))
                 } catch (any : Exception) {}
                 delay(DELAY)
             }

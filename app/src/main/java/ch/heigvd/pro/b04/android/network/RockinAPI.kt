@@ -107,7 +107,7 @@ interface RockinAPI {
 
     companion object {
         fun getQuestions(poll: Poll, userToken: String?): LiveData<ApiResponse<List<Question?>?>?> {
-            return Rockin.api().getQuestions(
+            return Rockin.api.getQuestions(
                     poll.idModerator.toLong(),
                     poll.idPoll.toLong(),
                     userToken
@@ -115,7 +115,7 @@ interface RockinAPI {
         }
 
         suspend fun getQuestionsSuspending(poll: Poll, userToken: String) : Response<List<Question>> {
-            return Rockin.api().getQuestionsSuspending(
+            return Rockin.api.getQuestionsSuspending(
                     poll.idModerator.toLong(),
                     poll.idPoll.toLong(),
                     userToken
@@ -123,7 +123,7 @@ interface RockinAPI {
         }
 
         fun getAnswers(question: Question, token: String?): LiveData<ApiResponse<List<Answer?>?>?> {
-            return Rockin.api().getAnswers(
+            return Rockin.api.getAnswers(
                     question.idModerator,
                     question.idPoll,
                     question.idQuestion,
@@ -132,7 +132,7 @@ interface RockinAPI {
         }
 
         suspend fun getAnswersSuspending(question: Question, token: String): Response<List<Answer>> {
-            return Rockin.api().getAnswersSuspending(
+            return Rockin.api.getAnswersSuspending(
                     question.idModerator,
                     question.idPoll,
                     question.idQuestion,
@@ -141,7 +141,7 @@ interface RockinAPI {
         }
 
         fun voteForAnswer(answer: Answer, token: String?): Call<ResponseBody?> {
-            return Rockin.api().voteForAnswer(
+            return Rockin.api.voteForAnswer(
                     answer.idModerator,
                     answer.idPoll,
                     answer.idQuestion,
@@ -151,7 +151,7 @@ interface RockinAPI {
         }
 
         suspend fun voteForAnswerSuspending(answer: Answer, token: String?): ResponseBody {
-            return Rockin.api().voteForAnswerSuspending(
+            return Rockin.api.voteForAnswerSuspending(
                 answer.idModerator,
                 answer.idPoll,
                 answer.idQuestion,
