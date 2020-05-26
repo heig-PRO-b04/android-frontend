@@ -11,41 +11,35 @@ import androidx.recyclerview.widget.RecyclerView
 import ch.heigvd.pro.b04.android.R
 import ch.heigvd.pro.b04.android.datamodel.Answer
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import java.util.*
 
-class QuestionAdapter(private val state: QuestionViewModel,
-                      private val context: Context
+class QuestionAdapter(
+        private val state: QuestionViewModel,
+        private val context: Context
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var answers: List<Answer> = LinkedList()
+    private var title: String = ""
 
     override fun getItemId(position: Int): Long {
         return if (position == 0) HEADER_ID else answers[position - 1].idAnswer
     }
 
-    private class HeaderViewHolder(parent: ViewGroup,
-                                   state: QuestionViewModel
-    ) : RecyclerView.ViewHolder(LayoutInflater.from(parent.context)
-        .inflate(R.layout.question_title, parent, false)) {
+    private class HeaderViewHolder(parent: ViewGroup)
+        : RecyclerView.ViewHolder(LayoutInflater.from(parent.context)
+            .inflate(R.layout.question_title, parent, false)) {
 
         private val title: TextView = itemView.findViewById(R.id.question)
 
-        init {
-            state.viewModelScope.launch {
-                state.currentQuestion
-                    .filterNotNull()
-                    .collect {
-                    title.text = it.title
-                }
-            }
+        fun bindTitle(text: String) {
+            title.text = text
         }
     }
 
     private inner class AnswerViewHolder(parent: ViewGroup)
         : RecyclerView.ViewHolder(LayoutInflater.from(parent.context)
-        .inflate(R.layout.question_answers, parent, false)) {
+            .inflate(R.layout.question_answers, parent, false)) {
 
         private val answerButton: Button = itemView.findViewById(R.id.question_answer_item)
 
@@ -72,16 +66,18 @@ class QuestionAdapter(private val state: QuestionViewModel,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            VIEW_TYPE_HEADER -> HeaderViewHolder(parent, state)
+            VIEW_TYPE_HEADER -> HeaderViewHolder(parent)
             VIEW_TYPE_ANSWER -> AnswerViewHolder(parent)
             else -> throw IllegalStateException("Unknown view type.")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (position == 0) {
+            (holder as HeaderViewHolder).bindTitle(title)
+        }
         if (position != 0) {
-            (holder as AnswerViewHolder)
-                .bindAnswer(answers[position - 1])
+            (holder as AnswerViewHolder).bindAnswer(answers[position - 1])
         }
     }
 
@@ -105,6 +101,12 @@ class QuestionAdapter(private val state: QuestionViewModel,
             state.answers.collect {
                 this@QuestionAdapter.answers = it
                 notifyDataSetChanged()
+            }
+        }
+        state.viewModelScope.launch {
+            state.currentQuestion.collect {
+                this@QuestionAdapter.title = it.title
+                notifyItemChanged(0)
             }
         }
     }
