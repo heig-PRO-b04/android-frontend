@@ -114,7 +114,9 @@ class QuestionViewModel(application: Application, question : Question, private v
         if (question == null || question.idQuestion != answer.idQuestion)
             return
 
-        if (question.answerMax > nbCheckedAnswer.value || question.answerMax == 0 || answer.isChecked) {
+        val max = if (question.answerMax < question.answerMin) 0 else question.answerMax
+
+        if (question.answerMax > nbCheckedAnswer.value || max == 0 || answer.isChecked) {
             lastVoteAtTime = System.currentTimeMillis()
 
             if (answer.isChecked) nbCheckedAnswer.value-- else nbCheckedAnswer.value++
@@ -124,7 +126,7 @@ class QuestionViewModel(application: Application, question : Question, private v
             viewModelScope.launch {
                 voteForAnswerSuspending(answer, token)
             }
-        } else if (question.answerMax != 0 && question.answerMax == nbCheckedAnswer.value) {
+        } else if (max != 0 && max == nbCheckedAnswer.value) {
             notifyMaxAnswer.value = question.answerMax
 
             // Not useless: if we do not set the value back to 0, the activity will not be
