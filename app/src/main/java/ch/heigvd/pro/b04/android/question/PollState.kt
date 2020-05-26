@@ -1,6 +1,5 @@
 package ch.heigvd.pro.b04.android.question
 
-import android.util.Log
 import ch.heigvd.pro.b04.android.datamodel.Answer
 import ch.heigvd.pro.b04.android.datamodel.Poll
 import ch.heigvd.pro.b04.android.datamodel.Question
