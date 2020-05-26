@@ -222,7 +222,7 @@ private suspend fun transform(data: Model, event: Event): Pair<Model, Flow<Event
                     .filter { it.indexInPoll > data.current.indexInPoll }
                     .minBy { it.indexInPoll }
                     ?: data.current
-            data.copy(current = nextCurrent) to flowOf(Event.RefreshCurrentAnswers)
+            data.copy(current = nextCurrent, rejected = Pair(null, 0)) to flowOf(Event.RefreshCurrentAnswers)
         }
         // Get the current question, and move to the previous one (based on index)
         is Event.MoveToPrevious -> {
@@ -230,7 +230,7 @@ private suspend fun transform(data: Model, event: Event): Pair<Model, Flow<Event
                     .filter { it.indexInPoll < data.current.indexInPoll }
                     .maxBy { it.indexInPoll }
                     ?: data.current
-            data.copy(current = nextCurrent) to flowOf(Event.RefreshCurrentAnswers)
+            data.copy(current = nextCurrent, rejected = Pair(null, 0)) to flowOf(Event.RefreshCurrentAnswers)
         }
         // Vote for a certain answer, persist the state locally, then inform the server. Reset the
         // grace period
