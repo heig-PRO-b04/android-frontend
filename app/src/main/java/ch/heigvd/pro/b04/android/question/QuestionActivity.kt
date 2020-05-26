@@ -45,20 +45,19 @@ class QuestionActivity : AppCompatActivity() {
             }
         }
 
-        /*
+
         lifecycleScope.launchWhenStarted {
-            state.getNbCheckedAnswer().collect { nbVotes ->
-                state.currentQuestion.value?.let {question ->
-                    if (nbVotes > 0 && question.answerMin > nbVotes) {
-                        alert.text = resources.getString(R.string.answers_min_alerts, question.answerMin)
-                        alert.visibility = View.VISIBLE
-                    } else {
-                        alert.visibility = View.INVISIBLE
-                    }
+            state.getMinCheckedAnswers().collect { votes ->
+                if (votes != null) {
+                    alert.text = resources.getString(R.string.answers_min_alerts, question.answerMin)
+                    alert.visibility = View.VISIBLE
+                } else {
+                    alert.visibility = View.INVISIBLE
                 }
             }
         }
 
+        /*
         lifecycleScope.launchWhenStarted {
             state.notifyMaxAnswers().collect {
                 if (it != 0) {

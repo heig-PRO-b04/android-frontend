@@ -82,8 +82,8 @@ class QuestionViewModel(
         nextQuestion.value = System.currentTimeMillis()
     }
 
-    fun getNbCheckedAnswer(): Flow<Int> {
-        return pollState.nbCheckedAnswer
+    fun getMinCheckedAnswers(): Flow<Int?> {
+        return pollState.minCheckedAnswers
     }
 
     /*

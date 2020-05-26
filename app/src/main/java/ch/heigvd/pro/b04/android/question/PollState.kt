@@ -1,5 +1,6 @@
 package ch.heigvd.pro.b04.android.question
 
+import android.util.Log
 import ch.heigvd.pro.b04.android.datamodel.Answer
 import ch.heigvd.pro.b04.android.datamodel.Poll
 import ch.heigvd.pro.b04.android.datamodel.Question
@@ -141,12 +142,17 @@ class PollState(
             moveToPrevious.map { Event.MoveToPrevious }
     )
 
-    /**
-     * How many answers are currently checked.
-     */
-    val nbCheckedAnswer: Flow<Int> = data.map {
-        it.map[it.current]?.map { it.answer }?.filter { it.isChecked }?.count() ?: 0
-    }
+    val minCheckedAnswers: Flow<Int?> =
+            innerState.map { it.first }
+                    .map { it.current.answerMin to (it.map[it.current] ?: emptyList()) }
+                    .map { (required, answers) ->
+                        val actual = answers.count { it.answer.isChecked }
+                        if (actual == 0 || actual >= required) {
+                            return@map null
+                        } else {
+                            return@map required
+                        }
+                    }
 
     init {
         scope.launch {
@@ -216,6 +222,10 @@ private suspend fun transform(data: Model, event: Event): Pair<Model, Flow<Event
                     updated[question] = emptyList()
             }
             data.map = updated
+            // Update the current question, if it exists.
+            data.current = event.questions
+                    .firstOrNull { it.idQuestion == data.current.idQuestion }
+                    ?: data.current
             data to emptyFlow()
         }
         // Update the list of displayed answers
