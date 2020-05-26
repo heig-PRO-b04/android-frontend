@@ -143,7 +143,7 @@ class QuestionViewModel(application: Application, question : Question, private v
         currentQuestion.value = nextQuestion.value
     }
 
-    fun getNbCheckedAnswer() : MutableStateFlow<Int> {
+    fun getNbCheckedAnswer() : StateFlow<Int> {
         return nbCheckedAnswer
     }
 

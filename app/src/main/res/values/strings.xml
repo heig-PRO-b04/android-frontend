@@ -13,7 +13,7 @@
 
     <!-- Alerts -->
     <string name="answers_min_alerts">
-        There are not enough answers. Your current vote will not be sent.
+        %1$d votes are needed for your answers to be registered
     </string>
     <string name="code_clear_description">Clear</string>
     <string name="poll_exit">Disconnect</string>
