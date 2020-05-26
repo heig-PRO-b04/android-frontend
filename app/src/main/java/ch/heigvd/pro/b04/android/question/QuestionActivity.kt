@@ -3,8 +3,8 @@ package ch.heigvd.pro.b04.android.question
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -35,13 +35,39 @@ class QuestionActivity : AppCompatActivity() {
             token
         )).get(QuestionViewModel::class.java)
 
-        setupAnswerMinAlert(question)
         setupAnswerList()
+
+        val alert = findViewById<TextView>(R.id.question_answers_alert)
 
         lifecycleScope.launchWhenStarted {
             state.networkErrors().collect {
                 if (it == NetworkError.TokenNotValid)
                     disconnect()
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            state.getNbCheckedAnswer().collect {nbVotes ->
+                state.currentQuestion.value?.let {question ->
+                    if (nbVotes > 0 && question.answerMin > nbVotes) {
+                        alert.text = resources.getString(R.string.answers_min_alerts, question.answerMin)
+                        alert.visibility = View.VISIBLE
+                    } else {
+                        alert.visibility = View.INVISIBLE
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            state.notifyMaxAnswers().collect {
+                if (it != 0) {
+                    Toast.makeText(
+                        applicationContext,
+                        resources.getQuantityString(R.plurals.answers_max_toast, it, it),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
@@ -54,17 +80,6 @@ class QuestionActivity : AppCompatActivity() {
         answerList.itemAnimator = DefaultItemAnimator()
         answerList.adapter = questionAdapter
         answerList.layoutManager = manager
-    }
-
-    private fun setupAnswerMinAlert(question: Question) {
-        val alert = findViewById<TextView>(R.id.question_answers_alert)
-        state.getNbCheckedAnswer().observe(this, Observer { nbrVotes: Int ->
-            if (question.answerMin < nbrVotes) {
-                alert.setText(R.string.answers_min_alerts)
-            } else {
-                alert.text = ""
-            }
-        })
     }
 
     fun goBack(view: View?) {

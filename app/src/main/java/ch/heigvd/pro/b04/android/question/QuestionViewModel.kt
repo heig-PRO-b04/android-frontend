@@ -1,8 +1,6 @@
 package ch.heigvd.pro.b04.android.question
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import ch.heigvd.pro.b04.android.datamodel.Answer
 import ch.heigvd.pro.b04.android.datamodel.Question
@@ -21,12 +19,13 @@ class QuestionViewModel(application: Application, question : Question, private v
 
     private val previousQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
     private val nextQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
-    private val nbCheckedAnswer : MutableLiveData<Int> = MutableLiveData(0)
+    private val nbCheckedAnswer : MutableStateFlow<Int> = MutableStateFlow(0)
+    private val notifyMaxAnswer : MutableStateFlow<Int> = MutableStateFlow(0)
     private val networkErrors : Flow<NetworkError>
 
     private var lastVoteAtTime : Long = System.currentTimeMillis()
 
-    val currentQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
+    val currentQuestion : MutableStateFlow<Question> = MutableStateFlow(question)
     val answers: Flow<List<Answer>>
 
     init {
@@ -35,9 +34,7 @@ class QuestionViewModel(application: Application, question : Question, private v
         val pollingTimeToAnswers : Flow<Pair<Long, Response<List<Answer>>>> = flow {
             while(true) {
                 try {
-                    currentQuestion.value?.let {
-                        emit(System.currentTimeMillis() to RockinAPI.getAnswersSuspending(it, token))
-                    }
+                    emit(System.currentTimeMillis() to RockinAPI.getAnswersSuspending(currentQuestion.value, token))
                 } catch (any : Exception) {}
                 delay(DELAY)
             }
@@ -63,6 +60,12 @@ class QuestionViewModel(application: Application, question : Question, private v
         val currentToAllQuestions : Flow<Pair<Question, List<Question>>> = currentQuestion
             .filterNotNull()
             .zip(questions) { x, y -> x to y }
+
+        viewModelScope.launch {
+            answers.map {
+                it.filter { it.isChecked }.size
+            }.collect { nbCheckedAnswer.value = it }
+        }
 
         viewModelScope.launch {
             currentToAllQuestions.map { (current, all) ->
@@ -109,36 +112,43 @@ class QuestionViewModel(application: Application, question : Question, private v
         if (question == null || question.idQuestion != answer.idQuestion)
             return
 
-        var counter: Int = nbCheckedAnswer.value!!
+        val max = if (question.answerMax < question.answerMin) 0 else question.answerMax
 
-        if (question.answerMax > counter || question.answerMax == 0 || answer.isChecked) {
-
-            if (answer.isChecked) {
-                counter++
-            } else {
-                counter--
-            }
-            nbCheckedAnswer.value = counter
+        if (answer.isChecked || max > nbCheckedAnswer.value || max == 0) {
             lastVoteAtTime = System.currentTimeMillis()
+
+            if (answer.isChecked) nbCheckedAnswer.value-- else nbCheckedAnswer.value++
 
             answer.toggle()
             // Note that for now, we do not take the result into account
             viewModelScope.launch {
                 voteForAnswerSuspending(answer, token)
             }
+        } else if (max != 0 && max == nbCheckedAnswer.value) {
+            notifyMaxAnswer.value = question.answerMax
+
+            // Not useless: if we do not set the value back to 0, the activity will not be
+            // notified if the user clicks multiple times on an answer
+            notifyMaxAnswer.value = 0
         }
     }
 
     fun changeToPreviousQuestion() : Unit {
-        currentQuestion.value = previousQuestion.value
+        if (previousQuestion.value != null)
+            currentQuestion.value = previousQuestion.value!!
     }
 
     fun changeToNextQuestion() : Unit {
-        currentQuestion.value = nextQuestion.value
+        if (nextQuestion.value != null)
+            currentQuestion.value = nextQuestion.value!!
     }
 
-    fun getNbCheckedAnswer() : LiveData<Int> {
+    fun getNbCheckedAnswer() : StateFlow<Int> {
         return nbCheckedAnswer
+    }
+
+    fun notifyMaxAnswers() : StateFlow<Int> {
+        return notifyMaxAnswer
     }
 
     override fun networkErrors(): Flow<NetworkError> {
