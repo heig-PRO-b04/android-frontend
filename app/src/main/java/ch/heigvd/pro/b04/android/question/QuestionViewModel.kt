@@ -86,6 +86,12 @@ class QuestionViewModel(
         return pollState.minCheckedAnswers
     }
 
+    val nextButtonVisible : Flow<Boolean>
+        get() = pollState.nextButtonVisible
+
+    val previousButtonVisible : Flow<Boolean>
+        get() = pollState.previousButtonVisible
+
     /*
     fun notifyMaxAnswers() : flow<Int> {
         return notifyMaxAnswer

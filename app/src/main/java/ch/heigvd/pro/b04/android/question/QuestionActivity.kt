@@ -2,6 +2,7 @@ package ch.heigvd.pro.b04.android.question
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -37,6 +38,8 @@ class QuestionActivity : AppCompatActivity() {
         setupAnswerList()
 
         val alert = findViewById<TextView>(R.id.question_answers_alert)
+        val beforeButton = findViewById<ImageButton>(R.id.before_button)
+        val nextButton = findViewById<ImageButton>(R.id.next_button)
 
         lifecycleScope.launchWhenStarted {
             state.networkErrors().collect {
@@ -54,6 +57,24 @@ class QuestionActivity : AppCompatActivity() {
                 } else {
                     alert.visibility = View.INVISIBLE
                 }
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            state.nextButtonVisible.collect { visible ->
+                if (visible)
+                    nextButton.visibility = View.VISIBLE
+                else
+                    nextButton.visibility = View.INVISIBLE
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            state.previousButtonVisible.collect { visible ->
+                if (visible)
+                    beforeButton.visibility = View.VISIBLE
+                else
+                    beforeButton.visibility = View.INVISIBLE
             }
         }
 

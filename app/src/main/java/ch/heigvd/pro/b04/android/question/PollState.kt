@@ -154,6 +154,20 @@ class PollState(
                         }
                     }
 
+    /**
+     * A [Flow] with a boolean value indicating if the previous button should be displayed.
+     */
+    val previousButtonVisible: Flow<Boolean> =
+            innerState.map { it.first }
+                    .map { s -> s.map.keys.any { q -> q.indexInPoll < s.current.indexInPoll } }
+
+    /**
+     * A [Flow] with a boolean value indicating if the next button should be displayed.
+     */
+    val nextButtonVisible: Flow<Boolean> =
+            innerState.map { it.first }
+                    .map { s -> s.map.keys.any { q -> q.indexInPoll > s.current.indexInPoll } }
+
     init {
         scope.launch {
             events.collect { event ->
