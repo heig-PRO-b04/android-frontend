@@ -20,6 +20,7 @@ class QuestionViewModel(application: Application, question : Question, private v
     private val previousQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
     private val nextQuestion : MutableStateFlow<Question?> = MutableStateFlow(null)
     private val nbCheckedAnswer : MutableStateFlow<Int> = MutableStateFlow(0)
+    private val notifyMaxAnswer : MutableStateFlow<Int> = MutableStateFlow(0)
     private val networkErrors : Flow<NetworkError>
 
     private var lastVoteAtTime : Long = System.currentTimeMillis()
@@ -123,6 +124,12 @@ class QuestionViewModel(application: Application, question : Question, private v
             viewModelScope.launch {
                 voteForAnswerSuspending(answer, token)
             }
+        } else if (question.answerMax != 0 && question.answerMax == nbCheckedAnswer.value) {
+            notifyMaxAnswer.value = question.answerMax
+
+            // Not useless: if we do not set the value back to 0, the activity will not be
+            // notified if the user clicks multiple times on an answer
+            notifyMaxAnswer.value = 0
         }
     }
 
@@ -136,6 +143,10 @@ class QuestionViewModel(application: Application, question : Question, private v
 
     fun getNbCheckedAnswer() : StateFlow<Int> {
         return nbCheckedAnswer
+    }
+
+    fun notifyMaxAnswers() : StateFlow<Int> {
+        return notifyMaxAnswer
     }
 
     override fun networkErrors(): Flow<NetworkError> {

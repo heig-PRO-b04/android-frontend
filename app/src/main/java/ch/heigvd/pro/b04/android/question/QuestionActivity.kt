@@ -3,6 +3,7 @@ package ch.heigvd.pro.b04.android.question
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -54,6 +55,18 @@ class QuestionActivity : AppCompatActivity() {
                     } else {
                         alert.visibility = View.INVISIBLE
                     }
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            state.notifyMaxAnswers().collect {
+                if (it != 0) {
+                    Toast.makeText(
+                        applicationContext,
+                        resources.getQuantityString(R.plurals.answers_max_toast, it, it),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
