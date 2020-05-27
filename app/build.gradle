@@ -4,6 +4,11 @@ apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
 apply plugin: "kotlin-android-extensions"
 
+if (gradle.startParameter.taskNames.contains("release")) {
+    apply plugin: "com.google.gms.google-services"
+    apply plugin: "com.google.firebase.crashlytics"
+}
+
 Properties properties = new Properties()
 
 properties.load(project.rootProject.file("local.properties").newDataInputStream())
@@ -21,6 +26,15 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        release {
+            storeFile file(properties.getProperty("releaseStoreFile")) ?: "empty"
+            storePassword properties.getProperty("releaseStorePassword") ?: "empty"
+            keyAlias "debviousinc"
+            keyPassword properties.getProperty("releaseKeyPassword") ?: "empty"
+        }
+    }
+
     buildTypes {
 
         debug {
@@ -30,6 +44,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
@@ -63,6 +78,12 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:3.2.0"
     testImplementation "junit:junit:4.13"
 
+    // Firebase analytics -> Crashlytics
+    releaseImplementation 'com.google.firebase:firebase-analytics:17.4.2'
+    releaseImplementation 'com.google.firebase:firebase-analytics-ktx:17.4.2'
+    releaseImplementation 'com.google.firebase:firebase-crashlytics:17.0.0'
+
+
     // App dependencies.
     implementation "androidx.appcompat:appcompat:1.1.0"
     implementation "androidx.core:core-ktx:1.2.0"
@@ -76,17 +97,19 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:2.2.2"
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation "androidx.viewpager2:viewpager2:1.0.0"
+    implementation "com.google.android.material:material:1.1.0"
 
-    // Kotlin dependencies
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.3.72"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.7"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7"
+    // HTTP requests
+    implementation 'com.squareup.retrofit2:converter-gson:2.8.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.8.1'
 
     // QR code
     implementation 'com.journeyapps:zxing-android-embedded:4.1.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
 
-    implementation "com.google.android.material:material:1.1.0"
-    implementation 'com.squareup.retrofit2:converter-gson:2.8.1'
-    implementation 'com.squareup.retrofit2:retrofit:2.8.1'
+
+    // Kotlin dependencies
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.3.72"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.7"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7"
 }
