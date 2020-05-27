@@ -25,7 +25,7 @@ import ch.heigvd.pro.b04.android.R;
 import static ch.heigvd.pro.b04.android.R.id;
 import static ch.heigvd.pro.b04.android.R.layout;
 
-public class Home extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
     private static final int COLUMN_NBR = 4;
     private HomeViewModel state;
     private NavigateToPollViewModel navigate;
@@ -34,7 +34,7 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(layout.activity_home);
+        setContentView(layout.home_activity);
 
         state = new ViewModelProvider(this).get(HomeViewModel.class);
         navigate = new ViewModelProvider(this).get(NavigateToPollViewModel.class);
@@ -51,7 +51,7 @@ public class Home extends AppCompatActivity {
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return position == 0 ? COLUMN_NBR : 1;
+                return position <= 1 ? COLUMN_NBR : 1;
             }
         });
 

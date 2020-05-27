@@ -23,7 +23,7 @@ class PollActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_poll)
+        setContentView(R.layout.poll_activity)
 
         val idModerator = intent.getIntExtra(EXTRA_ID_MODERATOR, 0)
         val idPoll = intent.getIntExtra(EXTRA_ID_POLL, 0)

@@ -20,7 +20,7 @@
             android:name="preloaded_fonts"
             android:resource="@array/polls_fonts_preloaded" />
 
-        <activity android:name=".home.Home">
+        <activity android:name=".home.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

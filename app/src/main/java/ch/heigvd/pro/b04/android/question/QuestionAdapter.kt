@@ -2,6 +2,8 @@ package ch.heigvd.pro.b04.android.question
 
 import android.content.Context
 import android.graphics.Color
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
@@ -45,10 +47,24 @@ class QuestionAdapter(
 
         fun bindAnswer(answer: Answer) {
             var text = answer.title
-            if (answer.description != "") {
-                text += " : " + answer.description
+
+            if (answer.description != null && answer.description != "") {
+                text += "\n" + answer.description
             }
-            answerButton.text = text
+
+            val spannable = SpannableString(text)
+            spannable.setSpan(ForegroundColorSpan(Color.BLACK), 0, answer.title.length, 0 )
+
+            if (answer.description != null && answer.description != "") {
+                spannable.setSpan(
+                    ForegroundColorSpan(context.resources.getColor(R.color.colorDescription)),
+                    answer.title.length + 1,
+                    text.length,
+                    0
+                )
+            }
+
+            answerButton.text = spannable
             updateButtonColor(answer)
 
             answerButton.setOnClickListener {

@@ -4,12 +4,18 @@
     <string name="poll_welcome">Here are the questions</string>
 
     <!-- HomeActivity -->
-    <string name="home_welcome">What\'s your poll identifier ?</string>
+    <string name="home_welcome">Welcome to the RockinApp \u270c</string>
+    <string name="connection_instruction">
+        In order to connect to a poll, please enter its emoji code or scan the given QR code.
+    </string>
     <string name="home_qr_code">Or Scan a QR Code</string>
     <string name="code_clear_description">Clear</string>
 
     <!-- PollActivity -->
     <string name="poll_exit">Disconnect</string>
+    <string name="poll_instructions">
+        In order to answer a question, please click on it.
+    </string>
 
     <!-- QuestionActivity -->
     <string name="question_bask_button">Back</string>

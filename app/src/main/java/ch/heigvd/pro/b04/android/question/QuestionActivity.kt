@@ -25,7 +25,7 @@ class QuestionActivity : AppCompatActivity() {
     @OptIn(InternalCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_question)
+        setContentView(R.layout.question_activity)
         val intent = intent
         val question = intent.getSerializableExtra(PollActivity.EXTRA_QUESTION) as Question
         val token = getIntent().getStringExtra(PollActivity.EXTRA_TOKEN)
