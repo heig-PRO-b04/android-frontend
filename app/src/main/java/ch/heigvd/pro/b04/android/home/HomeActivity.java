@@ -34,7 +34,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(layout.activity_home);
+        setContentView(layout.home_activity);
 
         state = new ViewModelProvider(this).get(HomeViewModel.class);
         navigate = new ViewModelProvider(this).get(NavigateToPollViewModel.class);
