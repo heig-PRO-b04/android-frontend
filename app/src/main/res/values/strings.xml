@@ -1,10 +1,10 @@
 <resources>
     <!-- General -->
-    <string name="app_name">HEIG-VD PRO</string>
+    <string name="app_name">rockin\u00a0•\u00a0app</string>
     <string name="poll_welcome">Here are the questions</string>
 
     <!-- HomeActivity -->
-    <string name="home_welcome">Welcome to the RockinApp \u270c</string>
+    <string name="home_welcome">Welcome to Rockin\u00a0•\u00a0App \u270c</string>
     <string name="connection_instruction">
         In order to connect to a poll, please enter its emoji code or scan the given QR code.
     </string>
