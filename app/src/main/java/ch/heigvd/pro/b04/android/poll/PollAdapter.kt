@@ -1,6 +1,8 @@
 package ch.heigvd.pro.b04.android.poll
 
 import android.graphics.Color
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
@@ -55,8 +57,31 @@ class PollAdapter(private val state: PollViewModel) : RecyclerView.Adapter<Recyc
         private val questionButton: Button = itemView.findViewById(R.id.poll_question_item)
 
         fun bindQuestion(question: Question, answered: Boolean) {
-            questionButton.text = question.title
+
             questionButton.setOnClickListener { state.goToQuestion(question) }
+
+            var text = question.title
+
+            if (question.details != null && question.details != "") {
+                text += "\n" + question.details
+            }
+
+            val spannable = SpannableString(text)
+            spannable.setSpan(ForegroundColorSpan(Color.BLACK), 0, question.title.length, 0 )
+
+            if (question.details != null && question.details != "") {
+                spannable.setSpan(
+                        ForegroundColorSpan(
+                                itemView.resources.getColor(R.color.colorDescription)
+                        ),
+                        question.title.length + 1,
+                        text.length,
+                        0
+                )
+            }
+
+            questionButton.text = spannable
+
             if (answered) {
                 questionButton.setBackgroundColor(Color.GREEN)
             } else {
