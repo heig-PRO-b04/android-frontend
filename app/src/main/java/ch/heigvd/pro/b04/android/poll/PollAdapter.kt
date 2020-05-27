@@ -18,7 +18,11 @@ class PollAdapter(private val state: PollViewModel) : RecyclerView.Adapter<Recyc
 
     private var questions: List<Question> = LinkedList()
     override fun getItemId(position: Int): Long {
-        return if (position == 0) HEADER_ID else questions[position - 1].idQuestion
+        return when (position) {
+            0 -> HEADER_ID
+            1 -> INSTRUCTION_ID
+            else -> questions[position - 2].idQuestion
+        }
     }
 
     private class HeaderViewHolder(parent: ViewGroup,
@@ -32,6 +36,16 @@ class PollAdapter(private val state: PollViewModel) : RecyclerView.Adapter<Recyc
             state.viewModelScope.launch {
                 state.poll.collect { poll -> title.text = poll.title }
             }
+        }
+    }
+
+    private class InstructionViewHolder(parent: ViewGroup)
+        : RecyclerView.ViewHolder(LayoutInflater.from(parent.context)
+        .inflate(R.layout.home_instructions, parent, false)) {
+        private val title : TextView = itemView.findViewById(R.id.home_instructions_title)
+
+        init {
+            title.text = parent.context.getString(R.string.poll_instructions)
         }
     }
 
@@ -55,30 +69,37 @@ class PollAdapter(private val state: PollViewModel) : RecyclerView.Adapter<Recyc
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_TYPE_HEADER -> HeaderViewHolder(parent, state)
+            VIEW_TYPE_INSTRUCTION -> InstructionViewHolder(parent)
             VIEW_TYPE_QUESTION -> QuestionViewHolder(parent)
             else -> throw IllegalStateException("Unknown view type.")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (position != 0) {
-            val q = questions[position - 1]
+        if (position > 1) {
+            val q = questions[position - 2]
             (holder as QuestionViewHolder).bindQuestion(q, q.answered())
         }
     }
 
     override fun getItemCount(): Int {
-        return questions.size + 1
+        return questions.size + 2
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == 0) VIEW_TYPE_HEADER else VIEW_TYPE_QUESTION
+        return when(position) {
+            0 -> VIEW_TYPE_HEADER
+            1 -> VIEW_TYPE_INSTRUCTION
+            else -> VIEW_TYPE_QUESTION
+        }
     }
 
     companion object {
         private const val VIEW_TYPE_HEADER = 0
         private const val VIEW_TYPE_QUESTION = 1
+        private const val VIEW_TYPE_INSTRUCTION = 2
         private const val HEADER_ID: Long = -1
+        private const val INSTRUCTION_ID: Long = -2
     }
 
     init {

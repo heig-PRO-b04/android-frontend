@@ -13,6 +13,9 @@
 
     <!-- PollActivity -->
     <string name="poll_exit">Disconnect</string>
+    <string name="poll_instructions">
+        In order to answer a question, please click on it.
+    </string>
 
     <!-- QuestionActivity -->
     <string name="question_bask_button">Back</string>
