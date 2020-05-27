@@ -23,6 +23,7 @@
     <item type="id" name="question_answers_view" />
     <item type="id" name="question_answer_item" />
     <item type="id" name="question_answers_alert" />
+    <item type="id" name="question_answers_description" />
     <item type="id" name="back_button" />
     <item type="id" name="before_button" />
     <item type="id" name="next_button" />

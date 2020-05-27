@@ -5,8 +5,9 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorError">#F5414C</color>
     <color name="colorTitle">#004275</color>
-
+    <color name="colorDescription">#718096</color>
     <color name="colorSelected">#DFE7B8</color>
+
     <color name="transparent">#00000000</color>
     <color name="seaside_050">#E1F5FE</color>
     <color name="seaside_100">#B3E5FC</color>
