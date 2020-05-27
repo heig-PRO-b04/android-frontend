@@ -2,6 +2,7 @@ package ch.heigvd.pro.b04.android.question
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +39,8 @@ class QuestionActivity : AppCompatActivity() {
         setupAnswerList()
 
         val alert = findViewById<TextView>(R.id.question_answers_alert)
+        val beforeButton = findViewById<ImageButton>(R.id.before_button)
+        val nextButton = findViewById<ImageButton>(R.id.next_button)
 
         lifecycleScope.launchWhenStarted {
             state.networkErrors().collect {
@@ -46,28 +49,43 @@ class QuestionActivity : AppCompatActivity() {
             }
         }
 
+
         lifecycleScope.launchWhenStarted {
-            state.getNbCheckedAnswer().collect {nbVotes ->
-                state.currentQuestion.value?.let {question ->
-                    if (nbVotes > 0 && question.answerMin > nbVotes) {
-                        alert.text = resources.getString(R.string.answers_min_alerts, question.answerMin)
-                        alert.visibility = View.VISIBLE
-                    } else {
-                        alert.visibility = View.INVISIBLE
-                    }
+            state.getMinCheckedAnswers().collect { votes ->
+                if (votes != null) {
+                    alert.text = resources.getString(R.string.answers_min_alerts, question.answerMin)
+                    alert.visibility = View.VISIBLE
+                } else {
+                    alert.visibility = View.INVISIBLE
                 }
             }
         }
 
         lifecycleScope.launchWhenStarted {
-            state.notifyMaxAnswers().collect {
-                if (it != 0) {
-                    Toast.makeText(
+            state.nextButtonVisible.collect { visible ->
+                if (visible)
+                    nextButton.visibility = View.VISIBLE
+                else
+                    nextButton.visibility = View.INVISIBLE
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            state.previousButtonVisible.collect { visible ->
+                if (visible)
+                    beforeButton.visibility = View.VISIBLE
+                else
+                    beforeButton.visibility = View.INVISIBLE
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            state.tooManyAnswers.collect {
+                Toast.makeText(
                         applicationContext,
                         resources.getQuantityString(R.plurals.answers_max_toast, it, it),
                         Toast.LENGTH_SHORT
-                    ).show()
-                }
+                ).show()
             }
         }
     }
