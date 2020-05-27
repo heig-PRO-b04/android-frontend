@@ -1,9 +1,13 @@
 import kotlin.RequiresOptIn
 
 apply plugin: "com.android.application"
-apply plugin: "com.google.gms.google-services"
 apply plugin: "kotlin-android"
 apply plugin: "kotlin-android-extensions"
+
+if (gradle.startParameter.taskNames.contains("release")) {
+    apply plugin: "com.google.gms.google-services"
+    apply plugin: "com.google.firebase.crashlytics"
+}
 
 Properties properties = new Properties()
 
@@ -24,10 +28,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file(properties.getProperty("releaseStoreFile"))
-            storePassword properties.getProperty("releaseStorePassword")
+            storeFile file(properties.getProperty("releaseStoreFile")) ?: "empty"
+            storePassword properties.getProperty("releaseStorePassword") ?: "empty"
             keyAlias "debviousinc"
-            keyPassword properties.getProperty("releaseKeyPassword")
+            keyPassword properties.getProperty("releaseKeyPassword") ?: "empty"
         }
     }
 
@@ -75,7 +79,10 @@ dependencies {
     testImplementation "junit:junit:4.13"
 
     // Firebase analytics -> Crashlytics
-    implementation 'com.google.firebase:firebase-analytics:17.4.2'
+    releaseImplementation 'com.google.firebase:firebase-analytics:17.4.2'
+    releaseImplementation 'com.google.firebase:firebase-analytics-ktx:17.4.2'
+    releaseImplementation 'com.google.firebase:firebase-crashlytics:17.0.0'
+
 
     // App dependencies.
     implementation "androidx.appcompat:appcompat:1.1.0"
