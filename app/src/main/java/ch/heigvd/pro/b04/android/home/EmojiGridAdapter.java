@@ -3,6 +3,7 @@ package ch.heigvd.pro.b04.android.home;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -14,6 +15,7 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_EMOJI = 1;
+    private static final int VIEW_TYPE_INSTRUCTION = 2;
 
     private HomeViewModel state;
 
@@ -29,6 +31,8 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 return new HeaderViewHolder(parent);
             case VIEW_TYPE_EMOJI:
                 return new EmojiViewHolder(parent);
+            case VIEW_TYPE_INSTRUCTION:
+                return new InstructionViewHolder(parent);
             default:
                 throw new IllegalStateException("Unknown view type.");
         }
@@ -36,25 +40,23 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        switch (position) {
-            case 0:
-                break;
-            default:
-                ((EmojiViewHolder) holder).bindEmoji(Emoji.values()[position - 1]);
-                break;
+        if (position > 1) {
+            ((EmojiViewHolder) holder).bindEmoji(Emoji.values()[position - 2]);
         }
     }
 
     @Override
     public int getItemCount() {
-        return Emoji.values().length + 1;
+        return Emoji.values().length + 2;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return position == 0
-                ? VIEW_TYPE_HEADER
-                : VIEW_TYPE_EMOJI;
+        switch (position) {
+            case 0: return VIEW_TYPE_HEADER;
+            case 1: return VIEW_TYPE_INSTRUCTION;
+            default: return VIEW_TYPE_EMOJI;
+        }
     }
 
     private static class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -62,6 +64,16 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public HeaderViewHolder(@NonNull ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.home_grid_title, parent, false));
+        }
+    }
+
+    private static class InstructionViewHolder extends RecyclerView.ViewHolder {
+        private TextView title;
+        public InstructionViewHolder(@NonNull ViewGroup parent) {
+            super(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.home_instructions, parent, false));
+            title = itemView.findViewById(R.id.home_instructions_title);
+            title.setText(R.string.connection_instruction);
         }
     }
 

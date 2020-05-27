@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Home -->
+    <item type="id" name="home_instructions_title" />
     <item type="id" name="home_grid" />
     <item type="id" name="home_grid_item" />
     <item type="id" name="home_grid_item_icon" />
