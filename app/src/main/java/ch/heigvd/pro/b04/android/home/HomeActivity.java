@@ -25,7 +25,7 @@ import ch.heigvd.pro.b04.android.R;
 import static ch.heigvd.pro.b04.android.R.id;
 import static ch.heigvd.pro.b04.android.R.layout;
 
-public class Home extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
     private static final int COLUMN_NBR = 4;
     private HomeViewModel state;
     private NavigateToPollViewModel navigate;
