@@ -22,6 +22,15 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        release {
+            storeFile file(properties.getProperty("releaseStoreFile"))
+            storePassword properties.getProperty("releaseStorePassword")
+            keyAlias "debviousinc"
+            keyPassword properties.getProperty("releaseKeyPassword")
+        }
+    }
+
     buildTypes {
 
         debug {
@@ -31,6 +40,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
