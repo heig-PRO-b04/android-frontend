@@ -64,6 +64,7 @@ public class Answer {
         if (o == null || getClass() != o.getClass()) return false;
 
         Answer answer = (Answer) o;
+        // Note that we do not want to compare the mutable field checked
         return  Objects.equals(idModerator, answer.idModerator) &&
                 Objects.equals(idPoll, answer.idPoll) &&
                 Objects.equals(idQuestion, answer.idQuestion) &&

@@ -19,7 +19,7 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private HomeViewModel state;
 
-    public EmojiGridAdapter(HomeViewModel state) {
+    EmojiGridAdapter(HomeViewModel state) {
         this.state = state;
     }
 
@@ -61,18 +61,17 @@ public class EmojiGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private static class HeaderViewHolder extends RecyclerView.ViewHolder {
 
-        public HeaderViewHolder(@NonNull ViewGroup parent) {
+        HeaderViewHolder(@NonNull ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.home_grid_title, parent, false));
         }
     }
 
     private static class InstructionViewHolder extends RecyclerView.ViewHolder {
-        private TextView title;
-        public InstructionViewHolder(@NonNull ViewGroup parent) {
+        InstructionViewHolder(@NonNull ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.home_instructions, parent, false));
-            title = itemView.findViewById(R.id.home_instructions_title);
+            TextView title = itemView.findViewById(R.id.home_instructions_title);
             title.setText(R.string.connection_instruction);
         }
     }

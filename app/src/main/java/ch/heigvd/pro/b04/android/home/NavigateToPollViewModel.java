@@ -36,7 +36,7 @@ public class NavigateToPollViewModel extends AndroidViewModel {
         );
     }
 
-    public LiveData<Pair<String, Poll>> displayedPoll() {
+    LiveData<Pair<String, Poll>> displayedPoll() {
         return displayedPoll;
     }
 }

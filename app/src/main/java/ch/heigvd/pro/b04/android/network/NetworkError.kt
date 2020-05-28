@@ -25,7 +25,7 @@ private fun <T> errorFrom(response: Response<T>): NetworkError? {
 fun <T> Flow<Response<T>>.keepError() : Flow<NetworkError> =
     filter { it.isSuccessful.not() }
         .map {
-            Log.i("localDebug", "Network error : " + it.code())
+            Log.i("localDebug", "Network error : " + it.raw())
             errorFrom(it)
         }
         .filterNotNull()

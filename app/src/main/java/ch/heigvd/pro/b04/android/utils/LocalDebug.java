@@ -7,6 +7,9 @@ import java.io.IOException;
 import retrofit2.Call;
 import retrofit2.Response;
 
+/**
+ * A helper class that logs debug information
+ */
 public class LocalDebug {
     private static String TAG = "localDebug";
     private LocalDebug() {};

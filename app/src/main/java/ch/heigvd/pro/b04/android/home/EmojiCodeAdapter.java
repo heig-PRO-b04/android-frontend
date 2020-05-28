@@ -14,11 +14,9 @@ import java.util.List;
 import ch.heigvd.pro.b04.android.R;
 public class EmojiCodeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private HomeViewModel state;
     private List<Emoji> emojis = new LinkedList<>();
 
-    public EmojiCodeAdapter(HomeViewModel state, LifecycleOwner lifecycleOwner) {
-        this.state = state;
+    EmojiCodeAdapter(HomeViewModel state, LifecycleOwner lifecycleOwner) {
 
         state.getCodeEmoji().observe(lifecycleOwner, emojis -> {
             this.emojis.clear();
@@ -45,7 +43,7 @@ public class EmojiCodeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return emojis.size();
     }
 
-    private class EmojiViewHolder extends RecyclerView.ViewHolder {
+    private static class EmojiViewHolder extends RecyclerView.ViewHolder {
         private ImageView emojiImage;
 
         private EmojiViewHolder(@NonNull ViewGroup parent) {

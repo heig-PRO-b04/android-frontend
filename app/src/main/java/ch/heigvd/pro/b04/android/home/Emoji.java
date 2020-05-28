@@ -4,6 +4,9 @@ import androidx.annotation.DrawableRes;
 
 import ch.heigvd.pro.b04.android.R;
 
+/**
+ * This enum class represents an Emoji as shown on the HomeActivity
+ */
 public enum Emoji {
 
     E0(R.drawable.emoji_0, '0'),

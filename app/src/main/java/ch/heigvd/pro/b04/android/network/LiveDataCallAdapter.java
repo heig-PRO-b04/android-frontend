@@ -15,7 +15,7 @@ public class LiveDataCallAdapter<T> implements CallAdapter<T, LiveData<ApiRespon
 
     private final Type type;
 
-    public LiveDataCallAdapter(Type type) {
+    LiveDataCallAdapter(Type type) {
         this.type = type;
     }
 
@@ -41,7 +41,7 @@ public class LiveDataCallAdapter<T> implements CallAdapter<T, LiveData<ApiRespon
             private void enqueue() {
                 call.enqueue(new Callback<T>() {
                     @Override
-                    public void onResponse(Call<T> call, Response<T> response) {
+                    public void onResponse(@NotNull Call<T> call, @NotNull Response<T> response) {
                         if (response.isSuccessful()) {
                             postValue(ApiResponse.of(response.body()));
                         } else {
@@ -51,7 +51,7 @@ public class LiveDataCallAdapter<T> implements CallAdapter<T, LiveData<ApiRespon
                     }
 
                     @Override
-                    public void onFailure(Call<T> call, Throwable t) {
+                    public void onFailure(@NotNull Call<T> call, @NotNull Throwable t) {
                         postValue(ApiResponse.ofError(500));
                         success = false;
                     }

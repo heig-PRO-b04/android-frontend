@@ -18,15 +18,6 @@ public class Session {
     @SerializedName("status")
     private String status;
 
-    public Session(String idModerator, String idPoll, String idSession, String code, String status) {
-        this.idModerator = idModerator;
-        this.idPoll = idPoll;
-        this.idSession = idSession;
-
-        this.code = code;
-        this.status = status;
-    }
-
     public String getIdModerator() {
         return idModerator;
     }
@@ -35,15 +26,7 @@ public class Session {
         return idPoll;
     }
 
-    public String getIdSession() {
-        return idSession;
-    }
-
     public String getCode() {
         return code;
-    }
-
-    public String getStatus() {
-        return status;
     }
 }

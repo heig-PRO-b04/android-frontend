@@ -48,11 +48,11 @@
         android:src="@drawable/ic_before_black"
         android:drawablePadding="8dp"
         android:gravity="center"
-        android:onClick="goBack"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/back_button"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/question_activity_previous_question_description" />
     <ImageButton
         android:id="@id/back_button"
         style="?attr/buttonStyle"
@@ -64,11 +64,11 @@
         android:src="@drawable/ic_exit_sign"
         android:drawablePadding="8dp"
         android:gravity="center"
-        android:onClick="exitQuestion"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/before_button"
-        app:layout_constraintEnd_toStartOf="@id/next_button" />
+        app:layout_constraintEnd_toStartOf="@id/next_button"
+        android:contentDescription="@string/question_activity_exit_button_description" />
     <ImageButton
         android:id="@id/next_button"
         style="?attr/buttonStyle"
@@ -80,10 +80,10 @@
         android:src="@drawable/ic_next_black"
         android:drawablePadding="8dp"
         android:gravity="center"
-        android:onClick="goNext"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/back_button"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/question_activity_next_question_description" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

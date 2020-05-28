@@ -16,19 +16,17 @@ import ch.heigvd.pro.b04.android.authentication.AuthenticationTokenLiveData
 import ch.heigvd.pro.b04.android.datamodel.Question
 import ch.heigvd.pro.b04.android.network.NetworkError
 import ch.heigvd.pro.b04.android.poll.PollActivity
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 
 class QuestionActivity : AppCompatActivity() {
     private lateinit var state: QuestionViewModel
 
-    @OptIn(InternalCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.question_activity)
         val intent = intent
         val question = intent.getSerializableExtra(PollActivity.EXTRA_QUESTION) as Question
-        val token = getIntent().getStringExtra(PollActivity.EXTRA_TOKEN)
+        val token = getIntent().getStringExtra(PollActivity.EXTRA_TOKEN) ?: "empty"
 
         state = ViewModelProvider(this, QuestionViewModelFactory(
             application,
@@ -36,12 +34,26 @@ class QuestionActivity : AppCompatActivity() {
             token
         )).get(QuestionViewModel::class.java)
 
-        setupAnswerList()
+        // Setup list of answers
+        val answerList = findViewById<RecyclerView>(R.id.question_answers_view)
+        val manager = LinearLayoutManager(this)
+        val questionAdapter = QuestionAdapter(state, this)
 
+        answerList.itemAnimator = DefaultItemAnimator()
+        answerList.adapter = questionAdapter
+        answerList.layoutManager = manager
+
+        // Setup button behaviour
         val alert = findViewById<TextView>(R.id.question_answers_alert)
         val beforeButton = findViewById<ImageButton>(R.id.before_button)
+        val backButton = findViewById<ImageButton>(R.id.back_button)
         val nextButton = findViewById<ImageButton>(R.id.next_button)
 
+        beforeButton.setOnClickListener { goBack() }
+        backButton.setOnClickListener { finish() }
+        nextButton.setOnClickListener { goNext() }
+
+        // React to change in state
         lifecycleScope.launchWhenStarted {
             state.networkErrors().collect {
                 if (it == NetworkError.TokenNotValid)
@@ -49,11 +61,10 @@ class QuestionActivity : AppCompatActivity() {
             }
         }
 
-
         lifecycleScope.launchWhenStarted {
             state.getMinCheckedAnswers().collect { votes ->
                 if (votes != null) {
-                    alert.text = resources.getString(R.string.answers_min_alerts, votes)
+                    alert.text = resources.getString(R.string.question_answers_min_alerts, votes)
                     alert.visibility = View.VISIBLE
                 } else {
                     alert.visibility = View.INVISIBLE
@@ -83,33 +94,19 @@ class QuestionActivity : AppCompatActivity() {
             state.tooManyAnswers.collect {
                 Toast.makeText(
                         applicationContext,
-                        resources.getQuantityString(R.plurals.answers_max_toast, it, it),
+                        resources.getQuantityString(R.plurals.question_answers_max_toast, it, it),
                         Toast.LENGTH_SHORT
                 ).show()
             }
         }
     }
 
-    private fun setupAnswerList() {
-        val answerList = findViewById<RecyclerView>(R.id.question_answers_view)
-        val manager = LinearLayoutManager(this)
-        val questionAdapter = QuestionAdapter(state, this)
-
-        answerList.itemAnimator = DefaultItemAnimator()
-        answerList.adapter = questionAdapter
-        answerList.layoutManager = manager
-    }
-
-    fun goBack(view: View?) {
+    private fun goBack() {
         state.changeToPreviousQuestion()
     }
 
-    fun goNext(view: View?) {
+    private fun goNext() {
         state.changeToNextQuestion()
-    }
-
-    fun exitQuestion(view: View?) {
-        finish()
     }
 
     private fun disconnect() {

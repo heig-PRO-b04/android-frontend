@@ -89,7 +89,8 @@ sealed class Event {
  * @param moveToPrevious A [Flow] that emits when the user clicks the previous button.
  * @param votes A [Flow] that emits when the user votes for an answer.
  */
-@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+@FlowPreview
+@ExperimentalCoroutinesApi
 class PollState(
         // Scope
         scope: CoroutineScope,
