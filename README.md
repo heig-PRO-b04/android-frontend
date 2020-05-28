@@ -23,14 +23,18 @@ This software is developed as semester project (PRO) at HEIG-VD, academic year
 
 This project uses Gradle and the Android SDK will be needed.
 
-## Building and installing
+## Installing
 
-### Release Version
+You can install the app via the [Google Play
+store](https://play.google.com/store/apps/details?id=ch.heigvd.pro.b04.android), which we highly
+encourage you to do. Alternatively, you can build it yourself.
+
+### Building the release version
 
 The release version can only be built by specific users who are allowed to sign the app. If you
 need this access, please contact Alexandre and/or Guy-Laurent.
 
-### Development Version
+### Building the development version
 
 The development version of the app will not include Firebase Crashlytics, but instead will output
 debug information.
@@ -65,3 +69,7 @@ apiUrl="http://172.22.22.53:8080"
 #releaseStorePassword=1234
 #releaseKeyPassword=1234
 ```
+
+Finally, whichever version you chose, you will need to transfer it to your phone and install it
+manually. Please note that you may need to change your security settings to allow installing
+applications from unknown sources.
