@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import ch.heigvd.pro.b04.android.R
@@ -51,7 +52,8 @@ class PollAdapter(private val state: PollViewModel) : RecyclerView.Adapter<Recyc
         }
     }
 
-    private inner class QuestionViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(LayoutInflater.from(parent.context)
+    private inner class QuestionViewHolder(private val parent: ViewGroup)
+        : RecyclerView.ViewHolder(LayoutInflater.from(parent.context)
             .inflate(R.layout.poll_question, parent, false)) {
 
         private val questionButton: Button = itemView.findViewById(R.id.poll_question_item)
@@ -71,18 +73,16 @@ class PollAdapter(private val state: PollViewModel) : RecyclerView.Adapter<Recyc
 
             if (question.details != null && question.details != "") {
                 spannable.setSpan(
-                        ForegroundColorSpan(
-                                itemView.resources.getColor(R.color.colorDescription)
-                        ),
-                        question.title.length + 1,
-                        text.length,
-                        0
+                    ForegroundColorSpan(ContextCompat
+                        .getColor(parent.context, R.color.colorDescription)),
+                    question.title.length + 1,
+                    text.length,
+                    0
                 )
             }
 
             questionButton.text = spannable
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
