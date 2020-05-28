@@ -5,13 +5,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import ch.heigvd.pro.b04.android.datamodel.Poll
 import ch.heigvd.pro.b04.android.datamodel.Question
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import retrofit2.Response
 
-@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+@FlowPreview
 open class RequestsViewModel(application: Application, idModerator : Int, idPoll : Int, token : String)
     : AndroidViewModel(application) {
 
