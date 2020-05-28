@@ -34,19 +34,32 @@ class QuestionActivity : AppCompatActivity() {
             token
         )).get(QuestionViewModel::class.java)
 
-        setupAnswerList()
+        // Setup list of answers
+        val answerList = findViewById<RecyclerView>(R.id.question_answers_view)
+        val manager = LinearLayoutManager(this)
+        val questionAdapter = QuestionAdapter(state, this)
 
+        answerList.itemAnimator = DefaultItemAnimator()
+        answerList.adapter = questionAdapter
+        answerList.layoutManager = manager
+
+        // Setup button behaviour
         val alert = findViewById<TextView>(R.id.question_answers_alert)
         val beforeButton = findViewById<ImageButton>(R.id.before_button)
+        val backButton = findViewById<ImageButton>(R.id.back_button)
         val nextButton = findViewById<ImageButton>(R.id.next_button)
 
+        beforeButton.setOnClickListener { goBack() }
+        backButton.setOnClickListener { finish() }
+        nextButton.setOnClickListener { goNext() }
+
+        // React to change in state
         lifecycleScope.launchWhenStarted {
             state.networkErrors().collect {
                 if (it == NetworkError.TokenNotValid)
                     disconnect()
             }
         }
-
 
         lifecycleScope.launchWhenStarted {
             state.getMinCheckedAnswers().collect { votes ->
@@ -88,26 +101,12 @@ class QuestionActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupAnswerList() {
-        val answerList = findViewById<RecyclerView>(R.id.question_answers_view)
-        val manager = LinearLayoutManager(this)
-        val questionAdapter = QuestionAdapter(state, this)
-
-        answerList.itemAnimator = DefaultItemAnimator()
-        answerList.adapter = questionAdapter
-        answerList.layoutManager = manager
-    }
-
-    fun goBack(view: View?) {
+    private fun goBack() {
         state.changeToPreviousQuestion()
     }
 
-    fun goNext(view: View?) {
+    private fun goNext() {
         state.changeToNextQuestion()
-    }
-
-    fun exitQuestion(view: View?) {
-        finish()
     }
 
     private fun disconnect() {
