@@ -38,13 +38,20 @@ class PollActivity : AppCompatActivity() {
             token
         )).get(PollViewModel::class.java)
 
+        // Show the list of questions
         val questionList = findViewById<RecyclerView>(R.id.poll_questions_view)
-        questionList.itemAnimator = DefaultItemAnimator()
-        val manager = LinearLayoutManager(this)
         val pollAdapter = PollAdapter(state)
+        val manager = LinearLayoutManager(this)
+
+        questionList.itemAnimator = DefaultItemAnimator()
         questionList.adapter = pollAdapter
         questionList.layoutManager = manager
 
+        // Setup exit button behaviour
+        val exitButton = findViewById<Button>(R.id.poll_exit_button)
+        exitButton.setOnClickListener { disconnectFromPoll() }
+
+        // React to change of state
         lifecycleScope.launchWhenStarted {
             state.networkErrors().collect {
                 if (it == NetworkError.TokenNotValid)
@@ -60,9 +67,7 @@ class PollActivity : AppCompatActivity() {
             startActivity(questionIntent)
         })
 
-        val exitButton = findViewById<Button>(R.id.poll_exit_button)
-        exitButton.setOnClickListener { disconnectFromPoll() }
-
+        // If the token is not correct anymore, quit activity
         tokenLiveData!!.observe(this, Observer { s: Optional<String?> ->
             if (!s.isPresent) {
                 disconnectFromPoll()
@@ -78,6 +83,9 @@ class PollActivity : AppCompatActivity() {
         finish()
     }
 
+    /**
+     * If we use the usual android back button, remove token
+     */
     override fun onBackPressed() {
         tokenLiveData?.logout()
         super.onBackPressed()
