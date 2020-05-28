@@ -16,19 +16,17 @@ import ch.heigvd.pro.b04.android.authentication.AuthenticationTokenLiveData
 import ch.heigvd.pro.b04.android.datamodel.Question
 import ch.heigvd.pro.b04.android.network.NetworkError
 import ch.heigvd.pro.b04.android.poll.PollActivity
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 
 class QuestionActivity : AppCompatActivity() {
     private lateinit var state: QuestionViewModel
 
-    @OptIn(InternalCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.question_activity)
         val intent = intent
         val question = intent.getSerializableExtra(PollActivity.EXTRA_QUESTION) as Question
-        val token = getIntent().getStringExtra(PollActivity.EXTRA_TOKEN)
+        val token = getIntent().getStringExtra(PollActivity.EXTRA_TOKEN) ?: "empty"
 
         state = ViewModelProvider(this, QuestionViewModelFactory(
             application,

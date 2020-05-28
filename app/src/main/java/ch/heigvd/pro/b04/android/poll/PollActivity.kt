@@ -27,14 +27,15 @@ class PollActivity : AppCompatActivity() {
 
         val idModerator = intent.getIntExtra(EXTRA_ID_MODERATOR, 0)
         val idPoll = intent.getIntExtra(EXTRA_ID_POLL, 0)
+        val token: String = intent.getStringExtra(EXTRA_TOKEN) ?: "empty"
 
         tokenLiveData = AuthenticationTokenLiveData(this)
 
         state = ViewModelProvider(this, PollViewModelFactory(
-                application,
-                idModerator,
-                idPoll,
-                intent.getStringExtra(EXTRA_TOKEN)
+            application,
+            idModerator,
+            idPoll,
+            token
         )).get(PollViewModel::class.java)
 
         val questionList = findViewById<RecyclerView>(R.id.poll_questions_view)
