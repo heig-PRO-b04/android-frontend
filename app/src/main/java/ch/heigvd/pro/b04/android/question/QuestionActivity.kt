@@ -64,7 +64,7 @@ class QuestionActivity : AppCompatActivity() {
         lifecycleScope.launchWhenStarted {
             state.getMinCheckedAnswers().collect { votes ->
                 if (votes != null) {
-                    alert.text = resources.getString(R.string.answers_min_alerts, votes)
+                    alert.text = resources.getString(R.string.question_activity_answers_min_alerts, votes)
                     alert.visibility = View.VISIBLE
                 } else {
                     alert.visibility = View.INVISIBLE
@@ -94,7 +94,7 @@ class QuestionActivity : AppCompatActivity() {
             state.tooManyAnswers.collect {
                 Toast.makeText(
                         applicationContext,
-                        resources.getQuantityString(R.plurals.answers_max_toast, it, it),
+                        resources.getQuantityString(R.plurals.question_answers_max_toast, it, it),
                         Toast.LENGTH_SHORT
                 ).show()
             }
