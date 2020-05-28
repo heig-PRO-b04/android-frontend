@@ -21,15 +21,47 @@ This software is developed as semester project (PRO) at HEIG-VD, academic year
 
 ## Dependencies
 
-This project uses Maven and is automatically built.
+This project uses Gradle and the Android SDK will be needed.
 
 ## Building and installing
 
-To launch the app locally, you need to :
+### Release Version
 
-0. Set the Android SDK up on your computer.
-1. Use `./gradlew clean assembleDebug assembleRelease testDebug` to run the
-   unit tests and build an `.apk` file.
-2. Install the `.apk` file manually to your device.
+The release version can only be built by specific users who are allowed to sign the app. If you
+need this access, please contact Alexandre and/or Guy-Laurent.
 
-**Note :** it is also possible to run the project using Android Studio, which is less tedious. Just open the repository root as an Android project and you'll be good to go !
+### Development Version
+
+The development version of the app will not include Firebase Crashlytics, but instead will output
+debug information.
+
+To build the app locally, you need to launch `./gradlew clean assembleDebug` to build two `.apk`
+file. Those `apk` will be located at :
+
+1. `app/build/outputs/apk/developmentAPI/debug/app-developmentAPI-debug.apk`
+2. `app/build/outputs/apk/productionAPI/debug/app-productionAPI-debug.apk`
+
+The `app-productionAPI-debug.apk` version will be built so that the app can communicate with our
+backend (i.e. rockin.app). The `app-developmentAPI-debug.apk` version will be built so that you
+can run your own version of the backend locally.
+
+If you wish to use the backend locally, you will need to have a `local.properties` file at the root
+of the project directory. It should contain the address and the port of your backend instance.
+
+For example:
+
+```
+## This file must *NOT* be checked into Version Control Systems,
+# as it contains information specific to your local configuration.
+#
+# Location of the SDK. This is only used by Gradle.
+# For customization when using a Version Control System, please read the
+# header note.
+sdk.dir=/opt/android-sdk-update-manager
+apiUrl="http://172.22.22.53:8080"
+
+# Necessary for building the release version
+#releaseStoreFile=
+#releaseStorePassword=1234
+#releaseKeyPassword=1234
+```
