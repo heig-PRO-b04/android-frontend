@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import ch.heigvd.pro.b04.android.R
@@ -39,7 +40,7 @@ class QuestionAdapter(
         }
     }
 
-    private inner class AnswerViewHolder(parent: ViewGroup)
+    private inner class AnswerViewHolder(private val parent: ViewGroup)
         : RecyclerView.ViewHolder(LayoutInflater.from(parent.context)
             .inflate(R.layout.question_answers, parent, false)) {
 
@@ -57,7 +58,8 @@ class QuestionAdapter(
 
             if (answer.description != null && answer.description != "") {
                 spannable.setSpan(
-                    ForegroundColorSpan(context.resources.getColor(R.color.colorDescription)),
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(parent.context, R.color.colorDescription)),
                     answer.title.length + 1,
                     text.length,
                     0

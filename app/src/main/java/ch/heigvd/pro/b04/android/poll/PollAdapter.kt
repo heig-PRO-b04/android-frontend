@@ -12,11 +12,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import ch.heigvd.pro.b04.android.R
 import ch.heigvd.pro.b04.android.datamodel.Question
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.*
 
+@FlowPreview
 class PollAdapter(private val state: PollViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var questions: List<Question> = LinkedList()
@@ -52,6 +54,7 @@ class PollAdapter(private val state: PollViewModel) : RecyclerView.Adapter<Recyc
         }
     }
 
+    @FlowPreview
     private inner class QuestionViewHolder(private val parent: ViewGroup)
         : RecyclerView.ViewHolder(LayoutInflater.from(parent.context)
             .inflate(R.layout.poll_question, parent, false)) {
