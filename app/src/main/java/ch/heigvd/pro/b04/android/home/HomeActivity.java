@@ -149,6 +149,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     @Override
+    // Is called when the scanQR method has a result
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (intentResult == null) {
