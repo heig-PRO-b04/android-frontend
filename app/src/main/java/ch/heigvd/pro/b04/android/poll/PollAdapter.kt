@@ -56,7 +56,7 @@ class PollAdapter(private val state: PollViewModel) : RecyclerView.Adapter<Recyc
 
         private val questionButton: Button = itemView.findViewById(R.id.poll_question_item)
 
-        fun bindQuestion(question: Question, answered: Boolean) {
+        fun bindQuestion(question: Question) {
 
             questionButton.setOnClickListener { state.goToQuestion(question) }
 
@@ -81,12 +81,6 @@ class PollAdapter(private val state: PollViewModel) : RecyclerView.Adapter<Recyc
             }
 
             questionButton.text = spannable
-
-            if (answered) {
-                questionButton.setBackgroundColor(Color.GREEN)
-            } else {
-                questionButton.setBackgroundColor(Color.WHITE)
-            }
         }
 
     }
@@ -103,7 +97,7 @@ class PollAdapter(private val state: PollViewModel) : RecyclerView.Adapter<Recyc
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (position > 1) {
             val q = questions[position - 2]
-            (holder as QuestionViewHolder).bindQuestion(q, q.answered())
+            (holder as QuestionViewHolder).bindQuestion(q)
         }
     }
 

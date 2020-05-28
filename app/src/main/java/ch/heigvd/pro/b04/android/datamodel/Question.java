@@ -30,8 +30,6 @@ public class Question implements Serializable {
     @SerializedName("answerMax")
     private int answerMax;
 
-    private boolean answered;
-
     public long getIdModerator() {
         return idModerator;
     }
@@ -60,14 +58,9 @@ public class Question implements Serializable {
         return answerMax;
     }
 
-    public boolean answered() {
-        return answered;
-    }
-
     public double getIndexInPoll() {
         return indexInPoll;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -79,17 +72,12 @@ public class Question implements Serializable {
                 Objects.equals(idQuestion, question.idQuestion) &&
                 Objects.equals(title, question.title) &&
                 Objects.equals(details, question.details) &&
-                Objects.equals(answered, question.answered) &&
                 Objects.equals(answerMin, question.answerMin) &&
                 Objects.equals(answerMax, question.answerMax);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idModerator, idPoll, idQuestion, indexInPoll, title, details, answerMin, answerMax, answered);
-    }
-
-    public void setAnswered(boolean answered) {
-        this.answered = answered;
+        return Objects.hash(idModerator, idPoll, idQuestion, indexInPoll, title, details, answerMin, answerMax);
     }
 }
