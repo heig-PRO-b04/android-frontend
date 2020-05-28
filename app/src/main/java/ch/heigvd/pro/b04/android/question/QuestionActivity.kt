@@ -64,7 +64,7 @@ class QuestionActivity : AppCompatActivity() {
         lifecycleScope.launchWhenStarted {
             state.getMinCheckedAnswers().collect { votes ->
                 if (votes != null) {
-                    alert.text = resources.getString(R.string.question_activity_answers_min_alerts, votes)
+                    alert.text = resources.getString(R.string.question_answers_min_alerts, votes)
                     alert.visibility = View.VISIBLE
                 } else {
                     alert.visibility = View.INVISIBLE
