@@ -8,6 +8,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,9 +44,9 @@ public final class HomeViewModel extends AndroidViewModel {
 
     private Callback<Token> callbackToken = new Callback<Token>() {
         @Override
-        public void onResponse(Call<Token> call, Response<Token> response) {
-            if (response.isSuccessful()) {
-                onSuccessfulToken(response.body().getToken());
+        public void onResponse(@NotNull Call<Token> call, Response<Token> response) {
+            if (response.isSuccessful() && response.body() != null) {
+                    onSuccessfulToken(response.body().getToken());
             } else {
                 requestState.postValue(ERROR);
                 LocalDebug.logUnsuccessfulRequest(call, response);
@@ -53,7 +55,7 @@ public final class HomeViewModel extends AndroidViewModel {
         }
 
         @Override
-        public void onFailure(Call<Token> call, Throwable t) {
+        public void onFailure(@NotNull Call<Token> call, @NotNull Throwable t) {
             requestState.postValue(ERROR);
             LocalDebug.logFailedRequest(call, t);
         }
@@ -70,8 +72,8 @@ public final class HomeViewModel extends AndroidViewModel {
         tokenData.login(token);
     }
 
-    public void addNewEmoji(Emoji emoji) {
-        if (requestState.getValue().equals(ERROR)) {
+    void addNewEmoji(Emoji emoji) {
+        if (Objects.equals(requestState.getValue(), ERROR)) {
             reinitializeEmojiBuffer();
         }
 
@@ -96,7 +98,7 @@ public final class HomeViewModel extends AndroidViewModel {
     /**
      * Helper method used to clean up the buffer state
      */
-    public void reinitializeEmojiBuffer() {
+    void reinitializeEmojiBuffer() {
         requestState.setValue(NORMAL);
         registrationCodeEmoji.setValue(new ArrayList<>());
     }
@@ -106,7 +108,7 @@ public final class HomeViewModel extends AndroidViewModel {
      * @return A correctly formatted code
      */
     private String buildCodeFromEmojis() {
-        Iterator<Emoji> emojis = registrationCodeEmoji.getValue().iterator();
+        Iterator<Emoji> emojis = Objects.requireNonNull(registrationCodeEmoji.getValue()).iterator();
         StringBuilder code = new StringBuilder().append("0x");
 
         while (emojis.hasNext()) {
@@ -118,7 +120,7 @@ public final class HomeViewModel extends AndroidViewModel {
     /**
      * Helper method used to send a connection request to the server
      */
-    public void sendConnectRequest(String code) {
+    void sendConnectRequest(String code) {
         requestState.postValue(SENDING);
         registrationCode.postValue(code);
         Rockin.api().postConnect(new SessionCode(code)).enqueue(callbackToken);
@@ -133,20 +135,20 @@ public final class HomeViewModel extends AndroidViewModel {
         selectedEmoji.postValue(new HashSet<>(emojisBuffer));
     }
 
-    public LiveData<List<Emoji>> getCodeEmoji() {
-        return this.registrationCodeEmoji;
-    }
-
-    public void clearOneEmoji() {
+    void clearOneEmoji() {
         List<Emoji> emojiList = registrationCodeEmoji.getValue();
-        if (! emojiList.isEmpty()) {
+        if (emojiList != null && ! emojiList.isEmpty()) {
             emojiList.remove(emojiList.size() - 1);
             registrationCodeEmoji.postValue(emojiList);
             requestState.postValue(NORMAL);
         }
     }
 
-    public LiveData<State> getRequestState() {
+    LiveData<State> getRequestState() {
         return this.requestState;
+    }
+
+    LiveData<List<Emoji>> getCodeEmoji() {
+        return this.registrationCodeEmoji;
     }
 }
