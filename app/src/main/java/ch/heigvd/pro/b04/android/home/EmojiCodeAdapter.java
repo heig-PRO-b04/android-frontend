@@ -45,7 +45,7 @@ public class EmojiCodeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return emojis.size();
     }
 
-    private class EmojiViewHolder extends RecyclerView.ViewHolder {
+    private static class EmojiViewHolder extends RecyclerView.ViewHolder {
         private ImageView emojiImage;
 
         private EmojiViewHolder(@NonNull ViewGroup parent) {
